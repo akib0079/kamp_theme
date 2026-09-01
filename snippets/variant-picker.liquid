@@ -112,7 +112,8 @@
                 nextSelector.querySelectorAll('.js-option').forEach(input => {
                     const variant = product.variants.find(variant => {
                         return [...slice, input.value].every((value, index) => {
-                            return variant[`option${index + 1}`] === value;
+                            // An option nobody has chosen yet constrains nothing.
+                            return value == null || variant[`option${index + 1}`] === value;
                         });
                     });
                     input.classList.toggle('variant-option-hidden', variant === undefined)
@@ -127,11 +128,8 @@
             if(!checked) return;
             if(checked.classList.contains('variant-option-hidden'))
             {
-                const availableOption = selector.querySelector('.js-option:not(.variant-option-hidden)');
-                if(availableOption){
-                    availableOption.checked = true;
-                }
-                options[index] = availableOption?.value || null;
+                checked.checked = false;
+                options[index] = null;
             }
         })
     }

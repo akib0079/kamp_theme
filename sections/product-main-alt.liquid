@@ -1192,21 +1192,42 @@
     if (productGallery) productGallery.setGroup(e.target.value);
   });
 
-  /* Nothing is preselected, so hold the cart until every option is chosen. */
+  /* Nothing is preselected, so hold the cart until every option is chosen.
+     Availability has to be recomputed here too: variant_changed only fires once
+     every option is set, so a lone colour click would otherwise leave the size
+     row showing what was available across all colours at page load. */
   container.addEventListener('change', (e) => {
     if (!e.target.classList.contains('js-option')) return;
+    updateAvailableState(Theme.currentProduct, container);
     updateChoiceState(container);
   });
 
   function updateChoiceState(container) {
-    const selectors = container.querySelectorAll(
-      '.product-alt__variant-picker .product-alt__option-selector'
+    const selectors = Array.from(
+      container.querySelectorAll('.product-alt__variant-picker .product-alt__option-selector')
     );
     if (!selectors.length) return;
-    const incomplete = Array.from(selectors).some((s) => !s.querySelector('.js-option:checked'));
-    if (!incomplete) return; // a complete choice is handled by variant_changed
+
+    const chosen = selectors.map((s) => {
+      const checked = s.querySelector('.js-option:checked');
+      return checked ? checked.value : null;
+    });
+    if (!chosen.includes(null)) return; // a complete choice is handled by variant_changed
+
+    // Read this from the product rather than the option classes, so it does not
+    // depend on which change listener happens to run first.
+    const product = Theme.currentProduct;
+    const reachable =
+      !product ||
+      (product.variants || []).some(
+        (variant) =>
+          variant.available &&
+          chosen.every((value, i) => value == null || variant.options[i] === value)
+      );
+
     container.querySelectorAll('.product-alt__add-cart[data-needs-choice]').forEach((btn) => {
-      if (btn.dataset.chooseText) btn.innerHTML = btn.dataset.chooseText;
+      const label = reachable ? btn.dataset.chooseText : btn.dataset.soldOutText;
+      if (label) btn.innerHTML = label;
       btn.setAttribute('disabled', '');
     });
   }
