@@ -11,9 +11,22 @@
         endif
     -%}
     <div class="product-alt__option-selector{% if uses_swatches %} option-selector--swatch{% if settings.show_variant_image %} variant-image{% endif %}{% endif %}"  data-option-index="{{ forloop.index0 }}" role="radiogroup" aria-labelledby="{{ option_id }}-Label">
+        {%- liquid
+            # Swatch options keep the "Kleur GRAY" pairing; the rest get a prompt
+            # ("Kies jouw maat"), as in the design.
+            assign option_prompt = ''
+            if block.settings.option_prompt != blank and uses_swatches == false
+                assign option_label = option.name | downcase
+                assign option_prompt = block.settings.option_prompt | replace: '[option]', option_label
+            endif
+        -%}
         <div class="opposing-items">
-            <label class="product-alt__option_name" id="{{ option_id }}-Label">{{ option.name }}</label>
-            <span class="product-alt__selected_option">{{ option.selected_value }}</span>
+            {%- if option_prompt != blank -%}
+                <label class="product-alt__option_name" id="{{ option_id }}-Label">{{ option_prompt }}</label>
+            {%- else -%}
+                <label class="product-alt__option_name" id="{{ option_id }}-Label">{{ option.name }}</label>
+                <span class="product-alt__selected_option">{{ option.selected_value }}</span>
+            {%- endif -%}
         </div>
         <div class="product-alt__option-selector_btns">
             {%- for value in option.values -%}

@@ -436,11 +436,42 @@
               {% endif %}
             </div>
           {% when 'excerpt' %}
-            {% if section.settings.desc != blank %}
+            {%- liquid
+              # 1. The block setting. It may hold Liquid that resolves to a metafield, so test
+              # the rendered text — an empty metafield leaves an empty <p>, not a blank string.
+              assign excerpt_html = block.settings.desc
+              assign excerpt_plain = excerpt_html | strip_html | strip
+              if excerpt_plain contains '{{'
+                # Liquid came through unevaluated; never print it to the storefront.
+                assign excerpt_plain = ''
+              endif
+
+              # 2. The product's own short-description metafield.
+              if excerpt_plain == blank
+                assign mf_path = block.settings.metafield_key | default: 'custom.korte_beschrijving' | split: '.'
+                assign mf_html = product.metafields[mf_path[0]][mf_path[1]] | metafield_tag
+                assign mf_plain = mf_html | strip_html | strip
+                if mf_plain != blank
+                  assign excerpt_html = mf_html
+                  assign excerpt_plain = mf_plain
+                endif
+              endif
+
+              # 3. Last resort: a trimmed product description.
+              if excerpt_plain == blank and block.settings.fallback_to_description
+                assign excerpt_words = block.settings.fallback_words | default: 25
+                assign excerpt_plain = product.description | strip_html | strip
+                if excerpt_plain != blank
+                  assign excerpt_html = excerpt_plain | truncatewords: excerpt_words
+                  assign excerpt_html = '<p>' | append: excerpt_html | append: '</p>'
+                endif
+              endif
+            -%}
+            {%- if excerpt_plain != blank -%}
               <div class="product-alt__excerpt desc" {{ block.shopify_attributes }}>
-                {{ block.settings.desc }}
+                {{ excerpt_html }}
               </div>
-            {% endif %}
+            {%- endif -%}
           {% when 'price' %}
             <div class="product-alt__price-wrap variant-visibility-area" {{ block.shopify_attributes }}>
               {%- for variant in product.variants -%}
@@ -2000,9 +2031,12 @@
             font-size: 14px;
             font-weight: 500;
             line-height: 150%;
-            color: #5C5C5C;
+            color: #908F90;
+            text-transform: capitalize;
             margin-top: 18px;
         }
+        .product-alt__excerpt.desc > *{ margin: 0; }
+        .product-alt__excerpt.desc > * + *{ margin-top: 6px; }
         .product-alt__price{
             display: flex;
             align-items: center;
@@ -2319,6 +2353,8 @@
          ============================================ */
         .product-alt__bt{
             margin-top: 35px;
+            padding-top: 35px;
+            border-top: 1px solid #E4E4E4;
         }
         .product-alt__bt-title{
             font-size: 16px;
@@ -3453,7 +3489,32 @@
           "type": "richtext",
           "id": "desc",
           "label": "Content",
+          "info": "Leave empty to use the metafield below. Accepts Liquid.",
           "default": "<p>Ademende en vochtafvoerende</p>"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Short description metafield",
+          "info": "Namespace and key, e.g. custom.korte_beschrijving.",
+          "default": "custom.korte_beschrijving"
+        },
+        {
+          "type": "checkbox",
+          "id": "fallback_to_description",
+          "label": "Fall back to product description",
+          "info": "Used only when the content above resolves to nothing, for example a product without the metafield.",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "fallback_words",
+          "label": "Fallback length",
+          "min": 10,
+          "max": 60,
+          "step": 5,
+          "unit": "w",
+          "default": 25
         }
       ]
     },
@@ -3471,7 +3532,16 @@
     },
     {
       "type": "variant_picker",
-      "name": "Variant Picker"
+      "name": "Variant Picker",
+      "settings": [
+        {
+          "type": "text",
+          "id": "option_prompt",
+          "label": "Prompt for non-colour options",
+          "info": "Use [option] for the option name, e.g. Kies jouw [option] renders as Kies jouw maat. Leave empty to show the option name plus the selected value instead.",
+          "default": "Kies jouw [option]"
+        }
+      ]
     },
     {
       "type": "buy_buttons",
