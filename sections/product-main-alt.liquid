@@ -288,6 +288,7 @@
                   </span>
                 </a>
               </div>
+              {% comment %}
               <script>
                   const id = {{product.id}};
                   {% comment %} alert("data") {% endcomment %}
@@ -377,17 +378,18 @@
                     }
                   })
               </script>
+               {% endcomment %}
             {% endif %}
           {% endfor %}
         </div>
       </div>
     </div>
     <div class="product-alt__right">
-      <!-- Start of Judge.me code -->
-      <div class='jdgm-widget jdgm-preview-badge' data-id="{{ product.id }}">
+<!-- Start of Judge.me code -->
+      <div style='{{ jm_style }}' class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}' data-auto-install='false'>
         {{ product.metafields.judgeme.badge }}
       </div>
-    <!-- End of Judge.me code -->
+      <!-- End of Judge.me code -->
 
       {% for block in section.blocks %}
         {% case block.type %}
