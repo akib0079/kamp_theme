@@ -10,16 +10,8 @@
 {% unless product.available %}
   {% assign product_sold_out = true %}
 {% endunless %}
-{% liquid
-  assign variantGallerySystem = true
-  for variant in product.variants
-    if variant.featured_image == blank
-      assign variantGallerySystem = false
-    endif
-  endfor
-%}
 <div
-  class="section product-alt-section section-id-{{ section.id }}{% if variantGallerySystem %} variant-based-gallery{% endif %}"
+  class="section product-alt-section section-id-{{ section.id }}"
   data-section-type="main-product"
 >
   <div class="section">
@@ -1197,7 +1189,6 @@
     if (!e.target.classList.contains('js-option')) return;
     const selector = e.target.closest('.product-alt__option-selector');
     if (!selector || selector.dataset.optionIndex !== '0') return;
-    if (!container.classList.contains('variant-based-gallery')) return;
     if (productGallery) productGallery.setGroup(e.target.value);
   });
 
@@ -1636,6 +1627,25 @@
 
     const groupByMediaId = buildMediaGroups(Theme.currentProduct);
 
+    // Grouping leans entirely on variant images. Name the colours Shopify has none
+    // for, so the gap is visible in the editor instead of looking like a bug.
+    if (window.Shopify && window.Shopify.designMode && Theme.currentProduct) {
+      const grouped = Object.keys(groupByMediaId).map((id) => groupByMediaId[id]);
+      const missing = [];
+      (Theme.currentProduct.variants || []).forEach((variant) => {
+        const colour = variant.options && variant.options[0];
+        if (colour == null || missing.indexOf(colour) > -1) return;
+        if (grouped.indexOf(colour) === -1) missing.push(colour);
+      });
+      if (missing.length) {
+        console.warn(
+          '[product gallery] No variant image assigned for: ' +
+            missing.join(', ') +
+            '. These cannot be filtered, and the colour before them in the media order takes their images.'
+        );
+      }
+    }
+
     let activeGroup = null; // null = no colour picked yet, show everything
     let expanded = false; // true once the full thumb rail has been opened
 
@@ -1743,7 +1753,6 @@
         thumbsSwiper.slideTo(Math.min(index, shownThumbs.length - 1), 0);
       }
       if (gallerySwiper.navigation) gallerySwiper.navigation.update();
-      outer.style.setProperty('--height', wrap.scrollHeight + 'px');
     }
 
     // Reveal the rest of the rail once the shopper browses past the cap.
@@ -2026,28 +2035,12 @@
         .product-alt__gallery-wrap-outer{
           width: 100%;
           position: relative;
-          height: var(--height)
         }
         .product-alt__gallery-wrap{
           display: grid;
           grid-template-columns: 1fr 4fr;
           grid-gap: 24px 11px;
           align-self: self-start;
-          transition: 0.5s ease-out;
-          transition-property: visibility, opacity;
-        }
-        .variant-based-gallery .product-alt__gallery-wrap{
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: auto;
-          visibility: hidden;
-          opacity: 0;
-        }
-        .variant-based-gallery .product-alt__gallery-wrap.active{
-          opacity: 1;
-          visibility: visible;
         }
         .product-alt__thumb{
             --gap: 11px;
