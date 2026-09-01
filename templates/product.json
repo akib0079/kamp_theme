@@ -312,7 +312,10 @@
           "type": "excerpt",
           "name": "Korte beschrijving",
           "settings": {
-            "desc": "<p>{{ product.metafields.custom.korte_beschrijving | metafield_tag }}</p>"
+            "desc": "<p>{{ product.metafields.custom.korte_beschrijving | metafield_tag }}</p>",
+            "metafield_key": "custom.korte_beschrijving",
+            "fallback_to_description": true,
+            "fallback_words": 25
           }
         },
         "price_bnTqC9": {
@@ -323,7 +326,9 @@
         },
         "variant_picker_DmC3Pp": {
           "type": "variant_picker",
-          "settings": {}
+          "settings": {
+            "option_prompt": "Kies jouw [option]"
+          }
         },
         "usps_T4zUWB": {
           "type": "usps",
@@ -345,6 +350,7 @@
           "settings": {
             "cart_icon": "shopify://shop_images/Frame_59.svg",
             "text": "In winkelwagen",
+            "choose_text": "Maak een keuze",
             "show_store_availability": false,
             "store_text": "Bekijk winkelvoorraad",
             "sold_out_text": "Uitverkocht"
