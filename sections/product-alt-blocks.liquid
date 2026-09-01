@@ -1,0 +1,212 @@
+<div class="section product-blocks-section section-id-{{ section.id }}">
+    <div class="product-blocks__row">
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+            <div class="product-blocks__block " {{ block.shopify_attributes }}>
+                <div class="product-blocks__text-block" >
+                    {% if block.settings.title != blank %}
+                        <h4 class="product-blocks__block_title">{{ block.settings.title }}</h4>
+                    {% endif %}
+                    {% if block.settings.desc != blank %}
+                        <div class="product-blocks__block-desc desc">{{ block.settings.desc }}</div>
+                    {% endif %}
+                    {%- if block.settings.btn_text != blank -%}
+                        {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'product-blocks__block-btn', icon: true %}
+                    {%- endif -%}
+                    {% if block.settings.img != blank %}
+                        {{ block.settings.img | image_url: width: nil | image_tag: class: 'product-blocks__bg-img bg-img hidden--mobile' }}
+                        {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'product-blocks__bg-img bg-img hidden--desktop' }}
+                    {% endif %}
+                </div>
+            </div>
+        {% elsif block.type == 'image' %}
+            <div class=" product-blocks__block product-blocks__img-block" {{ block.shopify_attributes }}>
+                {% if block.settings.img != blank %}
+                    {{ block.settings.img | image_url: width: nil | image_tag: class: 'product-blocks__img hidden--mobile' }}
+                    {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'product-blocks__img hidden--desktop' }}
+                {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'product-blocks__img placeholder' }}
+                {% endif %}
+            </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{%stylesheet %}
+  .product-blocks-section{
+    padding: 40px 0 55px;
+    overflow: hidden;
+  }
+  .product-blocks__row{
+    display: flex;
+    grid-gap: 20px;
+  }
+  .product-blocks__block{
+    flex-basis: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%;
+    min-height: 507px;
+  }
+  .product-blocks__text-block{
+    padding: 50px;
+    background-color: #F0F1ED;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    min-height: inherit;
+  }
+  .product-blocks__block_title{
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 110%;
+    color: #2E321D;
+    margin: 0;
+  }
+  .product-blocks__block-desc{
+    margin-top: 12px;
+    color: #4A4A4A;
+    line-height: 150%;
+  }
+  .product-blocks__block-desc strong{
+    font-weight: 500;
+    color: #2E321D;
+  }
+  .product-blocks__block-btn{
+    margin-top: 24px;
+  }
+  .product-blocks__img{
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease-out;
+  }
+  .product-blocks__block.product-blocks__img-block:hover .product-blocks__img{
+    transform: scale(1.05);
+  }
+@media screen and (max-width: 749px) {
+    .product-blocks-section{
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .template-product .section.product-blocks-section{
+        background-color: #FFF;
+    }
+    .product-blocks__row{
+        flex-direction: column;
+        grid-gap: 6px;
+    }
+    .product-blocks__block{
+        min-height: auto;
+        border-radius: 0;
+        flex-basis: auto;
+    }
+    .product-blocks__block_title{
+      font-size: 26px;
+    }
+    .product-blocks__block.product-blocks__img-block{
+      height: 480px;
+    }
+}
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Product Blocks",
+"settings": [
+        {
+            "type": "video",
+            "id": "video",
+            "label": "Video"
+        },
+        {
+            "type": "checkbox",
+            "id": "mute_btn",
+            "label": "Enable Mute Button",
+            "default": true
+        },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "DE PRODUCTEN TOCH EVEN IN HET ECHT ZIEN?",
+            },
+            {
+                "type": "richtext",
+                "id": "desc",
+                "label": "Description",
+                "default": "<p>KOM LANgS IN ONZE WINKEL!</p>"
+            },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Background Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Background Image mobile"
+            },
+            {
+                "type": "text",
+                "id": "btn_text",
+                "label": "Button Text",
+                "default": "Shop Alles"
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Button URL",
+                "default": "/collections/all"
+            },
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Product Blocks",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

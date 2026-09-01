@@ -1,0 +1,210 @@
+<div class="section home-shop-section section-id-{{ section.id }}">
+  <div class="home-shop__grid">
+    {% for block in section.blocks %}
+      {% if block.type == 'card' %}
+        <div class="home-shop__card" {{ block.shopify_attributes }}>
+          {% comment %} Media Wrapper (Video or Desktop + Mobile Images) {% endcomment %}
+          <div class="home-shop__media-wrap">
+            {% if block.settings.video != blank %}
+              {{ block.settings.video | video_tag: class: 'home-shop__media bg-img', autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+            {% elsif block.settings.img != blank %}
+              {{ block.settings.img | image_url: width: 1000 | image_tag: class: 'home-shop__media bg-img hidden--mobile', loading: 'lazy', alt: block.settings.heading | default: 'Shop banner' }}
+              {{ block.settings.img_mobile | default: block.settings.img | image_url: width: 800 | image_tag: class: 'home-shop__media bg-img hidden--desktop', loading: 'lazy', alt: block.settings.heading | default: 'Shop banner' }}
+            {% else %}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'home-shop__media bg-img placeholder' }}
+            {% endif %}
+            
+            {% comment %} Gradient Overlay {% endcomment %}
+            <div class="home-shop__overlay" style="opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};"></div>
+          </div>
+
+          {% comment %} Content Overlay (Heading & Button at Bottom Left) {% endcomment %}
+          <div class="home-shop__content">
+            {% if block.settings.heading != blank %}
+              <h3 class="home-shop__heading">{{ block.settings.heading }}</h3>
+            {% endif %}
+
+            {% if block.settings.btn_text != blank %}
+              {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-shop__btn', icon: true %}
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .home-shop-section {
+    padding: 50px 0 80px;
+  }
+  .home-shop__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .home-shop__card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    min-height: 457px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-color: #3C4127;
+  }
+  .home-shop__media-wrap {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+  .home-shop__media {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .home-shop__card:hover .home-shop__media {
+    transform: scale(1.03);
+  }
+  .home-shop__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.65) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .home-shop__content {
+    position: relative;
+    z-index: 3;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    color: #ffffff;
+  }
+  .home-shop__heading {
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1em;
+    letter-spacing: -0.02em;
+    margin: 0;
+    max-width: 380px;
+  }
+
+  .home-shop__btn.btn-global{
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 50px;
+    padding: 15px 20px;
+    align-self: flex-start;
+    letter-spacing: 0;
+    background-color: #FFFFFF;
+    color: #000000;
+    svg{
+        width: 16px;
+        height: 16px;
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .home-shop__grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .home-shop__card {
+      min-height: 320px;
+    }
+    .home-shop__content {
+      padding: 24px;
+    }
+    .home-shop__heading {
+      font-size: 22px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "KW - Home Shop",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Shop Banner Card",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "SHOP JOUW MESTIC KOELBOXEN"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Label",
+          "default": "SHOP NOW"
+        },
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "Button Link",
+          "default": "/collections/all"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Background Video (Shopify hosted)"
+        },
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Background Image (Desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_mobile",
+          "label": "Background Image (Mobile)"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "Dark Overlay Opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "default": 50
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Home Shop",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "heading": "SHOP JOUW MESTIC KOELBOXEN",
+            "btn_text": "SHOP NOW"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "heading": "CARAVAN PLEZIER",
+            "btn_text": "SHOP NOW"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

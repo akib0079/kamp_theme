@@ -1,0 +1,167 @@
+
+  {% if section.settings.desc != blank or request.design_mode %}
+    <div class="section collection-desc-section section-id-{{ section.id }}">
+    <div class="collection-desc__content-wrap" style="--height: {{ section.settings.height }}">
+            <div class="collection-desc__desc desc">{{ section.settings.desc }}</div>
+        
+        {%- if section.settings.btn_text != blank -%}
+            <a href="#" class="collection-desc__btn">
+                <span class="collection-desc__btn_text">
+                <span class="collection-desc__btn_text--inner">
+                <span class="collection-desc__btn--more">
+                {{ section.settings.btn_text }}
+                </span>
+                <span class="collection-desc__btn--less">
+                {{ section.settings.btn_text_less | default: section.settings.btn_text }}
+                </span>
+                </span>
+                </span>
+            </a>
+        {%- endif -%}
+    </div>
+</div>
+{% endif %}
+    <script>
+        const wrap = document.querySelector('.section-id-{{ section.id }} .collection-desc__content-wrap');
+        if(wrap) {
+          const height = parseFloat(window.getComputedStyle(wrap).getPropertyValue('--height'))
+          const btn = wrap.querySelector('.collection-desc__btn')
+          if(height > wrap.scrollHeight){
+              btn.remove()
+              wrap.classList.add('normalized')
+          }
+          else{
+              wrap.style.setProperty('--open-height', wrap.scrollHeight + 'px');
+              wrap.classList.add('initiated')
+              btn.addEventListener('click', e => {
+                  e.preventDefault();
+                  wrap.classList.toggle('open')
+              });
+          }
+        }
+        
+    </script>
+{%stylesheet %}
+  .collection-desc-section{
+    padding: 80px 0 100px;
+    overflow: hidden;
+  }
+  .collection-desc__content-wrap{
+    position: relative;
+        padding-bottom: 60px;
+  }
+  .collection-desc__content-wrap.initiated{
+    height: var(--height, 420px);
+    overflow: hidden;
+    transition: height 0.4s ease-out;
+  }
+    .collection-desc__content-wrap.normalized{
+        padding-bottom: 0;
+    }
+  .collection-desc__content-wrap.initiated.open{
+    height: var(--open-height, 100%);
+  }
+  .collection-desc__content-wrap.initiated::after{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(var(--height, 420px) / 2);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.00) -2.17%, #FFF 103.5%);
+    z-index: 1;
+    transition: .4s ease-out;
+    transition-property: opacity, visibility;
+  }
+  .collection-desc__content-wrap.initiated.open::after{
+    opacity: 0;
+    visibility: hidden;
+  }
+  .collection-desc__desc{
+    color: #202020;
+  }
+  .collection-desc__desc h2, .collection-desc__desc h1, .collection-desc__desc h3, .collection-desc__desc h4{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 100%;
+    margin-bottom: 8px;
+    text-transform: none;
+  }
+  .collection-desc__desc h1{
+    font-size: 18px;
+  }
+  .collection-desc__desc h2:not(:first-child),.collection-desc__desc h1:not(:first-child),.collection-desc__desc h3:not(:first-child), .collection-desc__desc h4:not(:first-child){
+    margin-top: 25px;
+  }
+  .collection-desc__btn {
+    position: absolute;
+    bottom: 0;
+    padding: 10px 30px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 98%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #6D7646;
+    border-radius: 8px;
+    border: 1px solid currentColor;
+    backdrop-filter: blur(10px);
+    z-index: 2;
+}
+.collection-desc__btn_text{
+    overflow: hidden;
+    height: 1em;
+    display: block;
+}
+.collection-desc__btn_text--inner{
+    display: block;
+    height: 100%;
+    transition: .4s ease-out;
+    transition-property: transform;
+}
+.collection-desc__content-wrap.initiated.open .collection-desc__btn_text--inner{
+    transform: translateY(-100%);
+}
+.collection-desc__btn_text--inner>span{
+    height: 100%;
+    display: flex;
+}
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "Collection Description",
+"settings": [
+        {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>30% Discount for black Friday valid till 30th November only for limited time!</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "More Button Text",
+            "default": "Shop Alles"
+        },
+        {
+            "type": "text",
+            "id": "btn_text_less",
+            "label": "Less Button Text",
+            "default": "LEES MEER"
+        },
+        {
+            "type": "text",
+            "id": "height",
+            "label": "Closed height",
+            "default": "420px"
+        },
+    ],
+    "presets": [
+      {
+        "name": "KW - Collection Description",
+      }
+    ]
+  }
+{% endschema %}

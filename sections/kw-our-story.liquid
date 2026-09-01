@@ -1,0 +1,347 @@
+{% comment %}
+  KW - Our Story Section
+  Green background card with title, text content and statistics
+  Based on Figma design node 1080:263
+{% endcomment %}
+
+<section class="kw-our-story section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+">
+  {% comment %} <div class="kw-our-story__container"> {% endcomment %}
+    <div class="kw-our-story__card">
+      <div class="kw-our-story__content">
+        <div class="kw-our-story__title-wrapper">
+          <h2 class="kw-our-story__title">{{ section.settings.title }}</h2>
+        </div>
+        
+        <div class="kw-our-story__main">
+          <div class="kw-our-story__text">
+            {{ section.settings.content }}
+          </div>
+          
+          <div class="kw-our-story__stats" data-counter-section>
+            {% for block in section.blocks %}
+              {% if block.type == 'stat' %}
+                <div class="kw-our-story__stat" {{ block.shopify_attributes }}>
+                  <span class="kw-our-story__stat-value" data-counter data-value="{{ block.settings.value }}">0</span>
+                  <span class="kw-our-story__stat-label">{{ block.settings.label }}</span>
+                </div>
+                {% unless forloop.last %}
+                  <div class="kw-our-story__stat-divider"></div>
+                {% endunless %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% comment %} </div> {% endcomment %}
+</section>
+
+<style>
+  .kw-our-story {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 0);
+  }
+
+  .kw-our-story__container {
+    max-width: 1629px;
+    margin: 0 auto;
+  }
+
+  .kw-our-story__card {
+    background: #F6F8EF;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+    padding: 84px 55px;
+  }
+
+  .kw-our-story__content {
+    display: flex;
+    gap: 80px;
+    align-items: flex-start;
+    max-width: 1495px;
+    margin: 0 auto;
+  }
+
+  .kw-our-story__title-wrapper {
+    flex-shrink: 0;
+  }
+
+  .kw-our-story__title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #2E321D;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .kw-our-story__main {
+    display: flex;
+    flex-direction: column;
+    gap: 58px;
+  }
+
+  .kw-our-story__text {
+    font-size: 19px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1.5;
+    max-width: 1137px;
+  }
+
+  .kw-our-story__text p {
+    margin: 0 0 1.5em;
+  }
+
+  .kw-our-story__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-our-story__stats {
+    display: flex;
+    align-items: center;
+    gap: 64px;
+  }
+
+  .kw-our-story__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 147px;
+  }
+
+  .kw-our-story__stat-value {
+    font-size: 60px;
+    font-weight: 500;
+    color: #3C4127;
+    line-height: 1;
+  }
+
+  .kw-our-story__stat-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1.3;
+  }
+
+  .kw-our-story__stat-divider {
+    width: 1px;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-our-story__content {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .kw-our-story__card {
+      padding: 60px 40px;
+    }
+
+    .kw-our-story__stats {
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .kw-our-story__stat-divider {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-our-story {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 0);
+    }
+
+    .kw-our-story__card {
+      padding: 40px 25px;
+      border-radius: 16px;
+    }
+
+    .kw-our-story__title {
+      font-size: 26px;
+    }
+
+    .kw-our-story__text {
+      font-size: 16px;
+    }
+
+    .kw-our-story__stats {
+      gap: 30px;
+    }
+
+    .kw-our-story__stat {
+      width: calc(50% - 15px);
+    }
+
+    .kw-our-story__stat-value {
+      font-size: 42px;
+    }
+
+    .kw-our-story__stat-label {
+      font-size: 13px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const counterSection = document.querySelector('[data-counter-section]');
+    if (!counterSection) return;
+
+    const counters = counterSection.querySelectorAll('[data-counter]');
+    let hasAnimated = false;
+
+    function parseValue(valueStr) {
+      // Extract number, prefix, and suffix from values like "95%", "10+", "50k", "70k"
+      const match = valueStr.match(/^([^\d]*)(\d+(?:\.\d+)?)(.*)$/);
+      if (!match) return { prefix: '', number: 0, suffix: '', original: valueStr };
+      
+      return {
+        prefix: match[1] || '',
+        number: parseFloat(match[2]),
+        suffix: match[3] || '',
+        original: valueStr
+      };
+    }
+
+    function animateCounter(element, targetValue, duration) {
+      const parsed = parseValue(targetValue);
+      const startTime = performance.now();
+      const startValue = 0;
+
+      function easeOutQuart(t) {
+        return 1 - Math.pow(1 - t, 4);
+      }
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutQuart(progress);
+        
+        const currentValue = Math.floor(startValue + (parsed.number - startValue) * easedProgress);
+        element.textContent = parsed.prefix + currentValue + parsed.suffix;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          // Ensure final value is exact
+          element.textContent = targetValue;
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    function startCounters() {
+      if (hasAnimated) return;
+      hasAnimated = true;
+
+      counters.forEach((counter, index) => {
+        const targetValue = counter.getAttribute('data-value');
+        // Stagger the animations slightly
+        setTimeout(() => {
+          animateCounter(counter, targetValue, 2000);
+        }, index * 150);
+      });
+    }
+
+    // Intersection Observer to trigger animation when section is visible
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.3) {
+          startCounters();
+          observer.disconnect();
+        }
+      });
+    }, {
+      threshold: [0.3]
+    });
+
+    observer.observe(counterSection);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "KW - Our Story",
+  "tag": "section",
+  "class": "kw-section-our-story",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ons Verhaal"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Bij De Kampeerwinkel Roermond draait alles om outdoor levensstijl, kwaliteit en service. Wij zijn niet zomaar een kampeer- en outdoorwinkel; we zijn het vertrouwde adres in Roermond voor iedereen die wil genieten van natuur, avontuur en wintersport.</p><p>Vroeger maakte dit pand deel uit van De Vrijbuiter, een bekende kampeerketen in Nederland. Nadat De Vrijbuiter in financiële problemen kwam en de deuren sloot, hebben we de zaak doorontwikkeld en opnieuw opgebouwd als De Kampeerwinkel.</p><p>Onze missie is simpel maar ambitieus: jouw outdoorplannen slimmer, leuker en beter maken door advies dat werkt, producten die presteren en service die je verwacht van een specialist.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Statistic",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "95%"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Bij De Kampeerwinkel Roermond"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Our Story",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "95%", "label": "Tevreden klanten" }},
+        { "type": "stat", "settings": { "value": "10+", "label": "Jaar ervaring" }},
+        { "type": "stat", "settings": { "value": "50k", "label": "Producten verkocht" }},
+        { "type": "stat", "settings": { "value": "70k", "label": "Tevreden klanten" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

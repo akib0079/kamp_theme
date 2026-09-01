@@ -1,0 +1,219 @@
+{{ 'kw-components.css' | asset_url | stylesheet_tag }}
+
+<section class="kw-special-offer">
+  <div class="kw-special-offer__container">
+    {%- comment -%} Full Background Image {%- endcomment -%}
+    <div class="kw-special-offer__bg-image">
+      {% if section.settings.hero_image != blank %}
+        {{ section.settings.hero_image | image_url: width: 2000 | image_tag: 
+          class: 'kw-special-offer__image',
+          loading: 'lazy',
+          alt: section.settings.title_line_1
+        }}
+      {% else %}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'kw-special-offer__placeholder' }}
+      {% endif %}
+    </div>
+
+    {%- comment -%} Background Large Text {%- endcomment -%}
+    <div class="kw-special-offer__bg-text">
+      {{ section.settings.background_text }}
+    </div>
+
+    {%- comment -%} Diagonal Marquee Banner {%- endcomment -%}
+    <div class="kw-special-offer__marquee-wrapper">
+      <div class="kw-special-offer__marquee" style="--marquee-speed: {{ section.settings.marquee_speed }}s; --marquee-color: {{ section.settings.marquee_color }};">
+        <div class="kw-special-offer__marquee-content">
+          {% for i in (1..10) %}
+            <span class="kw-special-offer__marquee-text">{{ section.settings.marquee_text_1 }}</span>
+            <span class="kw-special-offer__marquee-icon">{% render 'icon-snowflake' %}</span>
+            <span class="kw-special-offer__marquee-text">{{ section.settings.marquee_text_2 }}</span>
+            <span class="kw-special-offer__marquee-icon">{% render 'icon-snowflake' %}</span>
+          {% endfor %}
+        </div>
+        <div class="kw-special-offer__marquee-content" aria-hidden="true">
+          {% for i in (1..10) %}
+            <span class="kw-special-offer__marquee-text">{{ section.settings.marquee_text_1 }}</span>
+            <span class="kw-special-offer__marquee-icon">{% render 'icon-snowflake' %}</span>
+            <span class="kw-special-offer__marquee-text">{{ section.settings.marquee_text_2 }}</span>
+            <span class="kw-special-offer__marquee-icon">{% render 'icon-snowflake' %}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} Content Area with Glass Effect {%- endcomment -%}
+    <div class="kw-special-offer__content">
+      {%- capture glass_blur -%}{{ section.settings.glass_blur | times: 0.2 }}px{%- endcapture -%}
+      {%- capture glass_opacity -%}{{ section.settings.glass_opacity | divided_by: 100.0 }}{%- endcapture -%}
+      
+      <div class="kw-special-offer__glass-panel" style="
+        --glass-blur: {{ glass_blur }};
+        --glass-color: {{ section.settings.glass_color }};
+        --glass-opacity: {{ glass_opacity }};
+      ">
+        <div class="kw-special-offer__text-block">
+          <div class="kw-special-offer__titles">
+            <h2 class="kw-special-offer__title-line-1">{{ section.settings.title_line_1 }}</h2>
+            <h2 class="kw-special-offer__title-line-2">{{ section.settings.title_line_2 }}</h2>
+          </div>
+          
+          {% if section.settings.description != blank %}
+            <p class="kw-special-offer__description">{{ section.settings.description }}</p>
+          {% endif %}
+          
+          {% if section.settings.button_text != blank %}
+            <a href="{{ section.settings.button_link }}" class="kw-special-offer__button" style="background-color: {{ section.settings.button_color }};">
+              <span>{{ section.settings.button_text }}</span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KW - Special Offer Hero",
+  "tag": "section",
+  "class": "kw-section-special-offer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Background Image",
+      "info": "Full cover background image"
+    },
+    {
+      "type": "text",
+      "id": "background_text",
+      "label": "Large Background Text",
+      "default": "Special discounts"
+    },
+    {
+      "type": "header",
+      "content": "Marquee Banner"
+    },
+    {
+      "type": "text",
+      "id": "marquee_text_1",
+      "label": "Marquee Text 1",
+      "default": "Special Offer"
+    },
+    {
+      "type": "text",
+      "id": "marquee_text_2",
+      "label": "Marquee Text 2",
+      "default": "Up to 50% Off"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee Speed (seconds)",
+      "info": "Higher = slower scrolling",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "marquee_color",
+      "label": "Marquee Background Color",
+      "default": "#F8843E"
+    },
+    {
+      "type": "header",
+      "content": "Glass Panel"
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "label": "Glass Blur Density",
+      "info": "0 = no blur, 100 = maximum blur",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "glass_opacity",
+      "label": "Glass Opacity",
+      "info": "0 = transparent, 100 = solid",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "glass_color",
+      "label": "Glass Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title Line 1",
+      "default": "Special Discount!"
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title Line 2",
+      "default": "UP TO 50% OFF"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "30% Discount for black Friday valid till 30th November only for limited time!"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#2E321D"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Alles"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#8A916B"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Special Offer Hero"
+    }
+  ]
+}
+{% endschema %}

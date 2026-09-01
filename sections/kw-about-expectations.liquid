@@ -1,0 +1,449 @@
+{% comment %}
+  KW - Expectations Section
+  Text content on left with slider controls, image gallery on right
+  Based on Figma design node 1080:285
+{% endcomment %}
+
+<section class="kw-expectations section section-id-{{ section.id }}" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+" data-animate="fade-up">
+  <div class="kw-expectations__container">
+    <div class="kw-expectations__content">
+      <div class="kw-expectations__text-column">
+        <div class="kw-expectations__text-swiper swiper">
+        <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          {% if block.type == 'slide' %}
+              <div class="swiper-slide">
+              <div class="kw-expectations__text-wrapper">
+                <h2 class="kw-expectations__title">{{ block.settings.title }}</h2>
+                <div class="kw-expectations__description">
+                  {{ block.settings.description }}
+                </div>
+              </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        </div>
+        
+        <div class="kw-expectations__controls">
+          <div class="kw-expectations__progress">
+            
+          </div>
+          
+          <div class="slider_controls-wrap">
+            <div class="swiper-pagination"></div>
+            {% render 'slider-nav' %}
+          </div>
+        </div>
+      </div>
+      
+      <div class="kw-expectations__images-column">
+        <div class="kw-expectations__images-slider">
+          <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+              {% if block.type == 'slide' %}
+                <div class="swiper-slide">
+                  <div class="kw-expectations__image-card" {{ block.shopify_attributes }}>
+                    {% if block.settings.image != blank %}
+                      {{ block.settings.image | image_url: width: 800 | image_tag: 
+                        class: 'kw-expectations__image',
+                        loading: 'lazy',
+                        alt: block.settings.alt
+                      }}
+                    {% else %}
+                      <div class="kw-expectations__image-placeholder"></div>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kw-expectations {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+  }
+
+  .kw-expectations__container {
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .kw-expectations__content {
+    display: flex;
+    gap: 67px;
+    align-items: center;
+  }
+
+  .kw-expectations__text-column {
+    flex-shrink: 0;
+    width: 522px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .kw-expectations__text-swiper {
+    width: 100%;
+  }
+  .kw-expectations__text-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .kw-expectations__title {
+    font-size: 36px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin: 0;
+    max-width: 433px;
+  }
+
+  .kw-expectations__description {
+    font-size: 14px;
+    font-weight: 400;
+    color: #4A4A4A;
+    line-height: 1.5;
+  }
+
+  .kw-expectations__description p {
+    margin: 0 0 1em;
+  }
+
+  .kw-expectations__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-expectations__description ul {
+    margin: 0;
+    padding-left: 21px;
+  }
+
+  .kw-expectations__description li {
+    line-height: 1.9;
+  }
+
+  .kw-expectations__description strong {
+    font-weight: 700;
+  }
+
+  .kw-expectations__controls {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+  }
+
+  .kw-expectations__progress {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1;
+    width: auto;
+  }
+
+  .kw-expectations__progress .swiper-pagination-current {
+    font-weight: 500;
+    color: #6D7646;
+  }
+
+  .kw-expectations__progress .swiper-pagination-total {
+    color: #A6A6A6;
+  }
+  .kw-expectations__controls .slider_controls-wrap{
+    flex-grow: 1;
+  }
+  .kw-expectations__controls .swiper-pagination{
+    flex-grow: 1;
+    position: static;
+    --swiper-pagination-progressbar-size: 2px;
+    --swiper-pagination-progressbar-bg-color: #F0F1ED;
+    --swiper-pagination-color: #8A916B;
+    z-index: 0;
+  }
+  .kw-expectations__controls .slider_nav{
+    background: rgba(210, 213, 198, 0.40);
+    backdrop-filter: blur(6.46px);
+    color: #9DA383;
+    border: none;
+  }
+  .kw-expectations__controls .slider_nav.swiper-button-disabled{
+    opacity: 0.5;
+  }
+  .kw-expectations__images-column {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .kw-expectations__images {
+    display: flex;
+    gap: 12px;
+  }
+
+  .kw-expectations__image-card {
+    flex: 1;
+    min-width: 0;
+    height: 523px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #F4F4F4;
+  }
+
+  .kw-expectations__image-card--large {
+    flex: 0 0 458px;
+  }
+
+  .kw-expectations__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease-out;
+  }
+  .kw-expectations__image-card:hover .kw-expectations__image {
+      transform: scale(1.05);
+  }
+  .kw-expectations__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+  }
+  .kw-expectations__images-slider {
+    width: 50%;
+    --gap: 11px;
+    margin: 0 calc(-1 * var(--gap) / 2);
+  }
+  .kw-expectations__images-slider .swiper-slide{
+    width: 100%;
+    transition: width 0.3s ease-out;
+  }
+  .kw-expectations__images-slider .swiper-slide-active~.swiper-slide{
+    width: 50% !important;
+  }
+  .kw-expectations__images-slider .kw-expectations__image-card{
+    margin: 0 calc(var(--gap) / 2);
+  }
+  /* Responsive */
+  @media screen and (max-width: 1400px) {
+    .kw-expectations__content {
+      flex-direction: column;
+      gap: 50px;
+    }
+
+    .kw-expectations__text-column {
+      width: 100%;
+    }
+
+    .kw-expectations__title {
+      max-width: 100%;
+    }
+
+    .kw-expectations__image-card--large {
+      flex: 1;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-expectations {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 60px);
+      overflow: hidden;
+    }
+
+    .kw-expectations__title {
+      font-size: 28px;
+    }
+
+    .kw-expectations__images {
+      flex-direction: column;
+    }
+
+    .kw-expectations__image-card {
+      height: 280px;
+    }
+
+    .kw-expectations__progress-bar {
+      width: 100px;
+    }
+    .kw-expectations__images-column{
+      overflow: visible;
+      width: 100%;
+    }
+    .kw-expectations__images-slider{
+      width: 75%;
+    }
+    .kw-expectations__images-slider .swiper-slide-active~.swiper-slide {
+      width: 37%;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const imgSwiper = new Swiper('.section-id-{{ section.id }} .kw-expectations__images-slider',{
+      slidesPerView: 1,
+      {% comment %} centeredSlides: true, {% endcomment %}
+      navigation: {
+        nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+        prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+      },
+      {% comment %} virtualTranslate: true, {% endcomment %}
+      pagination: {
+        el: ".section-id-{{ section.id }} .swiper-pagination",
+        type: "progressbar",
+      },
+      scrollbar: {
+        el: '.section-id-{{ section.id }} .swiper-scrollbar',
+        draggable: true
+      },
+      on: {
+        init: function () {
+          // Manually update the second pagination element
+          {% comment %} document.querySelector('.ssection-id-{{ section.id }} .kw-expectations__progress').innerHTML = 
+            `<span class="kw-expectations__progress-current">1</span> / <span class="kw-expectations__progress-total">${this.slides.length}</span>`; {% endcomment %}
+        },
+        slideChange: function (swiper) {
+          {% comment %} document.querySelector('.ssection-id-{{ section.id }} .kw-expectations__progress').innerHTML = 
+          `<span class="kw-expectations__progress-current">${this.activeIndex + 1}</span> / <span class="kw-expectations__progress-total">${this.slides.length}</span>`; {% endcomment %}
+          console.log(swiper.activeIndex)
+        }
+      },
+    })
+    
+    const txtSwiper = new Swiper('.section-id-{{ section.id }} .kw-expectations__text-swiper', {
+      slidesPerView: 1,
+      effect: "fade",
+      speed: 500,
+      fadeEffect: {
+          crossFade: true
+      },
+      pagination: {
+        el: ".section-id-{{ section.id }} .kw-expectations__progress",
+        type: "fraction",
+      },
+    });
+    imgSwiper.controller.control = txtSwiper;
+    txtSwiper.controller.control = imgSwiper;
+  })
+
+  {% comment %} document.addEventListener('DOMContentLoaded', function() {
+    const section = document.querySelector('.kw-expectations');
+    if (!section) return;
+    
+    const slider = section.querySelector('.kw-expectations__images');
+    const prevBtn = section.querySelector('.kw-expectations__nav-btn--prev');
+    const nextBtn = section.querySelector('.kw-expectations__nav-btn--next');
+    const currentEl = section.querySelector('.kw-expectations__progress-current');
+    const progressFill = section.querySelector('.kw-expectations__progress-fill');
+    const cards = section.querySelectorAll('.kw-expectations__image-card');
+    const totalCards = cards.length;
+    
+    let currentIndex = 0;
+    
+    function updateProgress() {
+      if (currentEl) currentEl.textContent = currentIndex + 1;
+      if (progressFill) {
+        const progress = ((currentIndex + 1) / totalCards) * 100;
+        progressFill.style.width = progress + '%';
+      }
+    }
+    
+    if (prevBtn && nextBtn && slider) {
+      const scrollAmount = 470;
+      
+      prevBtn.addEventListener('click', function() {
+        slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        if (currentIndex > 0) currentIndex--;
+        updateProgress();
+      });
+      
+      nextBtn.addEventListener('click', function() {
+        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        if (currentIndex < totalCards - 1) currentIndex++;
+        updateProgress();
+      });
+    }
+  }); {% endcomment %}
+</script>
+
+{% schema %}
+{
+  "name": "KW - Expectations",
+  "tag": "section",
+  "class": "kw-section-expectations",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt Text",
+          "default": "Outdoor adventure"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Wat je van ons kunt verwachten"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p><strong>Assortiment:</strong> Wij bieden een breed en zorgvuldig samengesteld aanbod voor kamperen, hiking en outdoor avonturen. Denk aan:</p><ul><li>Tenten, slaapzakken, luchtbedden</li><li>Kampeermeubelen en accessoires</li><li>Kook- en koeloplossingen</li><li>Verlichting, sanitair en comfort-producten</li><li>Wintersportgear & onderhoudsproducten</li></ul><p>Onze focus ligt op praktische keuzes voor avontuur in elk seizoen, met merken die kwaliteit leveren waar het telt.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Expectations",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

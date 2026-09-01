@@ -1,0 +1,419 @@
+<div class="section home-banner-section section-id-{{ section.id }}" >
+    <div class="home-banner__grid">
+        <div class="home-banner__block swiper">
+            <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                {% if block.type == 'slide' %}
+                    <div class="swiper-slide">
+                        <div class="home-banner__slide" {{ block.shopify_attributes }}>
+                            {% if block.settings.title != blank %}
+                                <h4 class="home-banner__block-title">{{ block.settings.title }}</h4>
+                            {% endif %}
+                            {%- if block.settings.btn_text != blank -%}
+                                {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-banner__block-btn', icon: true %}
+                            {%- endif -%}
+                            {% if block.settings.img != blank %}
+                                {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-banner__img bg-img hidden--mobile' }}
+                                {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'home-banner__img bg-img hidden--desktop' }}
+                            {% else %}
+                                {{ 'image' | placeholder_svg_tag: 'home-banner__img bg-img placeholder' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+            {% assign home_banner_slide_count = section.blocks | where: 'type', 'slide' | size %}
+{% if home_banner_slide_count > 1 %}
+  {% render 'slider-nav' %}
+{% endif %}
+        </div>
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+            <a class="home-banner__block link-underline{% if block.settings.overlay != blank %} with-overlay{% endif %}" {{ block.shopify_attributes }} href="{{block.settings.url}}">
+                <div class="home-banner__content-wrap">
+                    <div class="home-banner__content">
+                        {% if block.settings.title != blank %}
+                        <h4 class="home-banner__block-title"><span class="link-underline-text">{{ block.settings.title }}</span></h4>
+                        {% endif %}
+                        {% if block.settings.desc != blank %}
+                        <div class="home-banner__block-desc desc">{{ block.settings.desc }}</div>
+                        {% endif %}
+                    </div>
+                    {% if block.settings.icon_btn != blank %}
+                    <div class="home-banner__icon-btn" href="{{block.settings.url}}">{% render 'svg-btn-global-icon' %}</div>
+                    {% endif %}
+                </div>
+                {%- if block.settings.btn_text != blank -%}
+                    {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-banner__block-btn', icon: true %}
+                {%- endif -%}
+                {% if block.settings.img != blank %}
+                    {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-banner__img bg-img hidden--mobile' }}
+                    {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'home-banner__img bg-img hidden--desktop' }}
+                {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'home-banner__img bg-img placeholder' }}
+                {% endif %}
+                {%- if block.settings.video != blank -%}
+                    {{ block.settings.video | video_tag: class: 'home-banner__img bg-img', autoplay: true, loop: true }}
+                {% endif %}
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+      new Swiper('.section-id-{{ section.id }} .home-banner__block.swiper', {
+        slidesPerView: 1,
+        speed: 0,
+        loop: true,
+        autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+        waitForTransition: false,
+        },
+        effect: "fade",
+        navigation: {
+          nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+          prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+        },
+      });
+  });     
+</script>
+{%stylesheet %}
+  .home-banner-section{
+    padding: 20px 0;
+  }
+  .home-banner__grid {
+    display: grid;
+    grid-template-columns: 5fr 2fr 2fr;
+    grid-gap: 16px;
+    }
+
+    .home-banner__block {
+        padding: 25px 20px;
+        min-height: 240px;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        color: #FFF;
+    }
+    .home-banner__block.swiper {
+        grid-row: 1 / span 2;
+        width: 100%;
+        padding: 0;
+    }
+    .home-banner__slide{
+        padding: 40px;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        height: 100%;
+    }
+    .home-banner__block:nth-child(2){
+        min-height: 418px;
+        grid-column: 2 / span 2;
+    }
+    .home-banner__block.with-overlay::after{
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        z-index: -1;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.80) 100%);
+        /* backdrop-filter: blur(var(--blur-amount, 12px));
+        -webkit-backdrop-filter: blur(var(--blur-amount, 12px)); */
+        mask-image: linear-gradient(to top, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    }
+    .home-banner__content-wrap{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        grid-gap: 30px;
+    }
+    .home-banner__block-title{
+        margin: 0;
+        font-weight: 600;
+        line-height: 120%;
+        letter-spacing: -0.02em;
+    }
+    .home-banner__block-title .link-underline-text{
+        line-height: 0.9;
+        display: inline;
+    }
+    .home-banner__block.swiper .home-banner__block-title{
+        font-size: 36px;
+        max-width: 516px;
+    }
+    .home-banner__icon-btn{
+        width: 40px;
+        height: 40px;
+        background: #FFF;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 10px;
+        color: #202020;
+        flex-shrink: 0;
+    }
+    .home-banner__icon-btn svg{
+        width: 18px;
+        height: 18px;
+    }
+    .home-banner__block-btn.btn-global{
+        background: #FFF;
+        border-radius: 42.618px;
+        height: 36px;
+        color: #000;
+        margin-top: 20px;
+        font-size: 13px;
+        grid-gap: 7px;
+    }
+    .home-banner__block-btn.btn-global svg{
+        width: 18px;
+        height: 18px;
+        color: #6D7646;
+    }
+    .home-banner__block-desc{
+        margin-top: 2px;
+    }
+    .home-banner__block:hover .home-banner__img{
+        transform: scale(1.05);
+    }
+    .home-banner__img.placeholder{
+        background: #7d7d7d80;
+    }
+    .swiper-initialized .home-banner__slide .home-banner__img{
+        opacity: 0;
+        transform: scale(1.1);
+        transition: .3s ease-out;
+        transition-property: transform, opacity;
+        transition-delay: 0.3s;
+    }
+    .home-banner__block.swiper .swiper-slide{
+        opacity: 1 !important;
+    }
+    .home-banner__block.swiper .home-banner__block-title,.home-banner__block.swiper .home-banner__block-btn{
+        transform: translateY(30px);
+        opacity: 0;
+        transition: .4s ease-out;
+        transition-property: transform, opacity;
+        transition-delay: 0.3s;
+    }
+    .home-banner__block.swiper .home-banner__block-btn{
+        transform: scale(0.9);
+        transition: .5s ease-out;
+    }
+    .home-banner__block.swiper .home-banner__block-btn.btn-global::before{
+        background-color: #0001;
+    }
+    .swiper-slide-active .home-banner__slide .home-banner__block-title,.swiper-slide-active  .home-banner__slide .home-banner__block-btn{
+        opacity: 1;
+        transform: translateY(0px);
+        transition-delay: 0.1s;
+    }
+    .swiper-slide-active  .home-banner__slide .home-banner__block-btn{
+        transition-delay: 0.25s;
+        transform: scale(1);
+    }
+    .home-banner__block.swiper .swiper-slide-active{
+        z-index: 2;
+    }
+    .swiper-slide-active .home-banner__slide .home-banner__img{
+        opacity: 1;
+        transform: scale(1);
+        transition-delay: 0s;
+    }
+   .home-banner__block.swiper .slider_nav-wrap {
+        position: absolute;
+        right: 40px;
+        bottom: 40px;
+        z-index: 3;
+        width: 95px;
+        }
+    .home-banner__block.swiper .slider_nav{
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border: 0.761px solid #FFF;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(7.610321998596191px);
+    }
+    @media screen and (max-width: 749px) {
+        .home-banner-section{
+            /* grid-template-columns: 1fr; */
+            padding: 0;
+        }
+        .home-banner__grid{
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 6px;
+            grid-column: span 3;
+        }
+        .home-banner__block{
+            padding: 14px 30px;
+        min-height: 145px;
+        border-radius: 0;
+        }
+        .home-banner__block.swiper{
+            grid-row: auto;
+            grid-column: 1 / span 2;
+            min-height: 433px;
+        }
+        .home-banner__slide{
+            border-radius: 0;
+        }
+        .home-banner__block-title{
+            font-size: 18px;
+        }
+        .home-banner__block:nth-child(2) .home-banner__block-title{
+            font-size: 20px;
+        }
+        .home-banner__block.swiper .home-banner__block-title{
+            font-size: 26px;
+            line-height: 120%; 
+        }  
+        .home-banner__block.swiper .slider_nav-wrap{
+            width: 58px;
+            grid-gap: 3px;
+        }
+        .home-banner__block.swiper .slider_nav{
+            width: 36px;
+            height: 36px;
+        }
+        .home-banner__block.swiper .slider_nav svg{
+            width: 12px;
+            height: 12px;
+        }
+        .home-banner__block:nth-child(2){
+            grid-column: 1 / span 2;
+            min-height: 252px;
+        }
+    }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Home Banner",
+    "settings": [
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "limit": 3,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "BEREID JE VOOR OM TE KAMPEREN",
+          },
+          {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>Dagelijks geopend 10u - 18u</p>"
+          },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "video",
+                "id": "video",
+                "label": "Video"
+            },
+            {
+                "type": "checkbox",
+                "id": "icon_btn",
+                "label": "Icon Button",
+                "default": false
+            },
+            {
+                "type": "url",
+                "id": "url",
+                "label": "URL",
+                "default": "/collections/all",
+            },
+            {
+                "type": "checkbox",
+                "id": "overlay",
+                "label": "Overlay",
+                "default": false
+            },
+        ]
+      },
+      {
+        "type": "slide",
+        "name": "Slide",
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "BEREID JE VOOR OM TE KAMPEREN",
+          },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "text",
+                "id": "btn_text",
+                "label": "Button Text",
+                "default": "Shop Alles"
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Button URL",
+                "default": "/collections/all"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Home Banner",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,306 @@
+
+
+{% if section.blocks.size > 1 %}
+  <script
+    src="{{ 'announcement-bar.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+{% endif %}
+
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<aside
+  class="announcement-bar spacing-style section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}"
+  style="{% render 'spacing-padding', settings: section.settings %}; --border-bottom-width: {{ section.settings.divider_width }}px;"
+>
+  <div class="announcement-bar__row">
+  {% liquid
+    assign autoplay = false
+    assign show_arrows = false
+    if section.blocks.size > 1
+      assign autoplay = true
+      assign show_arrows = true
+    endif
+  %}
+  {% if section.settings.text != blank %}
+    <p class="announcement-bar__title">{{ section.settings.text }}</p>
+  {% endif %}
+  <announcement-bar-component
+    class="announcement-bar__slider"
+    {% if autoplay == true %}
+      autoplay="{{ section.settings.speed }}" aria-live="polite"
+    {% endif %}
+  >
+    {% if show_arrows %}
+      {% render 'slideshow-arrows', icon_style: 'chevron' %}
+    {% endif %}
+
+    <div class="announcement-bar__slides">
+      {% content_for 'blocks' %}
+    </div>
+  </announcement-bar-component>
+  {% if section.settings.menu != blank %}
+    <ul class="announcement-bar__menu">
+      {% for link in section.settings.menu.links %}
+      <li>
+        <a href="{{ link.url }}" class="link-underline">
+          <span class="link-underline-text">{{  link.title }}</span>
+        </a>
+        </li>
+      {% endfor %}
+      {% if section.settings.show_language %}
+        <li>
+          <div class="dropdown-localization mobile:hidden">
+            {% render 'localization-form',
+              show_country: false,
+              show_language: true,
+              localization_style: 'dropdown',
+              block_id: section.id
+            %}
+          </div>
+        </li>
+      {% endif %}
+    </ul>
+  {% endif %}
+  </div>
+</aside>
+
+{% stylesheet %}
+  .announcement-bar {
+    border-block-end: var(--border-bottom-width) solid var(--color-border);
+  }
+
+  .announcement-bar__slider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+    flex-grow: 1;
+
+    @media screen and (max-width: 749px) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .announcement-bar__slides {
+    display: grid;
+    grid: [stack] auto / [stack] auto;
+    width: calc(100% - var(--button-size) * 2);
+    max-width: 680px;
+    margin-inline: auto;
+  }
+
+  .announcement-bar__slides > * {
+    grid-area: stack;
+  }
+
+  .announcement-bar__slide {
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+
+    &[aria-hidden='true'] {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  .announcement-bar__slider slideshow-arrows {
+    padding: 0;
+    mix-blend-mode: normal;
+  }
+
+  .announcement-bar__slider slideshow-arrows .slideshow-control {
+    color: var(--color-foreground);
+  }
+
+  .announcement-bar__slider .slideshow-control {
+    display: flex;
+    padding: 0;
+    width: var(--button-size);
+    height: var(--button-size);
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    animation: none;
+
+    @media screen and (min-width: 750px) {
+      --slideshow-control-offset: calc((var(--button-size) - var(--icon-size-xs)) / 2);
+
+      .section--page-width &.slideshow-control--previous {
+        transform: translateX(var(--slideshow-control-offset));
+      }
+    }
+  }
+
+  .announcement-bar__slider .slideshow-control .svg-wrapper {
+    width: var(--icon-size-xs);
+    height: var(--icon-size-xs);
+  }
+
+  .announcement-bar__slide {
+    place-content: center;
+  }
+
+  .announcement-bar__title, .announcement-bar__slide .announcement-bar__text {
+    margin: 0;
+  }
+  .announcement-bar__link {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    inset: 0;
+  }
+  
+  .announcement-bar__row{
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr 0.6fr 1fr;
+  }
+  .announcement-bar__menu {
+    display: flex;
+    list-style: none;
+    grid-gap: 10px;
+    padding: 0;
+    margin: 0;
+    justify-content: flex-end;
+  }
+  .announcement-bar__menu a{
+    display: inline-flex;
+    padding: 0 9px;
+    transition: opacity .35s ease-out;
+  }
+   .announcement-bar__menu a:hover{
+    opacity: 0.8;
+   }
+   .announcement-bar .language-selector{
+    padding: 0;
+   }
+  @media screen and (max-width: 1330px) {
+    .announcement-bar__menu li:nth-child(1){
+      display: none;
+    }
+  }
+  @media screen and (max-width: 1080px) {
+    .announcement-bar__menu li:nth-child(2){
+      display: none;
+    }
+  }
+  @media screen and (max-width: 749px) {
+    .announcement-bar__title, .announcement-bar__menu{
+      display: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.announcement_bar",
+  "class": "annountment-section",
+  "blocks": [
+    {
+      "type": "_announcement"
+    },
+  ],
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "text",
+      "label": "t:settings.text"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "t:settings.menu"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "t:settings.scroll_speed",
+      "min": 2,
+      "max": 10,
+      "default": 5,
+      "unit": "sec"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language",
+      "label": "t:settings.language_selector",
+      "info": "t:info.manage_languages",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "scheme-4",
+      "label": "t:settings.color_scheme"
+    },
+    {
+      "type": "range",
+      "id": "divider_width",
+      "label": "t:settings.divider_thickness",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.announcement_bar",
+      "blocks": {
+        "announcement_1": {
+          "type": "_announcement"
+        }
+      },
+      "block_order": ["announcement_1"]
+    }
+  ]
+}
+{% endschema %}

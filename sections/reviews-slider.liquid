@@ -1,0 +1,524 @@
+<div class="section reviews-slider-section section-id-{{ section.id }}" data-animate="fade">
+    <div class="reviews-slider__header">
+        {% if section.settings.title != blank %}
+        <h2 class="reviews-slider__title">{{ section.settings.title }}</h2>
+        {% endif %}
+        {% if section.settings.desc != blank %}
+            <div class="reviews-slider__desc desc">
+                {{ section.settings.desc }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="reviews-slider__swiper swiper">
+        <div class="swiper-wrapper">
+            {% for block in section.blocks %}
+                {% if block.type == 'block' %}
+                    <div class="swiper-slide">
+                        <div class="reviews-slider__slide" {{ block.shopify_attributes }}>
+                            <div class="reviews-slider__slide_container">
+                                <div class="reviews-slider__slide_img-pos-wrap">
+                                    <div class="reviews-slider__slide_img-wrap">
+                                        {% if block.settings.img != blank %}
+                                            {{ block.settings.img | image_url: width: nil | image_tag: class: 'reviews-slider__slide_img hidden--mobile' }}
+                                            {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'reviews-slider__slide_img hidden--desktop' }}
+                                        {% else %}
+                                            {{ 'image' | placeholder_svg_tag: 'reviews-slider__slide_img placeholder' }}
+                                        {% endif %}
+                                    </div>
+                                    {% if block.settings.product %}
+                                        {% assign product = block.settings.product %}
+                                        <a class="reviews-slider__slide_prod-wrap link-underline" href="{{ product.url }}">
+                                            {% if product.featured_image != blank %}
+                                                {{ product.featured_image | image_url: width: nil | image_tag: class: 'reviews-slider__slide_prod-img' }}
+                                            {% else %}
+                                                {{ 'product-1' | placeholder_svg_tag: 'reviews-slider__slide_prod-img placeholder' }}
+                                            {% endif %}
+                                            <div class="reviews-slider__slide_prod-bottom">
+                                                <div class="reviews-slider__slide_prod-content">
+                                                    <h4 class="reviews-slider__slide_prod-title">{{ product.title }}</h4>
+                                                    {% if block.settings.btn_text != blank %}
+                                                        <span class="reviews-slider__slide_prod-btn link-underline-text">{{ block.settings.btn_text }}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="reviews-slider__slide_prod-icon">{% render 'svg-btn-global-icon' %}</div>
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="reviews-slider__slide_content" style="--rating: {{ block.settings.rating | times: 1.0 | round: 1 }};">
+                                    {% if section.settings.quote != blank %}
+                                        {{ section.settings.quote | image_url: width: nil | image_tag: class: 'reviews-slider__slide_quote' }}
+                                    {% endif %}
+                                    {% if block.settings.rating != blank %}
+                                        <div class="reviews-slider__slide_rating-wrap">
+                                            <span class="reviews-slider__slide_rating">{{ block.settings.rating | times: 1.0 | round: 1 }}</span>
+                                            {% if section.settings.conj != blank %}
+                                                <span class="reviews-slider__slide_conj">{{ section.settings.conj }}</span>
+                                            {% endif %}
+                                            {% if section.settings.brand != blank %}
+                                                {{ section.settings.brand | image_url: width: nil | image_tag: class: 'reviews-slider__slide_brand' }}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    {% if block.settings.desc != blank %}
+                                        <div class="reviews-slider__slide_desc desc">{{ block.settings.desc }}</div>
+                                    {% endif %}
+                                    {% if section.settings.stars != blank %}
+                                        {{ section.settings.stars | image_url: width: nil | image_tag: class: 'reviews-slider__slide_stars' }}
+                                    {% endif %}
+                                    {% if block.settings.title != blank %}
+                                        <h6 class="reviews-slider__slide_title">{{ block.settings.title }}</h6>
+                                    {% endif %}
+                                    {% if block.settings.desg != blank %}
+                                        <div class="reviews-slider__slide_desg">{{ block.settings.desg }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% render 'slider-nav' %}
+        {% if section.settings.img != blank %}
+            {{ section.settings.img | image_url: width: nil | image_tag: class: 'reviews-slider__slide_bg-img bg-img' }}
+        {% endif %}
+        <div class="swiper-pagination slider-pagination"></div>
+    </div>
+</div>
+{% if section.blocks.size > 1 %}
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+      new Swiper('.section-id-{{ section.id }} .reviews-slider__swiper', {
+        slidesPerView: 1,
+        speed: 400,
+        loop: true,
+        effect: "fade",
+        fadeEffect: {
+            crossFade: true
+        },
+        navigation: {
+          nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+          prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+      });
+  });     
+</script>
+{% endif %}
+{%stylesheet %}
+  .reviews-slider-section{
+    padding: 40px 0 45px;
+    overflow: hidden;
+  }
+  .reviews-slider__title{
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 98%;
+    letter-spacing: -.02em;
+    margin: 0;
+  }
+  .reviews-slider__desc{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 100%;
+    color: #908f90;
+    margin-top: 16px;
+  }
+  .reviews-slider__swiper{
+      margin-top: 30px;
+      width: 100%;
+      border-radius: 20px;
+      background: #4D5432;
+      color: #FFF;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .reviews-slider__slide{
+        padding: 126px 50px;
+  }
+  .reviews-slider__slide_container{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 60px;
+  }
+  .reviews-slider__slide_img-pos-wrap{
+    position: relative;
+  }
+  .reviews-slider__slide_img-wrap{
+    height: 626px;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .reviews-slider__slide_img{
+    object-fit: cover;
+    height: 100%;
+  }
+  .reviews-slider__slide_content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    }
+  .reviews-slider__slide_quote {
+        width: 76px;
+        height: 56px;
+        object-fit: contain;
+        margin-bottom: 40px;
+    }
+    .reviews-slider__slide_rating-wrap {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+        grid-gap: 5px;
+        font-weight: 400;
+        line-height: 100%;
+        font-size: 14px;
+    }
+    .reviews-slider__slide_rating{
+        font-weight: 700;
+    }
+    .reviews-slider__slide_brand {
+        height: 1.15em;
+        width: auto;
+    }
+    .reviews-slider__slide_desc{
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 150%
+    }
+    .reviews-slider__slide_stars {
+        --gap: 1.67px;
+        --star: 20px;
+        --rrating:max(0,min(5,var(--rating)));
+        height: 20px;
+        width: calc((var(--rrating) * ((var(--star) + var(--gap)))));
+        object-fit: cover;
+        object-position: left;
+        align-self: flex-start;
+        margin-top: 30px;
+    }
+    .reviews-slider__slide_title{
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 100%; 
+        margin: 10px 0 0;
+    }
+    .reviews-slider__slide_desg {
+        font-size: 12px;
+        line-height: 100%;
+        margin-top: 10px;
+    }
+    .reviews-slider__slide_bg-img.bg-img{
+        object-position: bottom right;
+        top: auto;
+        left: auto;
+        bottom: 0;
+        right: 0;
+    }
+    .reviews-slider__slide_prod-wrap{
+        position: absolute;
+        bottom: -25px;
+        left: -40px;
+        background: #FFF;
+        width: 223px;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .reviews-slider__slide_prod-img {
+        height: 200px;
+        object-fit: cover;
+        object-position: top;
+        width: 100%;
+    }
+    .reviews-slider__slide_prod-bottom {
+        margin-top: 6px;
+        padding: 16px;
+        display: flex;
+        grid-gap: 30px;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .reviews-slider__slide_prod-title{
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 100%;
+        margin: 0; 
+        word-break: break-word;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+    }
+    .reviews-slider__slide_prod-btn{
+        margin-top: 5px;
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 100%;
+    }
+    .reviews-slider__slide_prod-icon{
+        flex-shrink: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background: #EBEBEB;
+        color: #202020;
+    }
+    .reviews-slider__slide_prod-icon svg{
+        width: 16px;
+        height: 16px;
+    }
+  .reviews-slider__swiper .slider_nav-wrap{
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    right: 40px;
+    transform: translateY(-50%);
+    z-index: 2;
+    visibility: hidden;
+  }
+  .reviews-slider__swiper .slider_nav{
+    visibility: visible;
+    width: 38px;
+    height: 38px;
+    color: #4D5432;
+    background-color: rgba(255, 255, 255, 0.20);
+    backdrop-filter: blur(7.2px);
+  }
+  .reviews-slider__swiper .slider_nav:not(.swiper-button-disabled):hover {
+    background: #FFF;
+    color: #4D5432;
+}
+@media screen and (max-width: 749px) {
+    .reviews-slider-section.section{
+        display: flex;
+        flex-direction: column;
+        background: #4d5432 !important;
+        color: #fff;
+        padding: 57px 30px 115px;
+        position: relative;
+        z-index: 1;
+    }
+    .reviews-slider__title{
+        font-size: 18px;
+    }
+    .reviews-slider__desc{
+        color: #FFFFFF80;
+        margin-top: 8px;
+        position: static;
+    }
+    .reviews-slider__swiper{
+        margin-top: 50px;
+        border-radius: 0;
+        background: transparent;
+        position: static;
+    }
+    .reviews-slider__slide {
+        padding: 0;
+    }
+    .reviews-slider__slide_container{
+        grid-template-columns: 1fr;
+        grid-gap: 125px;
+    }
+    .reviews-slider__slide_img-pos-wrap{
+        padding: 0 30px;
+    }
+    .reviews-slider__slide_img-wrap{
+        border-radius: 12px;
+        height: 380px;
+        overflow: hidden;
+    }
+    .reviews-slider__slide_prod-wrap{
+        left: 0;
+        width: 135px;
+        border-radius: 10px;
+    }
+    .reviews-slider__slide_prod-img{
+        height: 115px;
+    }
+    .reviews-slider__slide_prod-bottom{
+        margin-top: 0;
+        grid-gap: 6px;
+        padding: 10px 10px 6px;
+    }
+    .reviews-slider__slide_prod-title{
+        font-size: 14px;
+        max-width: 7ch;
+    }
+    .reviews-slider__slide_quote{
+        width: 46px;
+        height: 34px;
+        margin-bottom: 18px;
+    }
+    .reviews-slider__slide_rating-wrap{
+        margin-bottom: 20px;
+    }
+    .reviews-slider__slide_desc{
+        font-size: 14px;
+    }
+    .reviews-slider__slide_stars{
+        margin-top: 20px;
+    }
+    .reviews-slider__slide_title{
+        margin: 16px 0 0;
+        font-size: 16px;
+    }
+    .reviews-slider__slide_desg{
+        margin-top: 8px;
+    }
+    .reviews-slider__slide_bg-img.bg-img{
+        bottom: -2%;
+        right: -10%;
+        width: 100%;
+        height: 60%;
+    }
+    .reviews-slider__swiper .slider_nav-wrap{
+        top: auto;
+        left: auto;
+        right: 30px;
+        bottom: 57px;
+        grid-gap: 20px;
+    }
+    .reviews-slider__swiper .slider_nav:not(.swiper-button-disabled){
+        background-color: #fff8;
+    }
+    .reviews-slider__swiper .slider-pagination{
+        --swiper-pagination-bottom: auto;
+        --swiper-pagination-top: 593px;
+    }
+}
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Reviews Slider",
+"settings": [
+        {
+        "type": "inline_richtext",
+        "id": "title",
+        "label": "Title",
+        "default": "onze reviews",
+        },
+        {
+        "type": "richtext",
+        "id": "desc",
+        "label": "Description",
+        "default": "<p>30% Discount for black Friday valid till 30th November</p>"
+        },
+            {
+                "type": "header",
+                "content": "Decor"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "conj",
+                "label": "Title conjunction",
+                "default": "reviews on",
+            },
+            {
+                "type": "image_picker",
+                "id": "quote",
+                "label": "Quote icon"
+            },
+            {
+                "type": "image_picker",
+                "id": "brand",
+                "label": "Brand logo"
+            },
+            {
+                "type": "image_picker",
+                "id": "stars",
+                "label": "Stars icon",
+                "info": "auto adjusts to review rating - showing less stars"
+            },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Background Image"
+            },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Slide",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "product",
+                "id": "product",
+                "label": "Product"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "btn_text",
+                "label": "Product Button Text",
+                "default": "Learn More",
+            },
+            {
+                "type": "range",
+                "id": "rating",
+                "label": "Rating",
+                "min": 0.0,
+                "max": 5.0,
+                "step": 0.1,
+                "default": 5.0,
+            },
+            {
+                "type": "richtext",
+                "id": "desc",
+                "label": "Review",
+                "default": "<p>I recently purchased</p>"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Name",
+                "default": "Danial Smith",
+            },
+            {
+                "type": "inline_richtext",
+                "id": "desg",
+                "label": "Designation",
+                "default": "Managing Director",
+            }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Reviews Slider",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,365 @@
+<div class="section home-welcome-section section-id-{{ section.id }}">
+  <div class="home-welcome__grid">
+    
+    {% comment %} Left Column - Video or Image 1 (Desktop & Mobile) {% endcomment %}
+    <div class="home-welcome__col home-welcome__col--image">
+      <div class="home-welcome__img-wrap">
+        {% if section.settings.left_video != blank %}
+          {{ section.settings.left_video | video_tag: class: 'home-welcome__img bg-img', autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+        {% elsif section.settings.left_image != blank %}
+          {{ section.settings.left_image | image_url: width: 800 | image_tag: class: 'home-welcome__img bg-img hidden--mobile', loading: 'lazy', alt: section.settings.title }}
+          {{ section.settings.left_image_mobile | default: section.settings.left_image | image_url: width: 800 | image_tag: class: 'home-welcome__img bg-img hidden--desktop', loading: 'lazy', alt: section.settings.title }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'home-welcome__img bg-img placeholder' }}
+        {% endif %}
+      </div>
+    </div>
+
+    {% comment %} Center Column - Content Card {% endcomment %}
+    <div class="home-welcome__col home-welcome__col--content">
+      <div class="home-welcome__card-outer">
+        {% if section.settings.bg_overlay != blank %}
+          {{ section.settings.bg_overlay | image_url: width: 800 | image_tag: class: 'home-welcome__bg-img bg-img', loading: 'lazy' }}
+        {% endif %}
+        
+        {% if section.settings.title != blank %}
+          <h2 class="home-welcome__title">
+            {{ section.settings.title }}
+          </h2>
+        {% endif %}
+
+        {% comment %} Inner Light Card {% endcomment %}
+        <div class="home-welcome__card-inner">
+          <ul class="home-welcome__list" role="list">
+            {% for block in section.blocks %}
+              {% if block.type == 'feature' %}
+                <li class="home-welcome__item" {{ block.shopify_attributes }}>
+                  <span class="home-welcome__icon-wrap" aria-hidden="true">
+                    {% if block.settings.custom_icon != blank %}
+                      {{ block.settings.custom_icon | image_url: width: 64 | image_tag: class: 'home-welcome__custom-icon', alt: '' }}
+                    {% else %}
+                      {% case block.settings.icon %}
+                        {% when 'location' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.7C17.3 17 20 13 20 9a8 8 0 1 0-16 0c0 4 2.7 8 8 12.7z"/><circle cx="12" cy="9" r="3"/></svg>
+                        {% when 'calendar' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><rect x="7" y="14" width="3" height="3" rx="0.5"/></svg>
+                        {% when 'user' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>
+                        {% when 'store' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        {% when 'package' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                        {% when 'truck' %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        {% else %}
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                      {% endcase %}
+                    {% endif %}
+                  </span>
+                  {% if block.settings.text != blank %}
+                    <span class="home-welcome__item-text">{{ block.settings.text }}</span>
+                  {% endif %}
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+
+          {% if section.settings.btn_text != blank %}
+            {% comment %} <a href="{{ section.settings.btn_url }}" class="home-welcome__btn">
+              <span>{{ section.settings.btn_text }}</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="home-welcome__btn-icon"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+            </a> {% endcomment %}
+            {% render 'btn-global', label: section.settings.btn_text, url: section.settings.btn_url, class: 'btn--secondary home-welcome__btn', icon: true %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Right Column - Video or Image 2 (Desktop & Mobile) {% endcomment %}
+    <div class="home-welcome__col home-welcome__col--image">
+      <div class="home-welcome__img-wrap">
+        {% if section.settings.right_video != blank %}
+          {{ section.settings.right_video | video_tag: class: 'home-welcome__img bg-img', autoplay: true, loop: true, muted: true, playsinline: true, controls: false }}
+        {% elsif section.settings.right_image != blank %}
+          {{ section.settings.right_image | image_url: width: 800 | image_tag: class: 'home-welcome__img bg-img hidden--mobile', loading: 'lazy', alt: section.settings.title }}
+          {{ section.settings.right_image_mobile | default: section.settings.right_image | image_url: width: 800 | image_tag: class: 'home-welcome__img bg-img hidden--desktop', loading: 'lazy', alt: section.settings.title }}
+        {% else %}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'home-welcome__img bg-img placeholder' }}
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% stylesheet %}
+  .home-welcome-section {
+    padding: 50px 0;
+  }
+  .home-welcome__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    align-items: stretch;
+    @media screen and (max-width: 749px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .home-welcome__col {
+    display: flex;
+    flex-direction: column;
+  }
+  .home-welcome__img-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 1;
+    background-color: #f0f1ed;
+  }
+  .home-welcome__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .home-welcome__card-outer {
+    background-color: #3C4127;
+    color: #ffffff;
+    border-radius: 15px;
+    padding: 75px 50px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    @media screen and (max-width: 749px) {
+      padding: 40px 19px 20px;
+    }
+  }
+  .home-welcome__bg-img{
+    object-position: right bottom;
+  }
+  .home-welcome__title {
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 98%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0 0 40px;
+    @media screen and (max-width: 749px) {
+      font-size: 24px;
+    }
+  }
+  .home-welcome__card-inner {
+    background-color: #F0F1ED;
+    color: #6D7646;
+    border-radius: 15px;
+    padding: 30px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    @media screen and (max-width: 749px) {
+      padding: 20px;
+    }
+  }
+  .home-welcome__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  .home-welcome__item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .home-welcome__icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #D2D5C6;
+    color: #6D7646;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .home-welcome__icon-wrap svg {
+    width: 24px;
+    height: 24px;
+  }
+  .home-welcome__custom-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  .home-welcome__item-text {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 100%;
+    color: #6D7646;
+    @media screen and (max-width: 749px) {
+      font-size: 14px;
+    }
+  }
+  .home-welcome__btn.btn-global{
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 50px;
+    padding: 15px 20px;
+    align-self: flex-start;
+    letter-spacing: 0;
+    svg{
+        width: 16px;
+        height: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "KW - Home Welcome",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "WE VERWELKOMEN JE GRAAG IN ONZE WINKEL"
+    },
+    {
+      "type": "video",
+      "id": "left_video",
+      "label": "Left Column Video"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left Column Image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image_mobile",
+      "label": "Left Column Image (Mobile)"
+    },
+    {
+      "type": "video",
+      "id": "right_video",
+      "label": "Right Column Video"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right Column Image (Desktop)"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image_mobile",
+      "label": "Right Column Image (Mobile)"
+    },
+    {
+      "type": "text",
+      "id": "btn_text",
+      "label": "Button Label",
+      "default": "BEZOEK ONZE WINKEL"
+    },
+    {
+      "type": "url",
+      "id": "btn_url",
+      "label": "Button Link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "image_picker",
+      "id": "bg_overlay",
+      "label": "Background Overlay"
+    },
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "location", "label": "Location Pin" },
+            { "value": "calendar", "label": "Calendar" },
+            { "value": "user", "label": "User / Advice" },
+            { "value": "store", "label": "Store / Showroom" },
+            { "value": "package", "label": "Package / Luggage" },
+            { "value": "truck", "label": "Truck / Delivery" }
+          ],
+          "default": "location"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom Icon Image (Optional)"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "text",
+          "label": "Item Text",
+          "default": "Feature description text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Home Welcome",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "location",
+            "text": "Onze winkel is gevestigd in het Retailpark Roermond."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "calendar",
+            "text": "7 dagen per week geopend"
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "user",
+            "text": "Persoonlijk advies van ervaren kampeerspecialisten."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "store",
+            "text": "Grote showroom met de nieuwste kampeercollecties."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "icon": "package",
+            "text": "Meer dan 10.000 kampeer- en outdoorartikelen op voorraad."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

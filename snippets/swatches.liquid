@@ -1,0 +1,51 @@
+{%- doc -%}
+
+  @param {object} product - The product object containing product details
+  @example
+  {% render 'swatches', product: product %}
+{%- enddoc -%}
+
+{%- if product.has_only_default_variant == false and settings.swatch_enabled -%}
+    {%- for option in product.options_with_values -%}
+        {%- capture option_id -%}{{ block.id }}-{{ product.id }}-{{ option.name | handle }}-selector{%- endcapture -%}
+        {%- liquid
+            assign sanitized_setting = settings.swatch_option_name | downcase
+            assign option_name = option.name | downcase
+        -%}
+        {%- if sanitized_setting contains option_name -%}
+            <div class="product-alt__option-selector option-selector--swatch"  data-option-index="{{ forloop.index0 }}" role="radiogroup" aria-labelledby="{{ option_id }}-Label">
+                <div class="product-alt__option-selector_btns">
+                    {%- for value in option.values -%}
+                        {% liquid
+                            assign handle = value | handleize
+                            assign entry = metaobjects.color[handle]
+                            assign bg = '#FFF'
+                            if entry
+                                if entry.color_s.value.size == 1
+                                    assign bg = entry.color_s.value
+                                elsif entry.color_s.value.size > 1
+                                    assign bg = 'linear-gradient(to right'
+                                    for color in entry.color_s.value
+                                        assign bg = bg | append: ', ' | append: color
+                                    endfor
+                                    assign bg = bg | append: ')'
+                                endif
+                            endif
+                        %}
+                        <input class="product-alt__opt-btn js-option"
+                                type="radio"
+                                name="{{ option_id }}"
+                                id="{{ option_id }}-opt-{{ forloop.index0 }}"
+                                value="{{ value | escape }}"
+                                {% if product.variants.size == 1 or variant != blank %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
+                                required>
+                        <label class="product-alt__opt-label" style="--bg:{{ bg }}" data-swatch="{{ value | replace: '"', '' | downcase }}" for="{{ option_id }}-opt-{{ forloop.index0 }}">
+                            
+                            <span class="product-alt__opt-label_text">{{ value }}</span>
+                        </label>
+                    {%- endfor -%}
+                </div>
+            </div>
+        {% endif %}
+    {%- endfor -%}
+{% endif %}

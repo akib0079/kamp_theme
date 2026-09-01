@@ -1,0 +1,1840 @@
+{% comment %}
+  KW - Product Main Section
+  Product detail page - exact Figma node 910:268 structure
+{% endcomment %}
+
+<section class="kw-product-main" 
+  data-product-id="{{ product.id }}"
+  data-section-id="{{ section.id }}">
+  
+  <div class="kw-product-main__container">
+    <div class="kw-product-main__grid">
+      
+      {%- comment -%} Product Gallery {%- endcomment -%}
+      <div class="kw-product-main__gallery">
+        
+        {%- comment -%} Thumbnail Navigation {%- endcomment -%}
+        <div class="kw-product-main__thumbnails">
+          {% for media in product.media limit: 4 %}
+            {% if forloop.index == 4 and product.media.size > 4 %}
+              <button 
+                class="kw-product-main__thumbnail kw-product-main__thumbnail--more"
+                data-thumbnail-index="{{ forloop.index0 }}"
+                aria-label="View {{ product.media.size | minus: 3 }} more images">
+                {% if media.media_type == 'image' %}
+                  {{ media | image_url: width: 200 | image_tag: 
+                    class: 'kw-product-main__thumbnail-image',
+                    loading: 'lazy',
+                    alt: media.alt | default: product.title
+                  }}
+                {% endif %}
+                <div class="kw-product-main__thumbnail-overlay">
+                  <span class="kw-product-main__thumbnail-count">+{{ product.media.size | minus: 3 }}</span>
+                </div>
+              </button>
+            {% else %}
+              <button 
+                class="kw-product-main__thumbnail {% if forloop.first %}kw-product-main__thumbnail--active{% endif %}"
+                data-thumbnail-index="{{ forloop.index0 }}"
+                aria-label="View image {{ forloop.index }}">
+                {% if media.media_type == 'image' %}
+                  {{ media | image_url: width: 200 | image_tag: 
+                    class: 'kw-product-main__thumbnail-image',
+                    loading: 'lazy',
+                    alt: media.alt | default: product.title
+                  }}
+                {% endif %}
+              </button>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        {%- comment -%} Main Carousel {%- endcomment -%}
+        <div class="kw-product-main__carousel">
+          {%- comment -%} Product Badges {%- endcomment -%}
+          <div class="kw-product-main__badges">
+            {% for block in section.blocks %}
+              {% if block.type == 'badge' %}
+                <div class="kw-product-main__badge kw-product-main__badge--{{ block.settings.badge_style }}" {{ block.shopify_attributes }}>
+                  {{ block.settings.badge_text }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {%- comment -%} Carousel Slides {%- endcomment -%}
+          <div class="kw-product-main__carousel-track">
+            {% for media in product.media %}
+              <div class="kw-product-main__carousel-slide {% if forloop.first %}kw-product-main__carousel-slide--active{% endif %}"
+                   data-slide-index="{{ forloop.index0 }}">
+                {% if media.media_type == 'image' %}
+                  {% if forloop.first %}
+                    {{ media | image_url: width: 1200 | image_tag: 
+                      class: 'kw-product-main__carousel-image',
+                      loading: 'eager',
+                      alt: media.alt | default: product.title
+                    }}
+                  {% else %}
+                    {{ media | image_url: width: 1200 | image_tag: 
+                      class: 'kw-product-main__carousel-image',
+                      loading: 'lazy',
+                      alt: media.alt | default: product.title
+                    }}
+                  {% endif %}
+                {% elsif media.media_type == 'video' or media.media_type == 'external_video' %}
+                  <div class="kw-product-main__carousel-video">
+                    {{ media | media_tag: class: 'kw-product-main__video', image_size: '1200x' }}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          {%- comment -%} Navigation Arrows {%- endcomment -%}
+          {% if product.media.size > 1 %}
+            <div class="kw-product-main__carousel-nav">
+              <button class="kw-product-main__carousel-btn kw-product-main__carousel-btn--prev"
+                      aria-label="Previous image">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <circle cx="20" cy="20" r="20" fill="#D2D5C6"/>
+                  <path d="M23 14L17 20L23 26" stroke="#4D5432" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <button class="kw-product-main__carousel-btn kw-product-main__carousel-btn--next"
+                      aria-label="Next image">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <circle cx="20" cy="20" r="20" fill="#636B40"/>
+                  <path d="M17 14L23 20L17 26" stroke="#F0F1ED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {%- comment -%} Product Information - Figma node 910:268 {%- endcomment -%}
+      <div class="kw-product-main__info">
+        <div class="kw-product-main__info-wrapper">
+          
+          {%- comment -%} HEADER GROUP: Vendor + Title + Reviews + Description + Price {%- endcomment -%}
+          <div class="kw-product-main__header-group">
+            <div class="kw-product-main__header-inner">
+              
+              {% for block in section.blocks %}
+                {% if block.type == 'vendor' %}
+                  {% if product.vendor != blank %}
+                    <p class="kw-product-main__vendor" {{ block.shopify_attributes }}>
+                      Merk: {{ product.vendor }}
+                    </p>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% for block in section.blocks %}
+                {% if block.type == 'title' %}
+                  <h1 class="kw-product-main__title" {{ block.shopify_attributes }}>
+                    {{ product.title }}
+                  </h1>
+                {% endif %}
+              {% endfor %}
+
+              {% for block in section.blocks %}
+                {% if block.type == 'reviews' %}
+                  <div class="kw-product-main__reviews" {{ block.shopify_attributes }}>
+                    <div class="kw-product-main__stars">
+                      {% for i in (1..5) %}
+                        <svg width="15" height="15" viewBox="0 0 15 15">
+                          <path d="M7.5 0L9.7 5.1L15 5.9L11.2 9.6L12.2 15L7.5 12.4L2.8 15L3.8 9.6L0 5.9L5.3 5.1L7.5 0Z" fill="#8A916B"/>
+                        </svg>
+                      {% endfor %}
+                    </div>
+                    <a href="#reviews" class="kw-product-main__reviews-link">
+                      {{ block.settings.review_count | default: 149 }} Reviews
+                    </a>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            {% for block in section.blocks %}
+              {% if block.type == 'description' %}
+                {% if product.description != blank %}
+                  <div class="kw-product-main__description" {{ block.shopify_attributes }}>
+                    {{ product.description | strip_html | truncatewords: 20 }}
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+            {% for block in section.blocks %}
+              {% if block.type == 'price' %}
+                <div class="kw-product-main__price-group" {{ block.shopify_attributes }}>
+                  {% if product.compare_at_price > product.price %}
+                    <span class="kw-product-main__price-compare">
+                      {{ product.compare_at_price | money }}
+                    </span>
+                  {% endif %}
+                  <span class="kw-product-main__price {% if product.compare_at_price > product.price %}kw-product-main__price--sale{% endif %}">
+                    {{ product.price | money }}
+                  </span>
+                  {% if product.compare_at_price > product.price %}
+                    {% assign savings = product.compare_at_price | minus: product.price %}
+                    <div class="kw-product-main__price-badge">
+                      Je bespaart {{ savings | money }}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {%- comment -%} SEPARATOR {%- endcomment -%}
+          {% for block in section.blocks %}
+            {% if block.type == 'separator' %}
+              <hr class="kw-product-main__separator" {{ block.shopify_attributes }}>
+            {% endif %}
+          {% endfor %}
+
+          {%- comment -%} VARIANTS GROUP: Color + Size {%- endcomment -%}
+          {% for block in section.blocks %}
+            {% if block.type == 'variant_picker' %}
+              {% unless product.has_only_default_variant %}
+                <div class="kw-product-main__variants-wrapper" {{ block.shopify_attributes }}>
+                  {% for option in product.options_with_values %}
+                    <div class="kw-product-main__variant-group">
+                      
+                      {% if option.name == 'Color' or option.name == 'Kleur' %}
+                        {%- comment -%} COLOR SWATCHES {%- endcomment -%}
+                        <label class="kw-product-main__variant-label">
+                          Kleur <span class="kw-product-main__variant-selected">{{ option.selected_value | upcase }}</span>
+                        </label>
+                        <div class="kw-product-main__color-swatches">
+                          {% for value in option.values %}
+                            <input 
+                              type="radio" 
+                              id="color-{{ value | handle }}"
+                              name="option-color"
+                              value="{{ value }}"
+                              {% if option.selected_value == value %}checked{% endif %}
+                              class="kw-product-main__color-input">
+                            <label 
+                              for="color-{{ value | handle }}"
+                              class="kw-product-main__color-swatch"
+                              data-color="{{ value | handle }}"
+                              title="{{ value }}">
+                              <span class="visually-hidden">{{ value }}</span>
+                            </label>
+                          {% endfor %}
+                        </div>
+
+                      {% else %}
+                        {%- comment -%} SIZE BUTTONS {%- endcomment -%}
+                        <label class="kw-product-main__variant-label">
+                          Kies jouw maat
+                        </label>
+                        <div class="kw-product-main__size-buttons">
+                          {% for value in option.values %}
+                            <input 
+                              type="radio" 
+                              id="size-{{ value | handle }}"
+                              name="option-size"
+                              value="{{ value }}"
+                              {% if option.selected_value == value %}checked{% endif %}
+                              class="kw-product-main__size-input">
+                            <label 
+                              for="size-{{ value | handle }}"
+                              class="kw-product-main__size-button">
+                              {{ value }}
+                            </label>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endunless %}
+            {% endif %}
+          {% endfor %}
+
+          {%- comment -%} BUY BUTTONS GROUP {%- endcomment -%}
+          {% for block in section.blocks %}
+            {% if block.type == 'buy_buttons' %}
+              <div class="kw-product-main__buy-group" {{ block.shopify_attributes }}>
+                <product-form>
+                  {% form 'product', product, id: 'product-form' %}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    
+                    <div class="kw-product-main__cart-row">
+                      {%- comment -%} Quantity Selector {%- endcomment -%}
+                      <div class="kw-product-main__quantity">
+                        <button type="button" class="kw-product-main__qty-btn kw-product-main__qty-btn--minus" data-qty-minus>
+                          <svg width="10" height="2" viewBox="0 0 10 2" fill="none">
+                            <line x1="0" y1="1" x2="10" y2="1" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </button>
+                        <div class="kw-product-main__qty-wrapper">
+                          <input 
+                            type="number" 
+                            name="quantity" 
+                            value="1" 
+                            min="1"
+                            class="kw-product-main__qty-input"
+                            aria-label="Quantity">
+                        </div>
+                        <button type="button" class="kw-product-main__qty-btn kw-product-main__qty-btn--plus" data-qty-plus>
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <line x1="5" y1="0" x2="5" y2="10" stroke="currentColor" stroke-width="2"/>
+                            <line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="2"/>
+                          </svg>
+                        </button>
+                      </div>
+
+                      {%- comment -%} Add to Cart Button {%- endcomment -%}
+                      <button 
+                        type="submit" 
+                        class="kw-product-main__add-cart"
+                        {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                          <path d="M2 2h2l1.5 9h11l2-7H6"/>
+                          <circle cx="8" cy="18" r="1"/>
+                          <circle cx="16" cy="18" r="1"/>
+                        </svg>
+                        <span>Voeg toe aan winkelwagen</span>
+                      </button>
+                    </div>
+
+                    {%- comment -%} Store Availability {%- endcomment -%}
+                    {% if block.settings.show_store_availability %}
+                      <button type="button" class="kw-product-main__store-btn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                          <path d="M10 1C6.13 1 3 4.13 3 8c0 5.25 7 11 7 11s7-5.75 7-11c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round"/>
+                          <circle cx="10" cy="8" r="2.5" stroke="currentColor" stroke-width="1.67"/>
+                        </svg>
+                        Bekijk winkelvoorraad
+                      </button>
+                    {% endif %}
+                  {% endform %}
+                </product-form>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+          {%- comment -%} COMPLEMENTARY PRODUCTS {%- endcomment -%}
+          {% for block in section.blocks %}
+            {% if block.type == 'complementary_products' %}
+              {% if block.settings.product_list != blank %}
+                <div class="kw-product-main__complementary" {{ block.shopify_attributes }}>
+                  <p class="kw-product-main__complementary-title">
+                    {{ block.settings.heading | default: "Complete your outfit with:" }}
+                  </p>
+                  <div class="kw-product-main__complementary-scroll">
+                    <div class="kw-product-main__complementary-grid">
+                      {% assign product_handles = block.settings.product_list | split: ',' %}
+                      {% for handle in product_handles limit: 3 %}
+                        {% assign handle_clean = handle | strip %}
+                        {% assign comp_product = all_products[handle_clean] %}
+                        {% if comp_product != blank %}
+                          <div class="kw-product-main__comp-item">
+                            <div class="kw-product-main__comp-image">
+                              {% if comp_product.featured_image %}
+                                {{ comp_product.featured_image | image_url: width: 150 | image_tag }}
+                              {% endif %}
+                            </div>
+                            <div class="kw-product-main__comp-info">
+                              <p class="kw-product-main__comp-name">{{ comp_product.title }}</p>
+                              <div class="kw-product-main__comp-colors"></div>
+                              <p class="kw-product-main__comp-price">{{ comp_product.price | money }}</p>
+                              <button type="button" class="kw-product-main__comp-add">+ Add</button>
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <div class="kw-product-main__complementary-nav">
+                    <button type="button" aria-label="Previous">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M15 18l-6-6 6-6"/>
+                      </svg>
+                    </button>
+                    <button type="button" aria-label="Next">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M9 18l6-6-6-6"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {%- comment -%} PRODUCT INFO TABS (Bever-style) {%- endcomment -%}
+          <div class="kw-product-main__info-tabs">
+            <p class="kw-product-main__info-title">Alles over dit product</p>
+            
+            {%- comment -%} Tab Navigation {%- endcomment -%}
+            <div class="kw-product-main__tabs-nav">
+              {% for block in section.blocks %}
+                {% if block.type == 'tab_description' or block.type == 'tab_specs' or block.type == 'tab_care' or block.type == 'tab_shipping' %}
+                  <button 
+                    type="button" 
+                    class="kw-product-main__tab-btn"
+                    data-tab-trigger="{{ block.id }}"
+                    {{ block.shopify_attributes }}>
+                    {{ block.settings.tab_title }}
+                  </button>
+                {% endif %}
+              {% endfor %}
+            </div>
+            
+            <hr class="kw-product-main__tabs-line">
+          </div>
+
+          {%- comment -%} Sidebar Panels {%- endcomment -%}
+          {% for block in section.blocks %}
+            {% if block.type == 'tab_description' %}
+              <div class="kw-product-main__sidebar" data-sidebar-panel="{{ block.id }}" {{ block.shopify_attributes }}>
+                <div class="kw-product-main__sidebar-overlay" data-sidebar-close></div>
+                <div class="kw-product-main__sidebar-content">
+                  <div class="kw-product-main__sidebar-header">
+                    <h3 class="kw-product-main__sidebar-title">{{ block.settings.tab_title | upcase }}</h3>
+                    <button type="button" class="kw-product-main__sidebar-close" data-sidebar-close>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="kw-product-main__sidebar-body">
+                    {% if block.settings.sections %}
+                      {% assign sections = block.settings.sections | split: '||' %}
+                      {% for section in sections %}
+                        {% assign section_parts = section | split: '::' %}
+                        {% if section_parts.size == 2 %}
+                          <div class="kw-product-main__desc-section">
+                            <h4 class="kw-product-main__desc-heading">{{ section_parts[0] | strip }}</h4>
+                            {% assign items = section_parts[1] | split: '|' %}
+                            <ul class="kw-product-main__desc-list">
+                              {% for item in items %}
+                                <li class="kw-product-main__desc-item">
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M12 5L7 10L4 7" stroke="#636B40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  </svg>
+                                  <span>{{ item | strip }}</span>
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% elsif block.type == 'tab_specs' %}
+              <div class="kw-product-main__sidebar" data-sidebar-panel="{{ block.id }}" {{ block.shopify_attributes }}>
+                <div class="kw-product-main__sidebar-overlay" data-sidebar-close></div>
+                <div class="kw-product-main__sidebar-content">
+                  <div class="kw-product-main__sidebar-header">
+                    <h3 class="kw-product-main__sidebar-title">{{ block.settings.tab_title | upcase }}</h3>
+                    <button type="button" class="kw-product-main__sidebar-close" data-sidebar-close>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="kw-product-main__sidebar-body">
+                    {% if block.settings.spec_groups %}
+                      {% assign groups = block.settings.spec_groups | split: '||' %}
+                      {% for group in groups %}
+                        {% assign group_parts = group | split: '::' %}
+                        {% if group_parts.size == 2 %}
+                          <div class="kw-product-main__spec-group">
+                            <h4 class="kw-product-main__spec-heading">{{ group_parts[0] | strip }}</h4>
+                            {% assign specs = group_parts[1] | split: '|' %}
+                            <div class="kw-product-main__spec-table">
+                              {% for spec in specs %}
+                                {% assign spec_pair = spec | split: ':' %}
+                                {% if spec_pair.size == 2 %}
+                                  {% cycle 'odd', 'even' %}
+                                  <div class="kw-product-main__spec-row {% if forloop.index == 1 or forloop.index == 3 or forloop.index == 5 or forloop.index == 7 or forloop.index == 9 or forloop.index == 11 %}kw-product-main__spec-row--alt{% endif %}">
+                                    <div class="kw-product-main__spec-label">{{ spec_pair[0] | strip }}</div>
+                                    <div class="kw-product-main__spec-value">{{ spec_pair[1] | strip }}</div>
+                                  </div>
+                                {% endif %}
+                              {% endfor %}
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% elsif block.type == 'tab_care' or block.type == 'tab_shipping' %}
+              <div class="kw-product-main__sidebar" data-sidebar-panel="{{ block.id }}" {{ block.shopify_attributes }}>
+                <div class="kw-product-main__sidebar-overlay" data-sidebar-close></div>
+                <div class="kw-product-main__sidebar-content">
+                  <div class="kw-product-main__sidebar-header">
+                    <h3 class="kw-product-main__sidebar-title">{{ block.settings.tab_title | upcase }}</h3>
+                    <button type="button" class="kw-product-main__sidebar-close" data-sidebar-close>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="kw-product-main__sidebar-body">
+                    <div class="kw-product-main__text-content">
+                      {{ block.settings.content }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Container */
+  .kw-product-main {
+    padding: 50px;
+  }
+
+  .kw-product-main__container {
+    max-width: 1628px;
+    margin: 0 auto;
+  }
+
+  .kw-product-main__grid {
+    display: grid;
+    grid-template-columns: 857px 1fr;
+    gap: 103px;
+  }
+
+  /* ========== GALLERY ========== */
+  .kw-product-main__gallery {
+    display: flex;
+    gap: 11px;
+  }
+
+  .kw-product-main__thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    width: 166px;
+  }
+
+  .kw-product-main__thumbnail {
+    width: 100%;
+    height: 158px;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #F0F0F0;
+    border: 2px solid transparent;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s ease;
+    padding: 0;
+  }
+
+  .kw-product-main__thumbnail:hover {
+    border-color: #8A916B;
+  }
+
+  .kw-product-main__thumbnail--active {
+    border-color: #636B40;
+  }
+
+  .kw-product-main__thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-product-main__thumbnail--more {
+    position: relative;
+  }
+
+  .kw-product-main__thumbnail-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kw-product-main__thumbnail-count {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 50px;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 1;
+  }
+
+  .kw-product-main__carousel {
+    flex: 1;
+    height: 667px;
+    border-radius: 12px;
+    background: #F0F0F0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kw-product-main__badges {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kw-product-main__badge {
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .kw-product-main__badge--primary {
+    background: #8A916B;
+  }
+
+  .kw-product-main__badge--sale {
+    background: #EA2903;
+  }
+
+  .kw-product-main__carousel-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .kw-product-main__carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .kw-product-main__carousel-slide--active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .kw-product-main__carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-product-main__carousel-nav {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+    z-index: 2;
+  }
+
+  .kw-product-main__carousel-btn {
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kw-product-main__carousel-btn svg {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+  }
+
+  .kw-product-main__carousel-btn:hover {
+    opacity: 0.8;
+  }
+
+  /* ========== PRODUCT INFO - FIGMA STRUCTURE ========== */
+  .kw-product-main__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kw-product-main__info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+  }
+
+  /* HEADER GROUP - gap: 18px */
+  .kw-product-main__header-group {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .kw-product-main__header-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kw-product-main__vendor {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1;
+    text-transform: capitalize;
+    margin: 0;
+  }
+
+  .kw-product-main__title {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 28px;
+    font-weight: 600;
+    color: #202020;
+    line-height: 1.3;
+    text-transform: capitalize;
+    margin: 0;
+  }
+
+  .kw-product-main__reviews {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .kw-product-main__stars {
+    display: flex;
+    gap: 1.3px;
+  }
+
+  .kw-product-main__reviews-link {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: #5C5C5C;
+    text-decoration: underline;
+    text-transform: capitalize;
+    line-height: 1;
+  }
+
+  .kw-product-main__description {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: #5C5C5C;
+    line-height: 1.5;
+    text-transform: capitalize;
+    margin: 0;
+  }
+
+  .kw-product-main__price-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .kw-product-main__price-compare {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: #A6A6A6;
+    text-decoration: line-through;
+    line-height: 1;
+  }
+
+  .kw-product-main__price {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: #202020;
+    line-height: 1;
+  }
+
+  .kw-product-main__price--sale {
+    color: #EA2903;
+  }
+
+  .kw-product-main__price-badge {
+    background: #EA2903;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 1;
+    height: 19px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* SEPARATOR */
+  .kw-product-main__separator {
+    border: none;
+    border-top: 1px solid #E3E3E3;
+    margin: 0;
+  }
+
+  /* VARIANTS WRAPPER - gap: 35px between color and size */
+  .kw-product-main__variants-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+  }
+
+  .kw-product-main__variant-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kw-product-main__variant-label {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: #AEAEAE;
+    line-height: 1.5;
+    text-transform: capitalize;
+  }
+
+  .kw-product-main__variant-selected {
+    font-weight: 600;
+    color: #202020;
+    text-transform: uppercase;
+  }
+
+  /* Color Swatches */
+  .kw-product-main__color-swatches {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .kw-product-main__color-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .kw-product-main__color-swatch {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    background: #CCCCCC;
+  }
+
+  /* Figma color mapping */
+  .kw-product-main__color-swatch[data-color*="gray"],
+  .kw-product-main__color-swatch[data-color*="grey"] { background: #94A3B8; }
+  .kw-product-main__color-swatch[data-color*="black"] { background: #000000; }
+  .kw-product-main__color-swatch[data-color*="beige"] { background: #C8B89F; }
+  .kw-product-main__color-swatch[data-color*="purple"] { background: #7C2D7C; }
+  .kw-product-main__color-swatch[data-color*="green"] { background: #5F7C74; }
+  .kw-product-main__color-swatch[data-color*="navy"],
+  .kw-product-main__color-swatch[data-color*="blue"] { background: #1E293B; }
+  .kw-product-main__color-swatch[data-color*="red"],
+  .kw-product-main__color-swatch[data-color*="wine"] { background: #7C1D3D; }
+  .kw-product-main__color-swatch[data-color*="teal"],
+  .kw-product-main__color-swatch[data-color*="cyan"] { background: #1D7C7C; }
+
+  .kw-product-main__color-input:checked + .kw-product-main__color-swatch {
+    box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #202020;
+  }
+
+  /* Size Buttons */
+  .kw-product-main__size-buttons {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .kw-product-main__size-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .kw-product-main__size-button {
+    min-width: 103px;
+    height: 39px;
+    padding: 10px;
+    background: #F8F8F8;
+    border-radius: 10px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #4A4A4A;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: capitalize;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.5;
+  }
+
+  .kw-product-main__size-input:checked + .kw-product-main__size-button {
+    background: #181818;
+    color: #FFFFFF;
+  }
+
+  /* BUY GROUP - gap: 12px */
+  .kw-product-main__buy-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kw-product-main__buy-group product-form,
+  .kw-product-main__buy-group form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .kw-product-main__cart-row {
+    display: flex;
+    gap: 9px;
+  }
+
+  .kw-product-main__quantity {
+    display: flex;
+    align-items: stretch;
+    background: #FFFFFF;
+    border: 1px solid #E3E3E3;
+    border-radius: 9px;
+    height: 50px;
+    width: 128px;
+    overflow: hidden;
+  }
+
+  .kw-product-main__qty-btn {
+    width: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #202020;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .kw-product-main__qty-btn--minus {
+    border-right: 1px solid #E3E3E3;
+  }
+
+  .kw-product-main__qty-btn--plus {
+    border-left: 1px solid #E3E3E3;
+  }
+
+  .kw-product-main__qty-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kw-product-main__qty-input {
+    width: 100%;
+    border: none;
+    text-align: center;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    background: transparent;
+    outline: none;
+  }
+
+  .kw-product-main__qty-input::-webkit-inner-spin-button,
+  .kw-product-main__qty-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .kw-product-main__add-cart {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 50px;
+    padding: 10px 20px;
+    background: #8A916B;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    line-height: normal;
+  }
+
+  .kw-product-main__add-cart:hover {
+    background: #636B40;
+  }
+
+  .kw-product-main__add-cart:disabled {
+    background: #AEAEAE;
+    cursor: not-allowed;
+  }
+
+  .kw-product-main__store-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 50px;
+    padding: 10px 20px;
+    background: #F1F1F1;
+    border: none;
+    border-radius: 10px;
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #3C4127;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    line-height: normal;
+  }
+
+  .kw-product-main__store-btn:hover {
+    background: #E3E3E3;
+  }
+
+  /* COMPLEMENTARY - gap: 24px */
+  .kw-product-main__complementary {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .kw-product-main__complementary-title {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 16px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: capitalize;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .kw-product-main__complementary-scroll {
+    position: relative;
+  }
+
+  .kw-product-main__complementary-grid {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-behavior: smooth;
+  }
+
+  .kw-product-main__complementary-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kw-product-main__comp-item {
+    display: flex;
+    gap: 9px;
+    flex-shrink: 0;
+  }
+
+  .kw-product-main__comp-image {
+    width: 126px;
+    height: 150px;
+    background: #F5F5F5;
+    border-radius: 9px;
+    overflow: hidden;
+  }
+
+  .kw-product-main__comp-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-product-main__comp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    width: 178px;
+  }
+
+  .kw-product-main__comp-name {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 15px;
+    font-weight: 500;
+    color: #202020;
+    line-height: 1.3;
+    margin: 0;
+    text-transform: capitalize;
+  }
+
+  .kw-product-main__comp-colors {
+    height: 18px;
+  }
+
+  .kw-product-main__comp-price {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #202020;
+    text-transform: capitalize;
+    margin: 0;
+    line-height: normal;
+  }
+
+  .kw-product-main__comp-add {
+    width: 92px;
+    height: 31px;
+    background: #FFFFFF;
+    border: 1px solid #636B40;
+    border-radius: 8px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #636B40;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 10px;
+    line-height: normal;
+  }
+
+  .kw-product-main__comp-add:hover {
+    background: #636B40;
+    color: #FFFFFF;
+  }
+
+  .kw-product-main__complementary-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .kw-product-main__complementary-nav button {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #202020;
+    padding: 0;
+  }
+
+  /* ========== PRODUCT INFO TABS (Bever-style) ========== */
+  .kw-product-main__info-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .kw-product-main__info-title {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: capitalize;
+    margin: 0;
+  }
+
+  .kw-product-main__tabs-nav {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .kw-product-main__tab-btn {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 16px;
+    font-weight: 500;
+    color: #202020;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    text-transform: capitalize;
+  }
+
+  .kw-product-main__tab-btn:hover {
+    color: #636B40;
+  }
+
+  .kw-product-main__tabs-line {
+    border: none;
+    height: 1px;
+    background: #E4E4E4;
+    margin: 0;
+  }
+
+  /* ========== SIDEBAR PANELS ========== */
+  .kw-product-main__sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .kw-product-main__sidebar[data-open] {
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .kw-product-main__sidebar-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.44);
+    backdrop-filter: blur(6px);
+    cursor: pointer;
+  }
+
+  .kw-product-main__sidebar-content {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 576px;
+    max-width: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+  }
+
+  .kw-product-main__sidebar[data-open] .kw-product-main__sidebar-content {
+    transform: translateX(0);
+  }
+
+  .kw-product-main__sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 61px 28px;
+    flex-shrink: 0;
+  }
+
+  .kw-product-main__sidebar-title {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: #202020;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .kw-product-main__sidebar-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #202020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .kw-product-main__sidebar-close:hover {
+    opacity: 0.6;
+  }
+
+  .kw-product-main__sidebar-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 61px 40px;
+  }
+
+  /* ========== DESCRIPTION SIDEBAR ========== */
+  .kw-product-main__desc-section {
+    margin-bottom: 28px;
+  }
+
+  .kw-product-main__desc-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-product-main__desc-heading {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 20px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: capitalize;
+    margin: 0 0 20px 0;
+  }
+
+  .kw-product-main__desc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .kw-product-main__desc-item {
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+  }
+
+  .kw-product-main__desc-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .kw-product-main__desc-item span {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1.5;
+  }
+
+  /* ========== SPECIFICATIONS SIDEBAR ========== */
+  .kw-product-main__spec-group {
+    margin-bottom: 28px;
+  }
+
+  .kw-product-main__spec-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-product-main__spec-heading {
+    font-family: var(--font-heading-family, sans-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: capitalize;
+    margin: 0 0 14px 0;
+  }
+
+  .kw-product-main__spec-table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kw-product-main__spec-row {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    background: white;
+  }
+
+  .kw-product-main__spec-row--alt {
+    background: #F0F1ED;
+  }
+
+  .kw-product-main__spec-label {
+    flex: 0 0 261px;
+    padding: 12px 17px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    color: #202020;
+    text-transform: capitalize;
+  }
+
+  .kw-product-main__spec-value {
+    flex: 1;
+    padding: 12px 10px;
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 13px;
+    font-weight: 500;
+    color: #202020;
+    text-transform: capitalize;
+  }
+
+  /* ========== TEXT CONTENT (Care/Shipping) ========== */
+  .kw-product-main__text-content {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1.5;
+  }
+
+  .kw-product-main__text-content p {
+    margin: 0 0 16px 0;
+  }
+
+  .kw-product-main__text-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-product-main__text-content ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .kw-product-main__text-content li {
+    margin-bottom: 12px;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .kw-product-main__text-content li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #636B40;
+  }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-product-main__grid {
+      grid-template-columns: 1fr;
+      gap: 50px;
+    }
+
+    .kw-product-main__gallery {
+      flex-direction: column-reverse;
+    }
+
+    .kw-product-main__thumbnails {
+      flex-direction: row;
+      width: 100%;
+    }
+
+    .kw-product-main__thumbnail {
+      flex: 1;
+      max-width: 150px;
+    }
+
+    .kw-product-main__carousel {
+      height: 500px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-product-main {
+      padding: 30px 20px;
+    }
+
+    .kw-product-main__carousel {
+      height: 400px;
+    }
+
+    .kw-product-main__info-wrapper {
+      gap: 25px;
+    }
+
+    .kw-product-main__title {
+      font-size: 24px;
+    }
+
+    .kw-product-main__size-button {
+      min-width: 80px;
+    }
+
+    .kw-product-main__cart-row {
+      flex-direction: column;
+    }
+
+    .kw-product-main__quantity {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    function initProduct() {
+      const sections = document.querySelectorAll('.kw-product-main');
+      
+      sections.forEach(function(section) {
+        const carousel = section.querySelector('.kw-product-main__carousel');
+        if (!carousel) return;
+
+        const slides = carousel.querySelectorAll('.kw-product-main__carousel-slide');
+        const thumbnails = section.querySelectorAll('.kw-product-main__thumbnail');
+        const prevBtn = carousel.querySelector('.kw-product-main__carousel-btn--prev');
+        const nextBtn = carousel.querySelector('.kw-product-main__carousel-btn--next');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+          slides.forEach(function(slide) {
+            slide.classList.remove('kw-product-main__carousel-slide--active');
+          });
+          thumbnails.forEach(function(thumb) {
+            thumb.classList.remove('kw-product-main__thumbnail--active');
+          });
+
+          if (slides[index]) {
+            slides[index].classList.add('kw-product-main__carousel-slide--active');
+          }
+          if (thumbnails[index]) {
+            thumbnails[index].classList.add('kw-product-main__thumbnail--active');
+          }
+          currentIndex = index;
+        }
+
+        thumbnails.forEach(function(thumb, index) {
+          thumb.addEventListener('click', function() {
+            showSlide(index);
+          });
+        });
+
+        if (prevBtn) {
+          prevBtn.addEventListener('click', function() {
+            const newIndex = currentIndex > 0 ? currentIndex - 1 : slides.length - 1;
+            showSlide(newIndex);
+          });
+        }
+
+        if (nextBtn) {
+          nextBtn.addEventListener('click', function() {
+            const newIndex = currentIndex < slides.length - 1 ? currentIndex + 1 : 0;
+            showSlide(newIndex);
+          });
+        }
+
+        // Quantity
+        const qtyInput = section.querySelector('.kw-product-main__qty-input');
+        const minusBtn = section.querySelector('[data-qty-minus]');
+        const plusBtn = section.querySelector('[data-qty-plus]');
+
+        if (minusBtn && qtyInput) {
+          minusBtn.addEventListener('click', function() {
+            const val = parseInt(qtyInput.value) || 1;
+            if (val > 1) qtyInput.value = val - 1;
+          });
+        }
+
+        if (plusBtn && qtyInput) {
+          plusBtn.addEventListener('click', function() {
+            const val = parseInt(qtyInput.value) || 1;
+            qtyInput.value = val + 1;
+          });
+        }
+
+        // Product Info Tabs & Sidebars (Bever-style)
+        const tabBtns = section.querySelectorAll('[data-tab-trigger]');
+        const sidebars = section.querySelectorAll('[data-sidebar-panel]');
+        
+        // Tab click handlers
+        tabBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            const panelId = btn.getAttribute('data-tab-trigger');
+            const sidebar = section.querySelector('[data-sidebar-panel="' + panelId + '"]');
+            
+            if (sidebar) {
+              // Close all sidebars first
+              sidebars.forEach(function(s) {
+                s.removeAttribute('data-open');
+              });
+              
+              // Open clicked sidebar with slight delay for animation
+              setTimeout(function() {
+                sidebar.setAttribute('data-open', '');
+                document.body.style.overflow = 'hidden';
+              }, 10);
+            }
+          });
+        });
+        
+        // Sidebar close handlers
+        sidebars.forEach(function(sidebar) {
+          const closeBtns = sidebar.querySelectorAll('[data-sidebar-close]');
+          closeBtns.forEach(function(closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              sidebar.removeAttribute('data-open');
+              document.body.style.overflow = '';
+            });
+          });
+        });
+        
+        // Close on escape key
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            const openSidebar = section.querySelector('[data-sidebar-panel][data-open]');
+            if (openSidebar) {
+              openSidebar.removeAttribute('data-open');
+              document.body.style.overflow = '';
+            }
+          }
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initProduct);
+    } else {
+      initProduct();
+    }
+
+    if (window.Shopify && Shopify.designMode) {
+      document.addEventListener('shopify:section:load', initProduct);
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "KW - Product Main",
+  "tag": "section",
+  "class": "kw-section-product-main",
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Product Badge",
+      "settings": [
+        {
+          "type": "text",
+          "id": "badge_text",
+          "label": "Badge Text",
+          "default": "Sale"
+        },
+        {
+          "type": "select",
+          "id": "badge_style",
+          "label": "Badge Style",
+          "options": [
+            { "value": "primary", "label": "Primary (Green)" },
+            { "value": "sale", "label": "Sale (Red)" }
+          ],
+          "default": "sale"
+        }
+      ]
+    },
+    {
+      "type": "vendor",
+      "name": "Vendor",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Product Title",
+      "limit": 1
+    },
+    {
+      "type": "reviews",
+      "name": "Product Reviews",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "number",
+          "id": "review_count",
+          "label": "Review Count",
+          "default": 149
+        }
+      ]
+    },
+    {
+      "type": "description",
+      "name": "Product Description",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Product Price",
+      "limit": 1
+    },
+    {
+      "type": "separator",
+      "name": "Separator Line",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant Selector",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_store_availability",
+          "label": "Show Store Availability Button",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "complementary_products",
+      "name": "Complete Your Outfit",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Complete your outfit with:"
+        },
+        {
+          "type": "text",
+          "id": "product_list",
+          "label": "Product Handles",
+          "info": "Comma separated product handles",
+          "placeholder": "product-1,product-2,product-3"
+        }
+      ]
+    },
+    {
+      "type": "tab_description",
+      "name": "📝 Beschrijving",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Beschrijving"
+        },
+        {
+          "type": "textarea",
+          "id": "sections",
+          "label": "Description Sections",
+          "info": "Format: SectionTitle::item1|item2|item3||NextSection::item1|item2",
+          "default": "General::The Icepeak Farwell wadded jacket for men is designed for extreme weather conditions.|Ideal for skiing, snowboarding and other active winter activities in the mountains.|Stay dry with fully taped seams and a 15,000mm water column.",
+          "placeholder": "General::Point 1|Point 2|Point 3||Materials::Material point 1|Material point 2"
+        }
+      ]
+    },
+    {
+      "type": "tab_specs",
+      "name": "📊 Eigenschappen",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Eigenschappen"
+        },
+        {
+          "type": "textarea",
+          "id": "spec_groups",
+          "label": "Specification Groups",
+          "info": "Format: GroupName::Label1:Value1|Label2:Value2||NextGroup::Label1:Value1",
+          "default": "Algemeen::Beste gebruik:Trekking, Wandelen|Merk:Deuter||Specificaties::Gewicht (g):2230|Inhoud (l):55|Afmetingen (cm):35 x 86 x 30||Kenmerken::Waterdicht:Nee|Inclusief Regenhoes:Ja|Vrijstaand Rugpand:Ja",
+          "placeholder": "General::Weight:500g|Material:Nylon||Features::Waterproof:Yes|Breathable:Yes"
+        }
+      ]
+    },
+    {
+      "type": "tab_care",
+      "name": "🧼 Onderhoud",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Onderhoud"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Care Instructions",
+          "default": "<p>Machine wash at 30°C with similar colors.</p><p>Do not bleach or tumble dry.</p><p>Iron on low heat if needed.</p>"
+        }
+      ]
+    },
+    {
+      "type": "tab_shipping",
+      "name": "📦 Verzenden",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Tab Title",
+          "default": "Verzenden & Retourneren"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Shipping & Returns Info",
+          "default": "<p>Gratis verzending vanaf €50.</p><p>Levering binnen 2-4 werkdagen.</p><p>365 dagen bedenktijd voor retourneren.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Product Main",
+      "blocks": [
+        { "type": "badge", "settings": { "badge_text": "Winter Deals", "badge_style": "primary" }},
+        { "type": "badge", "settings": { "badge_text": "Sale -25%", "badge_style": "sale" }},
+        { "type": "vendor" },
+        { "type": "title" },
+        { "type": "reviews" },
+        { "type": "description" },
+        { "type": "price" },
+        { "type": "separator" },
+        { "type": "variant_picker" },
+        { "type": "buy_buttons" },
+        { "type": "complementary_products" },
+        { "type": "tab_description" },
+        { "type": "tab_specs" },
+        { "type": "tab_care" },
+        { "type": "tab_shipping" }
+      ]
+    }
+  ]
+}
+{% endschema %}

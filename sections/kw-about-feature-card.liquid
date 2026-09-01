@@ -1,0 +1,282 @@
+{% comment %}
+  KW - Feature Card Section
+  Full-width image with white card overlay on left
+  Based on Figma design node 1080:377 (Ski Doctor)
+{% endcomment %}
+
+<section class="kw-feature-card section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+">
+  {% comment %} <div class="kw-feature-card__container"> {% endcomment %}
+    <div class="kw-feature-card__wrapper">
+      <div class="kw-feature-card__image-wrapper" data-animate="fade">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1920 | image_tag: 
+            class: 'kw-feature-card__image hidden--mobile',
+            loading: 'lazy',
+            alt: section.settings.title
+          }}
+          {{ section.settings.image_mobile | default: section.settings.image | image_url: width: 800 | image_tag: 
+            class: 'kw-feature-card__image hidden--desktop',
+            loading: 'lazy',
+            alt: section.settings.title
+          }}
+        {% else %}
+          <div class="kw-feature-card__placeholder"></div>
+        {% endif %}
+        <div class="kw-feature-card__overlay"></div>
+      </div>
+      
+      <div class="kw-feature-card__content">
+        <div class="kw-feature-card__card"  data-animate="fade-up"  data-animate-delay="0.3">
+          <h2 class="kw-feature-card__title">{{ section.settings.title }}</h2>
+          <div class="kw-feature-card__description">
+            {{ section.settings.description }}
+          </div>
+          {% if section.settings.link_text != blank %}
+            <a href="{{ section.settings.link_url }} " class="kw-feature-card__link link-underline">
+              <span class="link-underline-text">{{ section.settings.link_text }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.33334 8H12.6667M12.6667 8L8.66668 4M12.6667 8L8.66668 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% comment %} </div> {% endcomment %}
+</section>
+
+<style>
+  .kw-feature-card {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+  }
+
+  .kw-feature-card__container {
+    max-width: 1628px;
+    margin: 0 auto;
+  }
+
+  .kw-feature-card__wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 697px;
+  }
+
+  .kw-feature-card__image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kw-feature-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-feature-card__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #3C4127 0%, #636B40 100%);
+  }
+
+  .kw-feature-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.09);
+  }
+
+  .kw-feature-card__content {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+  }
+
+  .kw-feature-card__card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(27px);
+    -webkit-backdrop-filter: blur(27px);
+    border-radius: 20px;
+    padding: 50px;
+    max-width: 559px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .kw-feature-card__title {
+    font-size: 42px;
+    font-weight: 600;
+    color: #4D5432;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .kw-feature-card__description {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4A4A4A;
+    line-height: 1.5;
+  }
+
+  .kw-feature-card__description p {
+    margin: 0 0 1em;
+  }
+
+  .kw-feature-card__description p:last-child {
+    margin-bottom: 0;
+  }
+
+  .kw-feature-card__description ul {
+    margin: 1em 0;
+    padding-left: 21px;
+  }
+
+  .kw-feature-card__description li {
+    margin-bottom: 0.25em;
+  }
+
+  .kw-feature-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #8A916B;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    line-height: 1.3;
+    margin-top: 8px;
+  }
+
+  .kw-feature-card__link:hover {
+    color: #636B40;
+  }
+
+  .kw-feature-card__link svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-feature-card__wrapper {
+      height: 600px;
+    }
+
+    .kw-feature-card__card {
+      max-width: 480px;
+      padding: 40px;
+    }
+
+    .kw-feature-card__title {
+      font-size: 34px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-feature-card {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 60px);
+    }
+
+    .kw-feature-card__wrapper {
+      height: auto;
+      min-height: 600px;
+    }
+
+    .kw-feature-card__content {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: none;
+      padding: 20px;
+      padding-top: 300px;
+    }
+
+    .kw-feature-card__card {
+      max-width: 100%;
+      padding: 30px;
+      border-radius: 16px;
+    }
+
+    .kw-feature-card__title {
+      font-size: 28px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Feature Card",
+  "tag": "section",
+  "class": "kw-section-feature-card",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Background Image Mobile"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Ski Onderhoud met De Ski Doctor"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Naast kampeer- en outdoorproducten bieden wij een unieke samenwerking met Ski Doctor, het specialistische ski- en snowboard onderhoudsconcept dat bij ons gevestigd is.</p><p>Bij Ski Doctor @ De Kampeerwinkel Roermond kun je terecht voor:</p><ul><li>Professioneel ski- en snowboard onderhoud</li><li>Waxen, slijpen en reparaties</li><li>Persoonlijk advies door ervaren techs</li></ul><p>Je materiaal afgeven kan flexibel; meestal binnen dezelfde dag weer klaar. Dit maakt ons een all-in-1 bestemming voor wintersporters die alles onder één dak willen regelen — van aankoop tot performance service.</p>"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Feature Card"
+    }
+  ]
+}
+{% endschema %}

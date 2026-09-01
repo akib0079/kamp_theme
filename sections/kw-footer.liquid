@@ -1,0 +1,708 @@
+{% comment %}
+  KW - Footer Section
+  Based on exact Figma design specifications
+  All icons embedded - no separate snippet files needed
+{% endcomment %}
+
+<footer class="kw-footer" style="
+  --footer-bg: {{ section.settings.background_color }};
+  --footer-heading-color: {{ section.settings.heading_color }};
+  --footer-link-color: {{ section.settings.link_color }};
+  --footer-text-color: {{ section.settings.text_color }};
+  --footer-margin-top: {{ section.settings.margin_top }}px;
+  --footer-margin-bottom: {{ section.settings.margin_bottom }}px;
+  --footer-margin-horizontal: {{ section.settings.margin_horizontal }}px;
+">
+  <div class="kw-footer__container">
+    
+    {%- comment -%} Logo {%- endcomment -%}
+    <div class="kw-footer__logo">
+      <a href="{{ routes.root_url }}" class="kw-footer__logo-link" aria-label="{{ shop.name }}">
+        {%- if section.settings.logo != blank -%}
+          <img 
+            src="{{ section.settings.logo | image_url: width: 400 }}" 
+            alt="{{ shop.name }}"
+            width="{{ section.settings.logo_width }}"
+            height="auto"
+            loading="lazy"
+          >
+        {%- else -%}
+          <span class="kw-footer__logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+
+    {%- comment -%} Navigation Columns {%- endcomment -%}
+    <div class="kw-footer__nav">
+      
+      {%- comment -%} Column 1 {%- endcomment -%}
+      <div class="kw-footer__column kw-footer__column--1">
+        {%- if section.settings.heading_1 != blank -%}
+          <h3 class="kw-footer__heading">{{ section.settings.heading_1 }}</h3>
+        {%- endif -%}
+        {%- if section.settings.menu_1 != blank -%}
+          <ul class="kw-footer__links">
+            {%- for link in linklists[section.settings.menu_1].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Column 2 {%- endcomment -%}
+      <div class="kw-footer__column kw-footer__column--2">
+        {%- if section.settings.heading_2 != blank -%}
+          <h3 class="kw-footer__heading">{{ section.settings.heading_2 }}</h3>
+        {%- endif -%}
+        {%- if section.settings.menu_2 != blank -%}
+          <ul class="kw-footer__links">
+            {%- for link in linklists[section.settings.menu_2].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Column 3 {%- endcomment -%}
+      <div class="kw-footer__column kw-footer__column--3">
+        {%- if section.settings.heading_3 != blank -%}
+          <h3 class="kw-footer__heading">{{ section.settings.heading_3 }}</h3>
+        {%- endif -%}
+        {%- if section.settings.menu_3 != blank -%}
+          <ul class="kw-footer__links">
+            {%- for link in linklists[section.settings.menu_3].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Column 4 - Store Info (richtext) {%- endcomment -%}
+      <div class="kw-footer__column kw-footer__column--4">
+        {%- if section.settings.heading_4 != blank -%}
+          <h3 class="kw-footer__heading">{{ section.settings.heading_4 }}</h3>
+        {%- endif -%}
+        {%- if section.settings.store_info != blank -%}
+          <div class="kw-footer__store-info">
+            {{ section.settings.store_info }}
+          </div>
+        {%- endif -%}
+        
+        {%- comment -%} Social Media Icons {%- endcomment -%}
+        <div class="kw-footer__social">
+          {%- if section.settings.social_instagram != blank -%}
+            <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 1.8C12.67 1.8 12.99 1.81 14.04 1.86C15.02 1.9 15.55 2.06 15.9 2.19C16.36 2.37 16.7 2.58 17.05 2.93C17.4 3.28 17.62 3.62 17.8 4.08C17.93 4.43 18.09 4.96 18.13 5.94C18.18 6.99 18.19 7.31 18.19 9.98C18.19 12.65 18.18 12.97 18.13 14.02C18.09 15 17.93 15.53 17.8 15.88C17.62 16.34 17.41 16.68 17.06 17.03C16.71 17.38 16.37 17.6 15.91 17.78C15.56 17.91 15.03 18.07 14.05 18.11C13 18.16 12.68 18.17 10.01 18.17C7.34 18.17 7.02 18.16 5.97 18.11C4.99 18.07 4.46 17.91 4.11 17.78C3.65 17.6 3.31 17.39 2.96 17.04C2.61 16.69 2.39 16.35 2.21 15.89C2.08 15.54 1.92 15.01 1.88 14.03C1.83 12.98 1.82 12.66 1.82 9.99C1.82 7.32 1.83 7 1.88 5.95C1.92 4.97 2.08 4.44 2.21 4.09C2.39 3.63 2.6 3.29 2.95 2.94C3.3 2.59 3.64 2.37 4.1 2.19C4.45 2.06 4.98 1.9 5.96 1.86C7.01 1.81 7.33 1.8 10 1.8ZM10 0C7.28 0 6.94 0.01 5.88 0.06C4.82 0.11 4.09 0.28 3.45 0.53C2.79 0.78 2.23 1.13 1.67 1.69C1.11 2.25 0.77 2.8 0.51 3.47C0.26 4.11 0.1 4.84 0.05 5.9C0 6.96 0 7.3 0 10.02C0 12.74 0.01 13.08 0.06 14.14C0.11 15.2 0.28 15.93 0.53 16.57C0.78 17.23 1.13 17.79 1.69 18.35C2.25 18.91 2.8 19.25 3.47 19.51C4.11 19.76 4.84 19.92 5.9 19.97C6.96 20.02 7.3 20.02 10.02 20.02C12.74 20.02 13.08 20.01 14.14 19.96C15.2 19.91 15.93 19.74 16.57 19.49C17.23 19.24 17.79 18.89 18.35 18.33C18.91 17.77 19.25 17.22 19.51 16.55C19.76 15.91 19.92 15.18 19.97 14.12C20.02 13.06 20.02 12.72 20.02 10C20.02 7.28 20.01 6.94 19.96 5.88C19.91 4.82 19.74 4.09 19.49 3.45C19.24 2.79 18.89 2.23 18.33 1.67C17.77 1.11 17.22 0.77 16.55 0.51C15.91 0.26 15.18 0.1 14.12 0.05C13.06 0 12.72 0 10 0Z" fill="currentColor"/>
+                <path d="M10 4.86C7.16 4.86 4.86 7.16 4.86 10C4.86 12.84 7.16 15.14 10 15.14C12.84 15.14 15.14 12.84 15.14 10C15.14 7.16 12.84 4.86 10 4.86ZM10 13.33C8.16 13.33 6.67 11.84 6.67 10C6.67 8.16 8.16 6.67 10 6.67C11.84 6.67 13.33 8.16 13.33 10C13.33 11.84 11.84 13.33 10 13.33Z" fill="currentColor"/>
+                <path d="M15.34 5.86C16.01 5.86 16.55 5.32 16.55 4.65C16.55 3.99 16.01 3.44 15.34 3.44C14.67 3.44 14.13 3.99 14.13 4.65C14.13 5.32 14.67 5.86 15.34 5.86Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_facebook != blank -%}
+            <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 10C20 4.48 15.52 0 10 0C4.48 0 0 4.48 0 10C0 14.84 3.44 18.87 8 19.8V13H6V10H8V7.5C8 5.57 9.57 4 11.5 4H14V7H12C11.45 7 11 7.45 11 8V10H14V13H11V19.95C16.05 19.45 20 15.19 20 10Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_linkedin != blank -%}
+            <a href="{{ section.settings.social_linkedin }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18.52 0H1.48C0.66 0 0 0.64 0 1.44V18.56C0 19.36 0.66 20 1.48 20H18.52C19.34 20 20 19.36 20 18.56V1.44C20 0.64 19.34 0 18.52 0ZM6.12 17.04H3.08V7.68H6.12V17.04ZM4.6 6.36C3.62 6.36 2.82 5.56 2.82 4.6C2.82 3.64 3.62 2.84 4.6 2.84C5.56 2.84 6.36 3.64 6.36 4.6C6.36 5.56 5.56 6.36 4.6 6.36ZM17.04 17.04H14V12.52C14 11.38 13.98 9.92 12.42 9.92C10.84 9.92 10.6 11.16 10.6 12.44V17.04H7.58V7.68H10.48V9.02H10.52C10.92 8.26 11.9 7.46 13.38 7.46C16.46 7.46 17.04 9.48 17.04 12.1V17.04Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_twitter != blank -%}
+            <a href="{{ section.settings.social_twitter }}" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15.27 1.67H18.08L11.94 8.67L19.17 18.33H13.51L9.08 12.56L4.01 18.33H1.19L7.76 10.83L0.83 1.67H6.63L10.63 6.94L15.27 1.67ZM14.27 16.6H15.83L5.83 3.27H4.13L14.27 16.6Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_youtube != blank -%}
+            <a href="{{ section.settings.social_youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19.58 5.2C19.36 4.36 18.7 3.7 17.86 3.48C16.32 3.08 10 3.08 10 3.08C10 3.08 3.68 3.08 2.14 3.48C1.3 3.7 0.64 4.36 0.42 5.2C0 6.74 0 10 0 10C0 10 0 13.26 0.42 14.8C0.64 15.64 1.3 16.3 2.14 16.52C3.68 16.92 10 16.92 10 16.92C10 16.92 16.32 16.92 17.86 16.52C18.7 16.3 19.36 15.64 19.58 14.8C20 13.26 20 10 20 10C20 10 20 6.74 19.58 5.2ZM8 13V7L13.2 10L8 13Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+          {%- if section.settings.social_tiktok != blank -%}
+            <a href="{{ section.settings.social_tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok" class="kw-footer__social-link">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.16 0H10.84V13.62C10.84 15.24 9.52 16.56 7.9 16.56C6.28 16.56 4.96 15.24 4.96 13.62C4.96 12.02 6.26 10.72 7.84 10.68V7.34C4.42 7.38 1.64 10.18 1.64 13.62C1.64 17.08 4.46 19.88 7.92 19.88C11.38 19.88 14.18 17.06 14.18 13.62V6.58C15.42 7.48 16.94 8.02 18.56 8.04V4.72C16.04 4.62 14.16 2.56 14.16 0Z" fill="currentColor"/>
+              </svg>
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+    </div>
+
+    {%- comment -%} Payment Icons - Single Image {%- endcomment -%}
+    {%- if section.settings.payment_icons_image != blank -%}
+      <div class="kw-footer__payments">
+        <img 
+          src="{{ section.settings.payment_icons_image | image_url: width: 600 }}" 
+          alt="Payment methods"
+          loading="lazy"
+          class="kw-footer__payments-image"
+        >
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Bottom Bar {%- endcomment -%}
+    <div class="kw-footer__bottom">
+      <div class="kw-footer__divider"></div>
+      <div class="kw-footer__bottom-content">
+        <p class="kw-footer__copyright">
+          {{ section.settings.copyright_text | default: '© All Rights Reserved' }} {{ shop.name }}
+        </p>
+        {%- if section.settings.show_legal_links -%}
+          <div class="kw-footer__legal">
+            {% for link in section.settings.bottom_menu.links %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .kw-footer {
+    background-color: var(--footer-bg, #F0F1ED);
+    padding: 43px 81px 30px;
+    border-radius: 20px;
+    margin: var(--footer-margin-top, 0) var(--footer-margin-horizontal, 50px) var(--footer-margin-bottom, 50px);
+  }
+
+  .kw-footer__container {
+    max-width: 1466px;
+    margin: 0 auto;
+  }
+
+  /* Logo - 71px gap to navigation */
+  .kw-footer__logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 66px;
+  }
+
+  .kw-footer__logo-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .kw-footer__logo-link:hover {
+    opacity: 0.8;
+  }
+
+  .kw-footer__logo-link img {
+    display: block;
+    height: auto;
+  }
+
+  .kw-footer__logo-text {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--footer-heading-color, #3C4127);
+    text-transform: uppercase;
+  }
+
+  /* Navigation Grid - use auto columns to prevent wrapping */
+  .kw-footer__nav {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .kw-footer__column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kw-footer__column--stacked {
+    gap: 43px;
+  }
+
+  .kw-footer__section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Headings - no wrap */
+  .kw-footer__heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--footer-heading-color, #3C4127);
+    margin: 0 0 10px;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+    line-height: 1.22;
+    white-space: nowrap;
+  }
+
+  /* Menu Links - no wrap */
+  .kw-footer__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kw-footer__links li a {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--footer-link-color, #3C4127);
+    text-decoration: none;
+    opacity: 0.5;
+    text-transform: capitalize;
+    transition: opacity 0.3s ease;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .kw-footer__links li a:hover {
+    opacity: 1;
+  }
+
+  /* Store Info Text Block */
+  .kw-footer__store-info {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--footer-link-color, #3C4127);
+    opacity: 0.5;
+    line-height: 1.6;
+  }
+
+  .kw-footer__store-info p {
+    margin: 0 0 4px;
+  }
+
+  .kw-footer__store-info a {
+    color: var(--footer-link-color, #3C4127);
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .kw-footer__store-info a:hover {
+    opacity: 1;
+  }
+
+  /* Social Icons - LIGHT by default (50% opacity), DARK on hover (100%) */
+  .kw-footer__social {
+    display: flex;
+    gap: 18px;
+    margin-top: 20px;
+  }
+
+  .kw-footer__social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--footer-heading-color, #3C4127);
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+  }
+
+  .kw-footer__social-link:hover {
+    opacity: 1;
+  }
+
+  .kw-footer__social-link svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Payment Icons */
+  .kw-footer__payments {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+
+  .kw-footer__payments-image {
+    height: 22px;
+    width: auto;
+    display: block;
+  }
+
+  /* Bottom Section */
+  .kw-footer__bottom {
+    margin-top: 0;
+  }
+
+  .kw-footer__divider {
+    height: 1px;
+    background-color: var(--footer-heading-color, #3C4127);
+    opacity: 0.2;
+    margin-bottom: 23px;
+  }
+
+  .kw-footer__bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .kw-footer__copyright {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--footer-text-color, #202020);
+    opacity: 0.5;
+    margin: 0;
+  }
+
+  .kw-footer__legal {
+    display: flex;
+    gap: 43px;
+  }
+
+  .kw-footer__legal a {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--footer-text-color, #202020);
+    text-decoration: none;
+    opacity: 0.5;
+    text-transform: capitalize;
+    transition: opacity 0.3s ease;
+  }
+
+  .kw-footer__legal a:hover {
+    opacity: 1;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 1400px) {
+    .kw-footer__nav {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+    }
+    
+    .kw-footer__heading {
+      white-space: normal;
+    }
+    
+    .kw-footer__links li a {
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .kw-footer {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+    
+    .kw-footer__nav {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px 30px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .kw-footer {
+      padding-left: 30px;
+      padding-right: 30px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .kw-footer__logo {
+      margin-bottom: 40px;
+    }
+
+    .kw-footer__nav {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px 25px;
+    }
+
+    .kw-footer__bottom-content {
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
+    }
+
+    .kw-footer__legal {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .kw-footer {
+      padding-left: 20px;
+      padding-right: 20px;
+      margin-left: 15px;
+      margin-right: 15px;
+      border-radius: 15px;
+    }
+
+    .kw-footer__logo {
+      margin-bottom: 44px;
+    }
+
+    .kw-footer__nav {
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .kw-footer__heading {
+      font-size: 16px;
+    }
+
+    .kw-footer__links li a {
+      font-size: 14px;
+    }
+
+    .kw-footer__payments {
+      display: flex;
+      justify-content: center;
+    }
+
+    .kw-footer__social {
+      justify-content: flex-start;
+    }
+
+    .kw-footer__legal {
+      gap: 15px;
+    }
+
+    .kw-footer__legal a {
+      font-size: 13px;
+    }
+    .kw-footer__logo-link{
+      max-width: 160px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Footer",
+  "tag": "section",
+  "class": "kw-footer-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top (space above footer)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom (space below footer)",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_horizontal",
+      "label": "Margin Left & Right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo Width (px)",
+      "min": 100,
+      "max": 400,
+      "step": 10,
+      "default": 260
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#F0F1ED"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#3C4127"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "default": "#3C4127"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#202020"
+    },
+    {
+      "type": "header",
+      "content": "Menu Column 1"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading",
+      "default": "Klantenservice"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu Column 2"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading",
+      "default": "Assortiment"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu Column 3"
+    },
+    {
+      "type": "text",
+      "id": "heading_3",
+      "label": "Heading",
+      "default": "Over Ons"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Winkelinfo (Column 4)"
+    },
+    {
+      "type": "text",
+      "id": "heading_4",
+      "label": "Heading",
+      "default": "Winkel & Contact"
+    },
+    {
+      "type": "richtext",
+      "id": "store_info",
+      "label": "Winkelinformatie",
+      "default": "<p>Schaarbroekerweg 4a<br>6042 EJ Roermond<br>0475 745 506<br>Ma - Za: 10:00 - 18:00<br>Zo: 12:00 - 17:00</p><p>Info@Kwroermond.Nl</p>"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_linkedin",
+      "label": "LinkedIn URL"
+    },
+    {
+      "type": "url",
+      "id": "social_twitter",
+      "label": "Twitter/X URL"
+    },
+    {
+      "type": "url",
+      "id": "social_youtube",
+      "label": "YouTube URL"
+    },
+    {
+      "type": "url",
+      "id": "social_tiktok",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "header",
+      "content": "Payment Icons"
+    },
+    {
+      "type": "image_picker",
+      "id": "payment_icons_image",
+      "label": "Payment Icons Image",
+      "info": "Upload a single image with all payment icons"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Section"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "© All Rights Reserved"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_legal_links",
+      "label": "Show Legal Links",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "bottom_menu",
+      "label": "Bottom Menu"
+    },
+  ],
+  "presets": [
+    {
+      "name": "KW - Footer"
+    }
+  ]
+}
+{% endschema %}

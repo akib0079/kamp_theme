@@ -1,0 +1,331 @@
+{{ 'section-404-custom' | append: '.css' | asset_url | stylesheet_tag }}
+
+<style>
+  #shopify-section-footer,
+  .shopify-section--footer,
+  .section-footer,
+  [id*="footer" i]:not([id*="header"]),
+  footer {
+    display: none !important;
+  }
+</style>
+
+<div class="kwr-404">
+  <!-- Animated SVG scene -->
+  <svg class="kwr-404__scene" viewBox="0 0 800 640" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <rect width="800" height="640" fill="#1e2218"/>
+
+    <!-- Stars -->
+    <circle cx="60" cy="30" r="1.5" fill="#C8A84E" opacity="0.6"><animate attributeName="opacity" values="0.2;1;0.2" dur="2.8s" repeatCount="indefinite"/></circle>
+    <circle cx="180" cy="60" r="1" fill="#C8A84E" opacity="0.8"><animate attributeName="opacity" values="0.5;1;0.5" dur="3.5s" repeatCount="indefinite"/></circle>
+    <circle cx="310" cy="25" r="1.8" fill="#C8A84E" opacity="0.4"><animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite"/></circle>
+    <circle cx="480" cy="45" r="1.2" fill="#C8A84E" opacity="0.7"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2.5s" repeatCount="indefinite"/></circle>
+    <circle cx="620" cy="30" r="1.4" fill="#C8A84E" opacity="0.5"><animate attributeName="opacity" values="0.3;1;0.3" dur="3.2s" repeatCount="indefinite"/></circle>
+    <circle cx="740" cy="65" r="1" fill="#C8A84E" opacity="0.6"><animate attributeName="opacity" values="0.5;0.9;0.5" dur="4.2s" repeatCount="indefinite"/></circle>
+    <circle cx="400" cy="15" r="1.3" fill="#C8A84E" opacity="0.5"><animate attributeName="opacity" values="0.2;0.8;0.2" dur="3s" repeatCount="indefinite"/></circle>
+    <circle cx="550" cy="70" r="0.9" fill="#C8A84E" opacity="0.4"><animate attributeName="opacity" values="0.4;1;0.4" dur="3.8s" repeatCount="indefinite"/></circle>
+
+    <!-- Moon -->
+    <circle cx="650" cy="90" r="60" fill="#C8A84E" opacity="0.04"/>
+    <circle cx="650" cy="90" r="42" fill="#C8A84E" opacity="0.06"/>
+    <circle cx="650" cy="90" r="30" fill="#D4C9B5" opacity="0.12"/>
+    <circle cx="660" cy="82" r="24" fill="#1e2218" opacity="0.9"/>
+
+    <!-- Mountains -->
+    <polygon points="0,310 100,210 200,310" fill="#2a3018" opacity="0.8"/>
+    <polygon points="150,310 290,175 430,310" fill="#333a20" opacity="0.7"/>
+    <polygon points="370,310 500,195 630,310" fill="#2a3018" opacity="0.8"/>
+    <polygon points="560,310 680,205 800,310" fill="#333a20" opacity="0.7"/>
+
+    <!-- Ground -->
+    <rect x="0" y="310" width="800" height="330" fill="#353525"/>
+    <rect x="0" y="340" width="800" height="300" fill="#2E3318" opacity="0.6"/>
+
+    <!-- Trees left -->
+    <g transform="translate(55,310)">
+      <rect x="-4" y="-5" width="8" height="28" fill="#3A2E18" rx="2"/>
+      <polygon points="0,-90 -28,-5 28,-5" fill="#3B4120"/>
+      <polygon points="0,-110 -22,-40 22,-40" fill="#4A5025"/>
+      <polygon points="0,-125 -16,-70 16,-70" fill="#3B4120"/>
+    </g>
+    <g transform="translate(110,310)">
+      <rect x="-3" y="-4" width="6" height="22" fill="#3A2E18" rx="2"/>
+      <polygon points="0,-65 -20,-4 20,-4" fill="#4A5025"/>
+      <polygon points="0,-82 -15,-30 15,-30" fill="#3B4120"/>
+    </g>
+
+    <!-- Trees right -->
+    <g transform="translate(690,310)">
+      <rect x="-4" y="-5" width="8" height="28" fill="#3A2E18" rx="2"/>
+      <polygon points="0,-95 -30,-5 30,-5" fill="#3B4120"/>
+      <polygon points="0,-115 -24,-40 24,-40" fill="#4A5025"/>
+      <polygon points="0,-130 -18,-72 18,-72" fill="#3B4120"/>
+    </g>
+    <g transform="translate(750,310)">
+      <rect x="-3" y="-4" width="6" height="20" fill="#3A2E18" rx="2"/>
+      <polygon points="0,-58 -18,-4 18,-4" fill="#4A5025"/>
+      <polygon points="0,-72 -13,-28 13,-28" fill="#3B4120"/>
+    </g>
+
+    <!-- Bushes -->
+    <ellipse cx="30" cy="330" rx="22" ry="14" fill="#3B4120" opacity="0.7"/>
+    <ellipse cx="160" cy="340" rx="16" ry="10" fill="#4A5025" opacity="0.5"/>
+    <ellipse cx="770" cy="335" rx="20" ry="12" fill="#3B4120" opacity="0.6"/>
+
+    <!-- Collapsed tent -->
+    <g transform="translate(530, 340)">
+      <path d="M-30,30 Q-10,-15 20,-8 Q40,0 60,30 Z" fill="#5C6432" stroke="#4A5025" stroke-width="1.5"/>
+      <path d="M20,-8 L20,30" stroke="#4A5025" stroke-width="1.5"/>
+      <line x1="20" y1="-8" x2="28" y2="-28" stroke="#8B7D5E" stroke-width="2" stroke-linecap="round">
+        <animateTransform attributeName="transform" type="rotate" values="-3,20,-8;3,20,-8;-3,20,-8" dur="3s" repeatCount="indefinite"/>
+      </line>
+      <path d="M-30,30 Q-35,18 -28,10" fill="none" stroke="#4A5025" stroke-width="1">
+        <animate attributeName="d" values="M-30,30 Q-35,18 -28,10;M-30,30 Q-38,20 -32,12;M-30,30 Q-35,18 -28,10" dur="2s" repeatCount="indefinite"/>
+      </path>
+      <ellipse cx="5" cy="28" rx="14" ry="5" fill="#6B4025" opacity="0.7"/>
+    </g>
+
+    <!-- Campfire -->
+    <g transform="translate(400, 370)">
+      <ellipse cx="-14" cy="6" rx="5" ry="4" fill="#555" opacity="0.5"/>
+      <ellipse cx="-8" cy="10" rx="4" ry="3.5" fill="#4a4a4a" opacity="0.5"/>
+      <ellipse cx="0" cy="12" rx="5" ry="4" fill="#555" opacity="0.5"/>
+      <ellipse cx="10" cy="10" rx="4.5" ry="3.5" fill="#4a4a4a" opacity="0.5"/>
+      <ellipse cx="16" cy="6" rx="5" ry="4" fill="#555" opacity="0.5"/>
+      <line x1="-10" y1="6" x2="12" y2="2" stroke="#5C4020" stroke-width="5" stroke-linecap="round"/>
+      <line x1="12" y1="6" x2="-8" y2="1" stroke="#4A3418" stroke-width="4.5" stroke-linecap="round"/>
+      <path d="M1,2 Q-8,-20 1,-38 Q6,-18 12,-32 Q18,-14 12,2 Z" fill="#C8A84E" opacity="0.85">
+        <animate attributeName="d" values="M1,2 Q-8,-20 1,-38 Q6,-18 12,-32 Q18,-14 12,2 Z;M1,2 Q-10,-16 -1,-40 Q7,-22 14,-28 Q16,-10 12,2 Z;M1,2 Q-8,-20 1,-38 Q6,-18 12,-32 Q18,-14 12,2 Z" dur="0.6s" repeatCount="indefinite"/>
+      </path>
+      <path d="M3,2 Q-2,-12 3,-24 Q6,-10 9,-20 Q13,-6 9,2 Z" fill="#D4C9B5" opacity="0.5">
+        <animate attributeName="d" values="M3,2 Q-2,-12 3,-24 Q6,-10 9,-20 Q13,-6 9,2 Z;M3,2 Q0,-10 5,-26 Q7,-14 10,-17 Q11,-4 9,2 Z;M3,2 Q-2,-12 3,-24 Q6,-10 9,-20 Q13,-6 9,2 Z" dur="0.45s" repeatCount="indefinite"/>
+      </path>
+      <ellipse cx="4" cy="10" rx="30" ry="8" fill="#C8A84E" opacity="0.06"/>
+      <circle cx="-2" cy="-35" r="1.2" fill="#C8A84E" opacity="0.7">
+        <animate attributeName="cy" values="-35;-65" dur="1.6s" repeatCount="indefinite"/>
+        <animate attributeName="cx" values="-2;-8" dur="1.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="8" cy="-30" r="0.8" fill="#C8A84E" opacity="0.5">
+        <animate attributeName="cy" values="-30;-58" dur="2s" repeatCount="indefinite" begin="0.4s"/>
+        <animate attributeName="cx" values="8;14" dur="2s" repeatCount="indefinite" begin="0.4s"/>
+        <animate attributeName="opacity" values="0.5;0" dur="2s" repeatCount="indefinite" begin="0.4s"/>
+      </circle>
+      <circle cx="4" cy="-38" r="1" fill="#D4C9B5" opacity="0.4">
+        <animate attributeName="cy" values="-38;-70" dur="2.4s" repeatCount="indefinite" begin="0.8s"/>
+        <animate attributeName="opacity" values="0.4;0" dur="2.4s" repeatCount="indefinite" begin="0.8s"/>
+      </circle>
+    </g>
+
+    <!-- Lost camper walking back and forth -->
+    <g>
+      <animateTransform attributeName="transform" type="translate" values="200,0;380,0;200,0" dur="10s" repeatCount="indefinite"/>
+      <g transform="translate(0, 335)">
+        <ellipse cx="12" cy="48" rx="14" ry="4" fill="#1a1a14" opacity="0.3"/>
+        <g>
+          <line x1="6" y1="34" x2="2" y2="46" stroke="#3B4120" stroke-width="4" stroke-linecap="round">
+            <animate attributeName="x2" values="2;10;2" dur="0.8s" repeatCount="indefinite"/>
+          </line>
+          <line x1="18" y1="34" x2="22" y2="46" stroke="#3B4120" stroke-width="4" stroke-linecap="round">
+            <animate attributeName="x2" values="22;14;22" dur="0.8s" repeatCount="indefinite"/>
+          </line>
+          <ellipse cx="2" cy="47" rx="5" ry="2.5" fill="#3A2E18">
+            <animate attributeName="cx" values="2;10;2" dur="0.8s" repeatCount="indefinite"/>
+          </ellipse>
+          <ellipse cx="22" cy="47" rx="5" ry="2.5" fill="#3A2E18">
+            <animate attributeName="cx" values="22;14;22" dur="0.8s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+        <rect x="3" y="14" width="18" height="22" rx="4" fill="#5C6432"/>
+        <rect x="-5" y="12" width="12" height="22" rx="4" fill="#6B5530"/>
+        <rect x="-3" y="32" width="8" height="5" rx="2" fill="#5C4420" opacity="0.7"/>
+        <circle cx="12" cy="8" r="10" fill="#D4C9B5"/>
+        <path d="M2,6 Q2,-4 12,-5 Q22,-4 22,6" fill="#C8A84E"/>
+        <rect x="2" y="3" width="20" height="5" rx="2" fill="#C8A84E"/>
+        <circle cx="12" cy="-5" r="3" fill="#C8A84E"/>
+        <g>
+          <circle cx="8" cy="8" r="2" fill="#2E2E28"/>
+          <circle cx="16" cy="8" r="2" fill="#2E2E28"/>
+          <circle cx="8.8" cy="7.4" r="0.6" fill="#F5F1EA"/>
+          <circle cx="16.8" cy="7.4" r="0.6" fill="#F5F1EA"/>
+          <rect x="5" y="6" width="7" height="4" rx="2" fill="#D4C9B5" opacity="0">
+            <animate attributeName="opacity" values="0;0;0;0;0;0;0;0;0;1;0" dur="4s" repeatCount="indefinite"/>
+          </rect>
+          <rect x="13" y="6" width="7" height="4" rx="2" fill="#D4C9B5" opacity="0">
+            <animate attributeName="opacity" values="0;0;0;0;0;0;0;0;0;1;0" dur="4s" repeatCount="indefinite"/>
+          </rect>
+        </g>
+        <path d="M8,14 Q12,11 16,14" fill="none" stroke="#8B7D5E" stroke-width="1.5" stroke-linecap="round">
+          <animate attributeName="d" values="M8,14 Q12,11 16,14;M8,13 Q12,15 16,13;M8,14 Q12,11 16,14" dur="3s" repeatCount="indefinite"/>
+        </path>
+        <g transform="translate(22, 16) rotate(12)">
+          <rect x="0" y="0" width="18" height="14" rx="1" fill="#F5F1EA" stroke="#D4C9B5" stroke-width="0.8"/>
+          <line x1="3" y1="3" x2="15" y2="3" stroke="#D4C9B5" stroke-width="0.5"/>
+          <line x1="3" y1="6" x2="12" y2="6" stroke="#D4C9B5" stroke-width="0.5"/>
+          <line x1="3" y1="9" x2="14" y2="9" stroke="#D4C9B5" stroke-width="0.5"/>
+          <text x="9" y="8" font-size="5" fill="#C45C3E" text-anchor="middle" font-family="sans-serif" transform="rotate(180,9,7)">?</text>
+          <animateTransform attributeName="transform" type="rotate" values="12;18;12;6;12" dur="2.5s" repeatCount="indefinite"/>
+        </g>
+        <g>
+          <text x="28" y="-10" font-family="sans-serif" font-size="14" font-weight="600" fill="#C8A84E" opacity="0.8">?</text>
+          <animateTransform attributeName="transform" type="translate" values="0,0;3,-6;0,0;-3,-3;0,0" dur="2s" repeatCount="indefinite"/>
+        </g>
+        <g>
+          <text x="-8" y="-14" font-family="sans-serif" font-size="10" font-weight="600" fill="#C8A84E" opacity="0.5">?</text>
+          <animateTransform attributeName="transform" type="translate" values="0,0;-2,-5;0,0" dur="2.8s" repeatCount="indefinite"/>
+        </g>
+        <animateTransform attributeName="transform" type="translate" values="0,335;0,332;0,335" dur="0.8s" repeatCount="indefinite"/>
+      </g>
+    </g>
+
+    <!-- Owl -->
+    <g transform="translate(80, 215)">
+      <line x1="-15" y1="24" x2="40" y2="20" stroke="#5C4420" stroke-width="4" stroke-linecap="round"/>
+      <ellipse cx="18" cy="12" rx="12" ry="14" fill="#6B5530"/>
+      <ellipse cx="18" cy="16" rx="8" ry="9" fill="#8B7D5E" opacity="0.5"/>
+      <circle cx="18" cy="0" r="10" fill="#6B5530"/>
+      <polygon points="10,-8 8,-16 14,-6" fill="#5C4420"/>
+      <polygon points="26,-8 28,-16 22,-6" fill="#5C4420"/>
+      <circle cx="13" cy="-1" r="5" fill="#F5F1EA"/>
+      <circle cx="23" cy="-1" r="5" fill="#F5F1EA"/>
+      <circle cx="14" cy="-1" r="3" fill="#2E2E28">
+        <animate attributeName="cx" values="14;16;14;12;14" dur="10s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="24" cy="-1" r="3" fill="#2E2E28">
+        <animate attributeName="cx" values="24;26;24;22;24" dur="10s" repeatCount="indefinite"/>
+      </circle>
+      <polygon points="16,4 18,8 20,4" fill="#C8A84E"/>
+      <animateTransform attributeName="transform" type="rotate" values="0,80,215;0,80,215;0,80,215;-12,80,215;0,80,215;0,80,215;0,80,215;10,80,215;0,80,215" dur="8s" repeatCount="indefinite" additive="replace"/>
+    </g>
+
+    <!-- Rabbit -->
+    <g transform="translate(660, 330)">
+      <ellipse cx="0" cy="12" rx="24" ry="16" fill="#3B4120"/>
+      <g>
+        <ellipse cx="-4" cy="-8" rx="3.5" ry="12" fill="#D4C9B5"/>
+        <ellipse cx="-4" cy="-8" rx="2" ry="9" fill="#D4A085" opacity="0.5"/>
+        <ellipse cx="6" cy="-10" rx="3.5" ry="11" fill="#D4C9B5"/>
+        <ellipse cx="6" cy="-10" rx="2" ry="8" fill="#D4A085" opacity="0.5"/>
+        <ellipse cx="1" cy="4" rx="8" ry="7" fill="#D4C9B5"/>
+        <circle cx="-2" cy="2" r="1.5" fill="#2E2E28"/>
+        <circle cx="5" cy="2" r="1.5" fill="#2E2E28"/>
+        <ellipse cx="1.5" cy="5" rx="2" ry="1" fill="#D4A085"/>
+        <line x1="-8" y1="4" x2="-14" y2="2" stroke="#8B7D5E" stroke-width="0.5"/>
+        <line x1="-8" y1="5" x2="-14" y2="6" stroke="#8B7D5E" stroke-width="0.5"/>
+        <line x1="10" y1="4" x2="16" y2="2" stroke="#8B7D5E" stroke-width="0.5"/>
+        <line x1="10" y1="5" x2="16" y2="6" stroke="#8B7D5E" stroke-width="0.5"/>
+        <animateTransform attributeName="transform" type="translate" values="0,18;0,18;0,18;0,0;0,0;0,0;0,0;0,18;0,18" dur="6s" repeatCount="indefinite"/>
+      </g>
+    </g>
+
+    <!-- Footprints in circles -->
+    <g opacity="0.1" fill="#D4C9B5">
+      <ellipse cx="280" cy="420" rx="3.5" ry="5.5" transform="rotate(-30,280,420)"/>
+      <ellipse cx="298" cy="412" rx="3.5" ry="5.5" transform="rotate(15,298,412)"/>
+      <ellipse cx="320" cy="406" rx="3.5" ry="5.5" transform="rotate(40,320,406)"/>
+      <ellipse cx="345" cy="410" rx="3.5" ry="5.5" transform="rotate(70,345,410)"/>
+      <ellipse cx="358" cy="425" rx="3.5" ry="5.5" transform="rotate(100,358,425)"/>
+      <ellipse cx="355" cy="445" rx="3.5" ry="5.5" transform="rotate(140,355,445)"/>
+      <ellipse cx="338" cy="456" rx="3.5" ry="5.5" transform="rotate(180,338,456)"/>
+      <ellipse cx="315" cy="458" rx="3.5" ry="5.5" transform="rotate(210,315,458)"/>
+      <ellipse cx="292" cy="450" rx="3.5" ry="5.5" transform="rotate(250,292,450)"/>
+      <ellipse cx="278" cy="436" rx="3.5" ry="5.5" transform="rotate(290,278,436)"/>
+    </g>
+
+    <!-- Shooting star -->
+    <g opacity="0">
+      <line x1="0" y1="0" x2="40" y2="15" stroke="#C8A84E" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="0" y1="0" x2="12" y2="4" stroke="#F5F1EA" stroke-width="2" stroke-linecap="round"/>
+      <animateTransform attributeName="transform" type="translate" values="200,50;500,160" dur="0.8s" begin="5s" repeatCount="indefinite" repeatDur="indefinite"/>
+      <animate attributeName="opacity" values="0;0;0;0;0;0.9;0;0;0;0;0;0" dur="12s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Grass tufts -->
+    <g opacity="0.3">
+      <path d="M180,460 Q182,445 178,430" fill="none" stroke="#4A5025" stroke-width="1.5"/>
+      <path d="M184,460 Q188,442 185,428" fill="none" stroke="#4A5025" stroke-width="1.5"/>
+      <path d="M600,455 Q602,440 598,425" fill="none" stroke="#4A5025" stroke-width="1.5"/>
+      <path d="M604,455 Q608,438 605,424" fill="none" stroke="#4A5025" stroke-width="1.5"/>
+    </g>
+  </svg>
+
+  <!-- Grain overlay -->
+  <div class="kwr-404__grain"></div>
+
+  <!-- Vignette -->
+  <div class="kwr-404__vignette"></div>
+
+  <!-- Content -->
+  <div class="kwr-404__content">
+    <!-- Status badge -->
+    <div class="kwr-404__badge-wrap">
+      <div class="kwr-404__badge">
+        <span class="kwr-404__badge-dot"></span>
+        {{ section.settings.badge_text }}
+      </div>
+    </div>
+
+    <!-- 404 -->
+    <h1 class="kwr-404__number">404</h1>
+
+    <!-- Headline -->
+    <h2 class="kwr-404__headline">{{ section.settings.headline }}</h2>
+
+    <!-- Divider -->
+    <div class="kwr-404__divider"></div>
+
+    <!-- Subtitle -->
+    <p class="kwr-404__subtitle">{{ section.settings.subtitle }}</p>
+
+    <!-- CTA -->
+    <a href="{{ section.settings.button_link }}" class="kwr-404__cta">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      {{ section.settings.button_text }}
+    </a>
+  </div>
+
+</div>
+
+{% schema %}
+{
+  "name": "404 Pagina",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge tekst",
+      "default": "Kampeerder vermist"
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Verdwaald In Het Bos"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitel",
+      "default": "Deze pagina is ervandoor, net als je haringen bij storm. Zelfs de uil vindt het zielig. Tijd om terug te keren."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button tekst",
+      "default": "Terug naar de camping"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "default": "/"
+    }
+  ],
+  "presets": [
+    {
+      "name": "404 Pagina"
+    }
+  ]
+}
+{% endschema %}

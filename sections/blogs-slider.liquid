@@ -1,0 +1,351 @@
+<div class="section blogs-slider-section section-id-{{ section.id }}">
+    <div class="blogs-slider__header" data-animate="fade">
+        <div class="blogs-slider__header-content">
+            {% if section.settings.title != blank %}
+            <h2 class="blogs-slider__title">{{ section.settings.title }}</h2>
+            {% endif %}
+            {% if section.settings.desc != blank %}
+                <div class="blogs-slider__desc desc">
+                    {{ section.settings.desc }}
+                </div>
+            {% endif %}
+        </div>
+        {% comment %} {%- if section.settings.btn_text != blank -%}
+            <a class="blogs-slider__btn underlined-btn underlined-btn-hover" href="{{ section.settings.btn_url }}">
+                <span>{{ section.settings.btn_text }}</span>
+            </a>
+        {%- endif -%} {% endcomment %}
+    </div>
+    <div class="blogs-slider__swiper swiper">
+        <div class="swiper-wrapper" data-animate="fade-up" data-animate-stagger="0.15">
+            {% if section.settings.dynamic %}
+              {% liquid
+                assign all_articles = null
+                for link in linklists['blog-categories'].links
+                  assign blog = link.object
+                  assign all_articles = all_articles | concat: blog.articles
+                endfor
+                assign all_articles = all_articles | sort: 'created_at' | reverse
+              %}
+            {% endif %}
+            {% for article in all_articles limit: section.settings.limit %}
+                  <div class="swiper-slide">
+                      <a class="link-underline" href="{{article.url }}">
+                          <div class="blogs-slider__block">
+                              <div class="blogs-slider__block_img-wrap">
+                                  {% if article.image != blank %}
+                                      {{ article.image | image_url: width: nil | image_tag: class: 'blogs-slider__block_img' }}
+                                  {% else %}
+                                      {{ 'image' | placeholder_svg_tag: 'blogs-slider__block_img placeholder' }}
+                                  {% endif %}
+                              </div>
+                              <div class="blogs-slider__block_content">
+                                {% if article.title != blank %}
+                                    <h4 class="blogs-slider__block_title"><span class="link-underline-text">{{ article.title }}</span></h4>
+                                {% endif %}
+                                {% if article.excerpt != blank %}
+                                <div class="blogs-slider__block-desc desc">{{ article.excerpt }}</div>
+                                {% endif %}
+                                {%- if section.settings.article_btn_text != blank -%}
+                                <div class="blogs-slider__btn underlined-btn-hover">
+                                    <span class="underlined-btn">{{ section.settings.article_btn_text }}</span>
+                                    {% render 'svg-btn-global-icon' %}
+                                </div>
+                            {%- endif -%}
+                            </div>
+                          </div>
+                          
+                          
+                      </a>
+                  </div>
+            {% endfor %}
+            {% for block in section.blocks %}
+                {% if block.type == 'block' %}
+                    <div class="swiper-slide">
+                        <a class="link-underline" href="{{block.settings.url }}">
+                            <div class="blogs-slider__block" {{ block.shopify_attributes }}>
+                                <div class="blogs-slider__block_img-wrap">
+                                    {% if block.settings.img != blank %}
+                                        {{ block.settings.img | image_url: width: nil | image_tag: class: 'blogs-slider__block_img hidden--mobile' }}
+                                        {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'blogs-slider__block_img hidden--desktop' }}
+                                    {% else %}
+                                        {{ 'image' | placeholder_svg_tag: 'blogs-slider__block_img placeholder' }}
+                                    {% endif %}
+                                </div>
+                                <div class="blogs-slider__block_content">
+                                  {% if block.settings.title != blank %}
+                                      <h4 class="blogs-slider__block_title"><span class="link-underline-text">{{ block.settings.title }}</span></h4>
+                                  {% endif %}
+                                  {% if block.settings.desc != blank %}
+                                  <div class="blogs-slider__block-desc desc">{{ block.settings.desc }}</div>
+                                  {% endif %}
+                                  {%- if block.settings.btn_text != blank -%}
+                                  <div class="blogs-slider__btn underlined-btn-hover">
+                                      <span class="underlined-btn">{{ block.settings.btn_text }}</span>
+                                      {% render 'svg-btn-global-icon' %}
+                                  </div>
+                              {%- endif -%}
+                              </div>
+                            </div>
+                            
+                            
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+        <div data-animate="fade-up">
+        {% render 'slider-nav-scrollbar' %}
+        </div>
+</div>
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+      new Swiper('.section-id-{{ section.id }} .blogs-slider__swiper', {
+        slidesPerView: 'auto',
+        speed: 400,
+        freeMode: {
+          enabled: true,
+          sticky: true,
+          momentumRatio: 0.8,
+        },
+        navigation: {
+          nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+          prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+        },
+        scrollbar: {
+          el: '.section-id-{{ section.id }} .swiper-scrollbar',
+          draggable: true
+        },
+      });
+  });     
+</script>
+{%stylesheet %}
+  .blogs-slider-section{
+    padding: 50px 0 80px;
+    overflow: hidden;
+    .slider_controls-wrap{
+      margin-top: 40px;
+      --swiper-scrollbar-drag-bg-color: #AEAEAE;
+    }
+    @media screen and (max-width: 749px) {
+      padding: 50px 0;
+    }
+  }
+.blogs-slider__header{
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+  .blogs-slider__title {
+    margin: 0;
+    font-weight: 600;
+    line-height: 98%;
+    letter-spacing: -0.02em;
+    font-size: 32px;
+    @media screen and (max-width: 749px) {
+      font-size: 24px;
+    }
+  }
+  .blogs-slider__desc{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 100%;
+    color: #908F90;
+    margin-top: 8px;
+  }
+  .blogs-slider__swiper {
+      --gap: 10px;
+      margin: 0 calc(-1 * var(--gap) / 2);
+      width: 100%;
+      overflow: visible;
+  }
+  .blogs-slider__swiper .swiper-slide{
+      width: 455px;
+    @media screen and (max-width: 749px) {
+      width: 300px;
+    }
+  }
+  .blogs-slider__block{
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #F0F1ED;
+    margin: 0 calc(var(--gap) / 2);
+  }
+  .blogs-slider__block_img-wrap{
+    height: 223px;
+    width: 100%;
+    overflow: hidden;
+  }
+  .blogs-slider__block_img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease-out;
+  }
+  .blogs-slider__block:hover .blogs-slider__block_img{
+    transform: scale(1.05);
+  }
+  .blogs-slider__block_content{
+    padding: 30px;
+    color: #2E321D;
+  }
+  .blogs-slider__block_title{
+    margin: 14px 0 0;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 110%;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    color: inherit;
+  }
+  .blogs-slider__block-desc{
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 150%;
+    color: inherit;
+    margin-top: 14px;
+  }
+    
+  .blogs-slider__btn{
+    display: flex;
+    align-items: center;
+    grid-gap: 5px;
+    margin-top: 34px;
+    text-transform: uppercase;
+    transition: color .3s ease-out;
+    color: #8A916B;
+    @media screen and (max-width: 749px) {
+      margin-top: 13px;
+    }
+  }
+  .blogs-slider__btn:hover{
+    color: #2E321D;
+  }
+  .blogs-slider__btn svg{
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .blogs-slider__block .blogs-slider__btn{
+    font-weight: 600;
+  }
+
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Category Slider",
+"settings": [
+        {
+        "type": "inline_richtext",
+        "id": "title",
+        "label": "Title",
+        "default": "blogs  & nieuws",
+        },
+        {
+        "type": "richtext",
+        "id": "desc",
+        "label": "Description",
+        "default": "<p>Explore expert advice, gear reviews for unforgettable adventures.</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "LEES MEER"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+        {
+            "type": "checkbox",
+            "id": "dynamic",
+            "label": "Enable Dynamic Articles",
+            "default": true,
+        },
+        {
+            "type": "range",
+            "id": "limit",
+            "label": "Article limit",
+            "min": 1,
+            "max": 20,
+            "step": 1,
+            "default": 12,
+            "visible_if": "{{ section.settings.dynamic }}"
+        },
+        {
+            "type": "text",
+            "id": "article_btn_text",
+            "label": "Article Button Text",
+            "default": "LEES MEER",
+            "visible_if": "{{ section.settings.dynamic }}"
+        },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Blog",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "Gear Up for Adventure: A Guide",
+            },
+            {
+                "type": "richtext",
+                "id": "desc",
+                "label": "Description",
+                "default": "<p>30% Discount for black Friday valid till 30th November</p>"
+            },
+            {
+                "type": "text",
+                "id": "btn_text",
+                "label": "Button Text",
+                "default": "LEES MEER"
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Button URL",
+                "default": "/collections/all",
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Blogs Slider",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

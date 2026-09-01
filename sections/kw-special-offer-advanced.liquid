@@ -1,0 +1,605 @@
+{{ 'kw-components.css' | asset_url | stylesheet_tag }}
+
+<section class="kw-special-offer-adv">
+  <div class="kw-special-offer-adv__container" style="background-color: {{ section.settings.background_color }};">
+    
+    {%- comment -%} Background Image Layer {%- endcomment -%}
+    {% if section.settings.background_image != blank %}
+      <div class="kw-special-offer-adv__bg-image">
+        {{ section.settings.background_image | image_url: width: 2000 | image_tag: 
+          class: 'kw-special-offer-adv__bg-img',
+          loading: 'lazy',
+          alt: ''
+        }}
+      </div>
+    {% endif %}
+
+    {%- comment -%} Background Large Text {%- endcomment -%}
+    {% if section.settings.background_text != blank %}
+      <div class="kw-special-offer-adv__bg-text" style="
+        font-size: {{ section.settings.bg_text_size }}px;
+        color: {{ section.settings.bg_text_color }};
+        opacity: {{ section.settings.bg_text_opacity | divided_by: 100.0 }};
+      ">
+        {{ section.settings.background_text }}
+      </div>
+    {% endif %}
+
+    {%- comment -%} Diagonal Marquee Banner {%- endcomment -%}
+    {% if section.settings.show_marquee %}
+      <div class="kw-special-offer-adv__marquee-wrapper" style="
+        --marquee-rotation: {{ section.settings.marquee_rotation }}deg;
+        --marquee-position: {{ section.settings.marquee_position }}%;
+      ">
+        <div class="kw-special-offer-adv__marquee" style="
+          --marquee-speed: {{ section.settings.marquee_speed }}s;
+          --marquee-color: {{ section.settings.marquee_color }};
+          --marquee-text-color: {{ section.settings.marquee_text_color }};
+        ">
+          <div class="kw-special-offer-adv__marquee-content">
+            {% for i in (1..12) %}
+              <span class="kw-special-offer-adv__marquee-text">{{ section.settings.marquee_text_1 }}</span>
+              {% if section.settings.show_marquee_icon %}
+                <span class="kw-special-offer-adv__marquee-icon">{% render 'icon-snowflake' %}</span>
+              {% endif %}
+              {% if section.settings.marquee_text_2 != blank %}
+                <span class="kw-special-offer-adv__marquee-text">{{ section.settings.marquee_text_2 }}</span>
+                {% if section.settings.show_marquee_icon %}
+                  <span class="kw-special-offer-adv__marquee-icon">{% render 'icon-snowflake' %}</span>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="kw-special-offer-adv__marquee-content" aria-hidden="true">
+            {% for i in (1..12) %}
+              <span class="kw-special-offer-adv__marquee-text">{{ section.settings.marquee_text_1 }}</span>
+              {% if section.settings.show_marquee_icon %}
+                <span class="kw-special-offer-adv__marquee-icon">{% render 'icon-snowflake' %}</span>
+              {% endif %}
+              {% if section.settings.marquee_text_2 != blank %}
+                <span class="kw-special-offer-adv__marquee-text">{{ section.settings.marquee_text_2 }}</span>
+                {% if section.settings.show_marquee_icon %}
+                  <span class="kw-special-offer-adv__marquee-icon">{% render 'icon-snowflake' %}</span>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {%- comment -%} Foreground Image (Positionable) {%- endcomment -%}
+    {% if section.settings.foreground_image != blank %}
+      <div class="kw-special-offer-adv__fg-image" style="
+        width: {{ section.settings.fg_image_width }}%;
+        left: {{ section.settings.fg_image_position }}%;
+        transform: translateX(-{{ section.settings.fg_image_position }}%) translateX({{ section.settings.fg_image_offset_x }}px);
+        bottom: {{ section.settings.fg_image_offset_y }}px;
+      ">
+        {{ section.settings.foreground_image | image_url: width: 1200 | image_tag: 
+          class: 'kw-special-offer-adv__fg-img',
+          loading: 'lazy',
+          alt: section.settings.title_line_1
+        }}
+      </div>
+    {% endif %}
+
+    {%- comment -%} Content Area with Glass Effect {%- endcomment -%}
+    <div class="kw-special-offer-adv__content" style="
+      justify-content: {{ section.settings.content_vertical_align }};
+      align-items: {{ section.settings.content_horizontal_align }};
+    ">
+      {%- capture glass_blur -%}{{ section.settings.glass_blur | times: 0.2 }}px{%- endcapture -%}
+      {%- capture glass_opacity -%}{{ section.settings.glass_opacity | divided_by: 100.0 }}{%- endcapture -%}
+      
+      <div class="kw-special-offer-adv__glass-panel {% if section.settings.glass_blur == 0 and section.settings.glass_opacity == 0 %}kw-special-offer-adv__glass-panel--hidden{% endif %}" style="
+        --glass-blur: {{ glass_blur }};
+        --glass-color: {{ section.settings.glass_color }};
+        --glass-opacity: {{ glass_opacity }};
+        --glass-border-radius: {{ section.settings.glass_border_radius }}px;
+        padding: {{ section.settings.glass_padding }}px;
+      ">
+        <div class="kw-special-offer-adv__text-block">
+          {%- comment -%} Titles {%- endcomment -%}
+          <div class="kw-special-offer-adv__titles">
+            {% if section.settings.title_line_1 != blank %}
+              <h2 class="kw-special-offer-adv__title-line-1" style="
+                font-size: {{ section.settings.title_1_size }}px;
+                color: {{ section.settings.title_1_color }};
+                font-weight: {{ section.settings.title_1_weight }};
+                letter-spacing: {{ section.settings.title_letter_spacing }}px;
+              ">{{ section.settings.title_line_1 }}</h2>
+            {% endif %}
+            
+            {% if section.settings.title_line_2 != blank %}
+              <h2 class="kw-special-offer-adv__title-line-2" style="
+                font-size: {{ section.settings.title_2_size }}px;
+                color: {{ section.settings.title_2_color }};
+                font-weight: {{ section.settings.title_2_weight }};
+                letter-spacing: {{ section.settings.title_letter_spacing }}px;
+              ">{{ section.settings.title_line_2 }}</h2>
+            {% endif %}
+          </div>
+          
+          {%- comment -%} Description {%- endcomment -%}
+          {% if section.settings.description != blank %}
+            <p class="kw-special-offer-adv__description" style="
+              font-size: {{ section.settings.description_size }}px;
+              color: {{ section.settings.description_color }};
+              max-width: {{ section.settings.description_max_width }}px;
+            ">{{ section.settings.description }}</p>
+          {% endif %}
+          
+          {%- comment -%} Button {%- endcomment -%}
+          {% if section.settings.button_text != blank %}
+            <a href="{{ section.settings.button_link }}" class="kw-special-offer-adv__button" style="
+              background-color: {{ section.settings.button_bg_color }};
+              color: {{ section.settings.button_text_color }};
+              font-size: {{ section.settings.button_font_size }}px;
+              border-radius: {{ section.settings.button_border_radius }}px;
+              padding: {{ section.settings.button_padding_y }}px {{ section.settings.button_padding_x }}px;
+            ">
+              <span>{{ section.settings.button_text }}</span>
+              {% if section.settings.show_button_icon %}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              {% endif %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KW - Special Offer Adv",
+  "tag": "section",
+  "class": "kw-section-special-offer-adv",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Container"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#F6F6F6"
+    },
+    {
+      "type": "range",
+      "id": "container_height",
+      "label": "Container Height (px)",
+      "min": 400,
+      "max": 800,
+      "step": 10,
+      "default": 600
+    },
+    {
+      "type": "header",
+      "content": "Background Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image",
+      "info": "Full cover background (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Background Text"
+    },
+    {
+      "type": "text",
+      "id": "background_text",
+      "label": "Large Background Text",
+      "default": "Special discounts"
+    },
+    {
+      "type": "range",
+      "id": "bg_text_size",
+      "label": "Background Text Size (px)",
+      "min": 60,
+      "max": 200,
+      "step": 5,
+      "default": 155
+    },
+    {
+      "type": "color",
+      "id": "bg_text_color",
+      "label": "Background Text Color",
+      "default": "#2E321D"
+    },
+    {
+      "type": "range",
+      "id": "bg_text_opacity",
+      "label": "Background Text Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Marquee Banner"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marquee",
+      "label": "Show Marquee Banner",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "marquee_text_1",
+      "label": "Marquee Text 1",
+      "default": "Special Offer"
+    },
+    {
+      "type": "text",
+      "id": "marquee_text_2",
+      "label": "Marquee Text 2",
+      "default": "Up to 50% Off"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_marquee_icon",
+      "label": "Show Snowflake Icons",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee Speed (seconds)",
+      "info": "Higher = slower",
+      "min": 20,
+      "max": 120,
+      "step": 5,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "marquee_rotation",
+      "label": "Marquee Rotation (degrees)",
+      "min": -15,
+      "max": 15,
+      "step": 1,
+      "default": -3
+    },
+    {
+      "type": "range",
+      "id": "marquee_position",
+      "label": "Marquee Vertical Position (%)",
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "marquee_color",
+      "label": "Marquee Background Color",
+      "default": "#F8843E"
+    },
+    {
+      "type": "color",
+      "id": "marquee_text_color",
+      "label": "Marquee Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Foreground Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "foreground_image",
+      "label": "Foreground Image (Person/Product)",
+      "info": "PNG with transparent background recommended"
+    },
+    {
+      "type": "range",
+      "id": "fg_image_position",
+      "label": "Horizontal Position (%)",
+      "info": "0 = Left, 50 = Center, 100 = Right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "fg_image_width",
+      "label": "Image Width (%)",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "fg_image_offset_x",
+      "label": "Fine-tune Horizontal (px)",
+      "min": -100,
+      "max": 100,
+      "step": 10,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "fg_image_offset_y",
+      "label": "Fine-tune Vertical (px)",
+      "min": -100,
+      "max": 100,
+      "step": 10,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Glass Panel"
+    },
+    {
+      "type": "range",
+      "id": "glass_blur",
+      "label": "Glass Blur (0-100)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "glass_opacity",
+      "label": "Glass Opacity (0-100)",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 30
+    },
+    {
+      "type": "color",
+      "id": "glass_color",
+      "label": "Glass Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "glass_border_radius",
+      "label": "Glass Border Radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "glass_padding",
+      "label": "Glass Padding (px)",
+      "min": 0,
+      "max": 60,
+      "step": 5,
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Content Position"
+    },
+    {
+      "type": "select",
+      "id": "content_vertical_align",
+      "label": "Vertical Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Bottom" }
+      ],
+      "default": "flex-end"
+    },
+    {
+      "type": "select",
+      "id": "content_horizontal_align",
+      "label": "Horizontal Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "header",
+      "content": "Title Line 1"
+    },
+    {
+      "type": "text",
+      "id": "title_line_1",
+      "label": "Title Line 1",
+      "default": "Special Discount!"
+    },
+    {
+      "type": "range",
+      "id": "title_1_size",
+      "label": "Font Size (px)",
+      "min": 24,
+      "max": 100,
+      "step": 2,
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "title_1_color",
+      "label": "Color",
+      "default": "#2E321D"
+    },
+    {
+      "type": "select",
+      "id": "title_1_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "SemiBold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "header",
+      "content": "Title Line 2"
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title Line 2",
+      "default": "UP TO 50% OFF"
+    },
+    {
+      "type": "range",
+      "id": "title_2_size",
+      "label": "Font Size (px)",
+      "min": 24,
+      "max": 100,
+      "step": 2,
+      "default": 60
+    },
+    {
+      "type": "color",
+      "id": "title_2_color",
+      "label": "Color",
+      "default": "#2E321D"
+    },
+    {
+      "type": "select",
+      "id": "title_2_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "SemiBold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "title_letter_spacing",
+      "label": "Title Letter Spacing (px)",
+      "min": -3,
+      "max": 5,
+      "step": 1,
+      "default": -1
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "30% Discount for black Friday valid till 30th November only for limited time!"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Font Size (px)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 18
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Color",
+      "default": "#5C5C5C"
+    },
+    {
+      "type": "range",
+      "id": "description_max_width",
+      "label": "Max Width (px)",
+      "min": 200,
+      "max": 600,
+      "step": 10,
+      "default": 450
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Alles"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button_icon",
+      "label": "Show Arrow Icon",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#8A916B"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button Font Size (px)",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button Border Radius (px)",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "label": "Button Horizontal Padding (px)",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "label": "Button Vertical Padding (px)",
+      "min": 8,
+      "max": 24,
+      "step": 2,
+      "default": 14
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Special Offer Adv"
+    }
+  ]
+}
+{% endschema %}

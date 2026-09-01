@@ -1,0 +1,191 @@
+{% comment %}
+  KW - Promo Banner Section
+  Based on Figma design node 1084:1700
+  Promotional/announcement banner to display below header
+{% endcomment %}
+
+{%- if section.settings.show_banner -%}
+<section class="kw-promo-banner" style="
+  --promo-bg: {{ section.settings.background_color }};
+  --promo-text-color: {{ section.settings.text_color }};
+  --promo-margin-top: {{ section.settings.margin_top }}px;
+  --promo-margin-bottom: {{ section.settings.margin_bottom }}px;
+">
+  <div class="kw-promo-banner__container">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}" class="kw-promo-banner__link" {% if section.settings.open_in_new_tab %}target="_blank" rel="noopener noreferrer"{% endif %}>
+    {%- endif -%}
+    
+    <p class="kw-promo-banner__text">
+      {%- if section.settings.text_before != blank -%}
+        <span class="kw-promo-banner__text-regular">{{ section.settings.text_before }}</span>
+      {%- endif -%}
+      {%- if section.settings.text_highlight != blank -%}
+        &nbsp;<span class="kw-promo-banner__text-highlight">{{ section.settings.text_highlight }}</span>
+      {%- endif -%}
+    </p>
+
+    {%- if section.settings.link != blank -%}
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+{%- endif -%}
+
+<style>
+  .kw-promo-banner {
+    background-color: var(--promo-bg, #D2D5C6);
+    padding: 14px 50px;
+    margin-top: var(--promo-margin-top, 0);
+    margin-bottom: var(--promo-margin-bottom, 0);
+  }
+
+  .kw-promo-banner__container {
+    max-width: 1728px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .kw-promo-banner__link {
+    text-decoration: none;
+    display: block;
+  }
+
+  .kw-promo-banner__link:hover .kw-promo-banner__text {
+    opacity: 0.8;
+  }
+
+  .kw-promo-banner__text {
+    font-family: var(--font-body-family, sans-serif);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--promo-text-color, #3C4127);
+    line-height: 1;
+    margin: 0;
+    text-transform: capitalize;
+    transition: opacity 0.3s ease;
+  }
+
+  .kw-promo-banner__text-regular {
+    font-weight: 600;
+  }
+
+  .kw-promo-banner__text-highlight {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .kw-promo-banner {
+      padding: 12px 20px;
+    }
+
+    .kw-promo-banner__text {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .kw-promo-banner {
+      padding: 10px 15px;
+    }
+
+    .kw-promo-banner__text {
+      font-size: 12px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Promo Banner",
+  "tag": "section",
+  "class": "kw-promo-banner-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "label": "Show Banner",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "text",
+      "id": "text_before",
+      "label": "Text (regular)",
+      "default": "Winter Special Discount"
+    },
+    {
+      "type": "text",
+      "id": "text_highlight",
+      "label": "Text (underlined/highlighted)",
+      "default": "Up-To 50% Off!"
+    },
+    {
+      "type": "header",
+      "content": "Link"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Banner Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "Open link in new tab",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Margin Top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Margin Bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#D2D5C6"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#3C4127"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Promo Banner"
+    }
+  ]
+}
+{% endschema %}

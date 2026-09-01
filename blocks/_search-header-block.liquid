@@ -1,0 +1,77 @@
+<div class="swiper-slide" {{ block.shopify_attributes }}> 
+    <a class="link-underline search-header-block" href="{{ block.settings.url }}">
+        <div class="search-header-block__img-wrap"> 
+            {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: nil | image_tag: class: 'search-header-block__img' }}
+            {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'search-header-block__img placeholder' }}
+            {% endif %}
+        </div>
+        {% if block.settings.title != blank %}
+            <h5 class="search-header-block__title"><span class="link-underline-text">{{ block.settings.title }}</span></h5>
+        {% endif %}
+    </a>
+</div>
+{% stylesheet %}
+.swiper-slide{
+    width: 177px;
+}
+.search-header-block{
+    margin: 0 calc(var(--gap) / 2);
+    display: flex;
+    flex-direction: column;
+}
+.search-header-block__img-wrap {
+    height: 160px;
+    background: #F0F1ED;
+    border-radius: 16px;
+    overflow: hidden;
+    background-blend-mode: multiply, normal;
+}
+.search-header-block__img{
+    transition: transform 0.4s ease-out;
+    .search-header-block:hover &{
+        transform: scale(1.03);
+    }
+}
+.search-header-block__title.search-header-block__title{
+    margin-top: 14px;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 98%; /* 13.72px */
+    letter-spacing: -0.28px;
+    text-transform: uppercase;
+    .link-underline-text {
+        text-transform: uppercase !important;
+    }
+}
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Collection Block",
+  "tag": null,
+  "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "t:settings.title",
+            "default": "Partytenten"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL",
+          "default": "/collections/all"
+        },
+    ],
+    "presets": [
+        {"name": "Collection Block"}
+    ]
+}
+{% endschema %}

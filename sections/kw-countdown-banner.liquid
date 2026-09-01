@@ -1,0 +1,119 @@
+{{ 'kw-components.css' | asset_url | stylesheet_tag }}
+
+<section class="kw-countdown-banner" id="countdown-banner-{{ section.id }}">
+  <div class="kw-countdown-banner__container">
+    {%- comment -%} Headline {%- endcomment -%}
+    <h2 class="kw-countdown-banner__title">{{ section.settings.headline }}</h2>
+    
+    {%- comment -%} Timer + Description {%- endcomment -%}
+    <div class="kw-countdown-banner__middle">
+      <div class="kw-countdown-banner__timer" data-deadline="{{ section.settings.deadline }}">
+        <span class="kw-countdown-banner__time" data-days>00</span>
+        <span class="kw-countdown-banner__separator">:</span>
+        <span class="kw-countdown-banner__time" data-hours>00</span>
+        <span class="kw-countdown-banner__separator">:</span>
+        <span class="kw-countdown-banner__time" data-minutes>00</span>
+        <span class="kw-countdown-banner__separator">:</span>
+        <span class="kw-countdown-banner__time" data-seconds>00</span>
+      </div>
+      
+      {% if section.settings.description != blank %}
+        <p class="kw-countdown-banner__description">{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+    
+    {%- comment -%} Button {%- endcomment -%}
+    {% if section.settings.button_text != blank %}
+      <a href="{{ section.settings.button_link }}" class="kw-countdown-banner__button">
+        {{ section.settings.button_text }}
+        {% render 'icon-arrow-up-right' %}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  (function() {
+    const banner = document.getElementById('countdown-banner-{{ section.id }}');
+    if (!banner) return;
+    
+    const timerEl = banner.querySelector('.kw-countdown-banner__timer');
+    const deadline = new Date(timerEl.dataset.deadline).getTime();
+    
+    const daysEl = timerEl.querySelector('[data-days]');
+    const hoursEl = timerEl.querySelector('[data-hours]');
+    const minutesEl = timerEl.querySelector('[data-minutes]');
+    const secondsEl = timerEl.querySelector('[data-seconds]');
+    
+    function updateTimer() {
+      const now = new Date().getTime();
+      const distance = deadline - now;
+      
+      if (distance < 0) {
+        daysEl.textContent = '00';
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
+        return;
+      }
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      
+      daysEl.textContent = days.toString().padStart(2, '0');
+      hoursEl.textContent = hours.toString().padStart(2, '0');
+      minutesEl.textContent = minutes.toString().padStart(2, '0');
+      secondsEl.textContent = seconds.toString().padStart(2, '0');
+    }
+    
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "KW - Countdown Banner",
+  "tag": "section",
+  "class": "kw-section-countdown-banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Flash Sale now on!"
+    },
+    {
+      "type": "text",
+      "id": "deadline",
+      "label": "Deadline (Date & Time)",
+      "info": "Format: YYYY-MM-DD HH:MM (e.g., 2026-01-31 23:59)",
+      "default": "2026-01-31 23:59"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "See your best prices and special discount. Don't miss the chance, time is limited!"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Alles"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Countdown Banner"
+    }
+  ]
+}
+{% endschema %}

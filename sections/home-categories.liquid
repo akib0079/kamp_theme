@@ -1,0 +1,141 @@
+<div class="section home-categories-section section-id-{{ section.id }}" >
+    <div class="home-categories__grid">
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+            <a class="home-categories__block link-underline" {{ block.shopify_attributes }} href="{{block.settings.url}}">
+                <div class="home-categories__block-img-wrap">
+                    {% if block.settings.img != blank %}
+                        {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-categories__block-img bg-img hidden--mobile' }}
+                        {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'home-categories__block-img bg-img hidden--desktop' }}
+                    {% else %}
+                        {{ 'image' | placeholder_svg_tag: 'home-categories__block-img bg-img placeholder' }}
+                    {% endif %}
+                </div>
+                <div class="home-categories__content">
+                    {% if block.settings.title != blank %}
+                        <h4 class="home-categories__block-title"><span class="link-underline-text">{{ block.settings.title }}</span></h4>
+                    {% endif %}
+                    {% render 'svg-btn-global-icon' %}
+                </div>
+            </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{%stylesheet %}
+  .home-categories-section{
+    padding: 30px 0 50px;
+  }
+  .home-categories__grid{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
+    @media screen and (max-width: 749px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .home-categories__block{
+    background-color: #F0F1ED;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    color: #636B40;
+  }
+  .home-categories__block-img-wrap{
+    min-height: 100px;
+    width: 100px;
+    height: 100%;
+    position: relative;
+    background-color: #F8F8F6;
+    flex-shrink: 0;
+    z-index: 1;
+    .home-categories__block-img{
+      mix-blend-mode: darken;
+      height: 50px;
+      max-height: 95%;
+      max-width: 95%;
+      width: auto;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      background: transparent;
+    }
+  }
+  .home-categories__content{
+    padding: 20px 40px 20px 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 20px;
+    flex-grow: 1;
+    .home-categories__block-title{
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 98%;
+      word-break: break-word;
+    }
+    svg{
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+    }
+  }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Home Categories",
+    "settings": [
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "BARBECUES"
+            },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Button URL",
+                "default": "/collections/all"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Home Categories",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

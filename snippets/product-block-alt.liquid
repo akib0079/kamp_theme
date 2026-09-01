@@ -1,0 +1,120 @@
+<product-card-alt class="product-card__alt">
+    {% assign cheapest_variant = product.variants | sort: 'price' | first %}
+    <div class="hidden">
+        {% for variant in product.variants %}
+            <input type="hidden" value="{{  variant.id }}" name="{{variant.title}}" data-media="{{ variant.featured_media.id }}"
+                {% for option in variant.options %}
+                    option-{{ forloop.index }}="{{ option.name }}"
+                {% endfor %}
+            >
+        {% endfor %}
+    </div>
+    <div class="product-card__alt-gallery-wrap">
+        <div class="product-card__alt-gallery swiper">
+            <div class="swiper-wrapper">
+                
+                                        
+                {% if product.media != blank %}
+                    {% for media in product.media %}
+                        <div class="swiper-slide" data-media-id="{{ media.id }}">
+                        <a class="product-card__alt_img-wrap" href="{{ product.url | within: collection }}">
+                            {{ media | media_tag: class: 'product-card__alt_img', image_size: '600x' }}
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="swiper-slide" data-media-id="{{ media.id }}">
+                        <a class="product-card__alt_img-wrap" href="{{ product.url | within: collection }}">
+                        {% if settings.product_placeholder_img != blank %}
+                            {{ settings.product_placeholder_img | image_url: width: 600 | image_tag: class: 'product-card__alt_img' }}
+                        {% else %}
+                            {{ 'product-1' | placeholder_svg_tag: 'product-card__alt_img' }}
+                        {% endif %}
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            {% comment %} <div class="product__floating-buttons">
+                <a class="quick-action-button product-link quick-action-button--visibility-{{ settings.quickbuy_visibility }} quick-add quick-add-toggle tap-target" href="{{ product.url | within: collection }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" aria-label="{{ 'actions.add_to_cart' | t }}">
+                    <span class="product__icon-cart">
+                    {% render 'svg-cart', stroke_width: 1.5 %}
+                    </span>
+                    <span class="product__icon-check">
+                    {% render 'svg-cart-check' %}
+                    </span>
+                    {%- if settings.swatch_enabled and settings.prod_thumb_swatches_layout != blank and hide_swatch != true -%}
+                    <div class="product__var_ids">
+                        {%- for variant in product.variants -%}
+                        <input type="hidden" class="product__var_id" data-option-item="{{ variant.title | escape }}" data-available="{{ variant.available }}" value="{{ variant.id }}">
+                        {%- endfor -%}
+                    </div>
+                    {%- endif -%}
+                </a>
+                </div> {% endcomment %}
+        </div>
+    </div>
+    <div class="product-card__alt_info">
+        <a class="link-underline" href="{{product.url | within: collection }}">
+            <h4 class="product-card__alt_title">
+            <span class="link-underline-text">{{ product.title }}</span>
+            </h4>
+        </a>
+        <div class="product-card__alt_price-wrapper">
+            <div class="product-card__alt_price">
+            {% if cheapest_variant.price < cheapest_variant.compare_at_price %}
+                <span class="product-alt__compare-price">{{ cheapest_variant.compare_at_price | money }}</span>
+            {% endif %}
+                <span class="product-alt__main-price">{{ cheapest_variant.price | money }}</span>
+            </div>
+            <!-- Start of Judge.me code -->
+            <div style='{{ jm_style }}' class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}' data-auto-install='false'>
+                {{ product.metafields.judgeme.badge }}
+            </div>
+            <!-- End of Judge.me code -->
+        </div>
+        {%- for option in product.options_with_values -%}
+            {%- capture option_id -%}{{ block.id | default: section.id }}-{{ product.id }}-{{ option.name | handle }}-selector{%- endcapture -%}
+            {%- liquid
+                assign sanitized_setting = settings.swatch_option_name | downcase
+                assign option_name = option.name | downcase
+            -%}
+            {%- if sanitized_setting contains option_name -%}
+                <div class="product-alt__option-selector option-selector--swatch"  data-option-index="{{ forloop.index0 }}" role="radiogroup" aria-labelledby="{{ option_id }}-Label">
+                    <div class="product-alt__option-selector_btns">
+                        {%- for value in option.values -%}
+                            {% liquid
+                                assign handle = value | handleize
+                                assign entry = metaobjects.color[handle]
+                                assign bg = '#FFF'
+                                if entry
+                                    if entry.color_s.value.size == 1
+                                        assign bg = entry.color_s.value
+                                    elsif entry.color_s.value.size > 1
+                                        assign bg = 'linear-gradient(to right'
+                                        for color in entry.color_s.value
+                                            assign bg = bg | append: ', ' | append: color
+                                        endfor
+                                        assign bg = bg | append: ')'
+                                    endif
+                                endif
+                            %}
+                            <input class="product-alt__opt-btn js-option"
+                                    type="radio"
+                                    name="{{ option_id }}"
+                                    id="{{ option_id }}-opt-{{ forloop.index0 }}"
+                                    data-position="{{ option.position }}"
+                                    value="{{ value | escape }}"
+                                    {% if option.selected_value == value %}checked{% endif %}
+                                    required>
+                            <label class="product-alt__opt-label" style="--bg:{{ bg }}" data-swatch="{{ value | replace: '"', '' | downcase }}" for="{{ option_id }}-opt-{{ forloop.index0 }}">
+                                
+                                <span class="product-alt__opt-label_text">{{ value }}</span>
+                            </label>
+                        {%- endfor -%}
+                    </div>
+                </div>
+            {% endif %}
+        {%- endfor -%}
+
+    </div>
+</product-card-alt>

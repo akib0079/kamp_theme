@@ -1,0 +1,24 @@
+{% if product != blank %}
+    {% assign variant = product.selected_or_first_available_variant %}
+    <div class="bought-together__product">
+        <a class="bought-together__product_img-wrap" href="{{ product.url }}">
+            {% if product.featured_image != blank %}
+                {{ product.featured_image | image_url: width: nil | image_tag: class: 'bought-together__product_img'  }}
+            {%else %}
+                <img src="https://cdn.shopify.com/s/files/1/1026/3071/9826/files/Image.png?v=1774872279" alt="Placeholder" class="bought-together__product_img" >
+            {% endif %}
+        </a>
+        <div class="bought-together__product_info">
+            <a  href="{{ product.url }}">
+            <h5 class="bought-together__product_title">{{product.title }}</h5>
+            </a>
+            {% render 'swatches', product: product %}
+            <div class="bought-together__price">
+                {% if variant.price < variant.compare_at_price %}
+                    <span class="bought-together__compare-price">{{ variant.compare_at_price | money }}</span>
+                {% endif %}
+                <h6 class="bought-together__main-price">{{ variant.price | money }}</h6>
+            </div>
+        </div>
+    </div>
+{% endif %}

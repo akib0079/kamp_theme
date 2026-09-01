@@ -1,0 +1,103 @@
+
+{%- doc -%}
+  Renders the facet filtering component
+
+  @param {string} terms - The search results object
+  @param {number} count - The number of products in the search results
+{%- enddoc -%}
+
+<h4 class="search-header__title"><span>{{count}}</span> {{ block.settings.title | replace: '%%', terms }}</h4>
+<div class="search-header__desc">{{ block.settings.text }}</div>
+{% if block.blocks.size > 0%}
+<div class="search-header__blocks swiper">
+    <div class="swiper-wrapper">
+        {% content_for 'blocks' %}
+    </div>
+</div>
+{% endif %}
+{% javascript %}
+(function(){
+
+const targetSummary = document.querySelector('.main-collection-grid');
+
+if (targetSummary) {
+    const observer = new MutationObserver((mutationsList) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'characterData' || mutation.type === 'childList') {
+                const updatedText = targetSummary.querySelector('.gf-summary b').textContent;
+                // Replicate the text to your custom display element
+                document.querySelectorAll('.search-header__title span').forEach(el => {
+                    el.textContent = updatedText;
+                });
+            }
+        }
+    });
+
+    // Configuration: Watch for any text or structural changes inside the div
+    observer.observe(targetSummary, { childList: true, characterData: true, subtree: true });
+}
+
+new Swiper('.search-header__blocks', {
+    slidesPerView: 'auto',
+    speed: 400,
+    freeMode: {
+        enabled: true,
+        sticky: true,
+        momentumRatio: 0.8,
+    },
+});
+
+})()
+{% endjavascript %}
+{% stylesheet %}
+.search-header-wrapper{
+    @media screen and (min-width: 750px){
+        grid-column: 2;
+    }
+}
+.search-header__title{
+    font-size: 21px;
+    font-weight: 600;
+    line-height: 100%;
+    text-transform: none;
+    margin-bottom: 12px;
+}
+.search-header__desc {
+    color: #908F90;
+    line-height: 100%;
+}
+.search-header__blocks{
+    padding-top: 20px;
+    border-top: 1px solid #EFEFEF;
+    display: flex;
+    margin: 25px calc(-1 * var(--gap) / 2) 0;
+    --gap: 20px;
+}
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Search Header",
+  "tag": "div",
+  "class": "search-header-wrapper",
+  "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "t:settings.title",
+            "default": "resultaten voor ‘’Tent’’"
+        },
+        {
+            "type": "richtext",
+            "id": "text",
+            "label": "t:settings.text",
+            "default": "<p>A comfortable thermal layer with a full-length zipper, asymmetrical zipper, or no zipper at all.</p>"
+        },
+    ],
+    "blocks": [
+        {"type": "_search-header-block"}
+    ],
+    "presets": [
+        {"name": "Search Header"}
+    ]
+}
+{% endschema %}

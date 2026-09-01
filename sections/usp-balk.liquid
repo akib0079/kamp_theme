@@ -1,0 +1,412 @@
+{%- comment -%}
+  USP-balk / Trust badges
+  Gebaseerd op het Figma-ontwerp (Kampeerwinkel).
+  - Ruimte boven en onder instelbaar via de theme editor (Spacing)
+  - Elk USP-item is een block: tekst, icoon (of eigen afbeelding) en optionele link
+  - Responsive: op desktop gecentreerde rij, op mobiel scroll of 2-koloms grid
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .usp-bar {
+    background-color: {{ s.color_background }};
+    padding-top: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+    {% if s.show_border_top %}border-top: 1px solid {{ s.color_border }};{% endif %}
+    {% if s.show_border_bottom %}border-bottom: 1px solid {{ s.color_border }};{% endif %}
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: {{ s.gap_desktop }}px;
+    padding-inline: clamp(16px, 4vw, 60px);
+    margin: 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    color: {{ s.color_text }};
+  }
+
+  #shopify-section-{{ section.id }} a.usp-bar__item:hover .usp-bar__text {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    width: {{ s.icon_size }}px;
+    height: {{ s.icon_size }}px;
+    color: {{ s.color_icon }};
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .usp-bar__text {
+    margin: 0;
+    font-size: {{ s.text_size }}px;
+    font-weight: {{ s.font_weight }};
+    line-height: 1;
+    text-transform: {% if s.text_transform == 'sentence' %}lowercase{% else %}{{ s.text_transform }}{% endif %};
+    white-space: nowrap;
+    color: inherit;
+  }
+
+  {%- if s.text_transform == 'sentence' -%}
+  #shopify-section-{{ section.id }} .usp-bar__text::first-letter {
+    text-transform: uppercase;
+  }
+  {%- endif -%}
+
+  /* Mobiel */
+  @media screen and (max-width: 749px) {
+    {%- if s.mobile_layout == 'scroll' -%}
+    #shopify-section-{{ section.id }} .usp-bar__inner {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      gap: {{ s.gap_mobile }}px;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 16px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    #shopify-section-{{ section.id }} .usp-bar__inner::-webkit-scrollbar {
+      display: none;
+    }
+    #shopify-section-{{ section.id }} .usp-bar__item {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+    }
+    {%- else -%}
+    #shopify-section-{{ section.id }} .usp-bar__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: {{ s.gap_mobile }}px;
+      align-items: center;
+      justify-items: start;
+    }
+    #shopify-section-{{ section.id }} .usp-bar__item {
+      justify-content: flex-start;
+      width: 100%;
+    }
+    #shopify-section-{{ section.id }} .usp-bar__text {
+      white-space: normal;
+    }
+    {%- endif -%}
+  }
+{%- endstyle -%}
+
+<div class="usp-bar">
+  <div class="usp-bar__inner">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign tag = 'div'
+        if block.settings.link != blank
+          assign tag = 'a'
+        endif
+      -%}
+
+      <{{ tag }}
+        class="usp-bar__item"
+        {% if block.settings.link != blank %}href="{{ block.settings.link }}"{% endif %}
+        {{ block.shopify_attributes }}
+      >
+        <span class="usp-bar__icon" aria-hidden="true">
+          {%- if block.settings.custom_icon != blank -%}
+            {{ block.settings.custom_icon | image_url: width: 96 | image_tag: loading: 'lazy', alt: block.settings.text }}
+          {%- else -%}
+            {%- case block.settings.icon -%}
+              {%- when 'truck' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              {%- when 'calendar' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>
+              {%- when 'returns' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+              {%- when 'package' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 2 2 4-4"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.17"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg>
+              {%- when 'shield' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>
+              {%- when 'star' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.52 3.46a.5.5 0 0 1 .96 0l2.1 5.51 5.88.32a.5.5 0 0 1 .3.9l-4.6 3.68 1.5 5.69a.5.5 0 0 1-.77.55L12 17.3l-4.89 3a.5.5 0 0 1-.77-.54l1.5-5.7-4.6-3.67a.5.5 0 0 1 .3-.9l5.88-.31z"/></svg>
+              {%- when 'gift' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>
+              {%- when 'support' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 18 0"/><path d="M21 16a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h3"/><path d="M3 16a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H3"/></svg>
+              {%- when 'lock' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              {%- when 'payment' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+              {%- when 'percent' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5 5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+              {%- when 'leaf' -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg>
+              {%- else -%}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+            {%- endcase -%}
+          {%- endif -%}
+        </span>
+        <p class="usp-bar__text">{{ block.settings.text }}</p>
+      </{{ tag }}>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "USP-balk",
+  "tag": "section",
+  "class": "section-usp-bar",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Opmaak"
+    },
+    {
+      "type": "color",
+      "id": "color_background",
+      "label": "Achtergrondkleur",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Tekstkleur",
+      "default": "#6D7646"
+    },
+    {
+      "type": "color",
+      "id": "color_icon",
+      "label": "Icoonkleur",
+      "default": "#6D7646"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Icoongrootte",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tekstgrootte",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Tekstdikte",
+      "options": [
+        { "value": "400", "label": "Normaal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semibold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Tekststijl",
+      "options": [
+        { "value": "none", "label": "Normaal (zoals getypt)" },
+        { "value": "sentence", "label": "Alleen eerste letter (zin)" },
+        { "value": "uppercase", "label": "HOOFDLETTERS" },
+        { "value": "capitalize", "label": "Elk Woord Hoofdletter" }
+      ],
+      "default": "sentence"
+    },
+    {
+      "type": "header",
+      "content": "Randen"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_top",
+      "label": "Rand boven tonen",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_border_bottom",
+      "label": "Rand onder tonen",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "color_border",
+      "label": "Randkleur",
+      "default": "#0000001A"
+    },
+    {
+      "type": "header",
+      "content": "Ruimte"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte boven",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte onder",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "gap_desktop",
+      "min": 16,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte tussen items (desktop)",
+      "default": 70
+    },
+    {
+      "type": "header",
+      "content": "Mobiel"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Weergave op mobiel",
+      "options": [
+        { "value": "scroll", "label": "Horizontaal scrollen" },
+        { "value": "grid", "label": "2 kolommen" }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "range",
+      "id": "gap_mobile",
+      "min": 8,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte tussen items (mobiel)",
+      "default": 24
+    }
+  ],
+  "blocks": [
+    {
+      "type": "usp_item",
+      "name": "USP-item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icoon",
+          "options": [
+            { "value": "truck", "label": "Vrachtwagen (verzending)" },
+            { "value": "calendar", "label": "Kalender (openingstijden)" },
+            { "value": "returns", "label": "Pijlen (retourneren)" },
+            { "value": "package", "label": "Pakket met vink (levering)" },
+            { "value": "shield", "label": "Schild (garantie)" },
+            { "value": "star", "label": "Ster (reviews)" },
+            { "value": "gift", "label": "Cadeau" },
+            { "value": "support", "label": "Klantenservice" },
+            { "value": "lock", "label": "Slot (veilig betalen)" },
+            { "value": "payment", "label": "Betaalkaart" },
+            { "value": "percent", "label": "Korting" },
+            { "value": "leaf", "label": "Blad (duurzaam)" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Eigen icoon (optioneel)",
+          "info": "Overschrijft het gekozen icoon hierboven. Bij voorkeur een SVG of PNG."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Tekst",
+          "default": "USP-tekst"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optioneel)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "USP-balk",
+      "blocks": [
+        {
+          "type": "usp_item",
+          "settings": {
+            "icon": "truck",
+            "text": "Gratis verzending vanaf €100"
+          }
+        },
+        {
+          "type": "usp_item",
+          "settings": {
+            "icon": "calendar",
+            "text": "Winkel 7 dagen per week geopend"
+          }
+        },
+        {
+          "type": "usp_item",
+          "settings": {
+            "icon": "returns",
+            "text": "Retourneren binnen 14 werkdagen"
+          }
+        },
+        {
+          "type": "usp_item",
+          "settings": {
+            "icon": "package",
+            "text": "Verzending 1-2 werkdagen"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

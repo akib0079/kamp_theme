@@ -1,0 +1,574 @@
+{% comment %}
+  KW - New Footer Section
+  Based on exact design specification (Dark Olive background #3C4127)
+{% endcomment %}
+
+<footer class="kw-new-footer section" style="
+  --footer-bg: {{ section.settings.background_color }};
+  --footer-heading-color: {{ section.settings.heading_color }};
+  --footer-link-color: {{ section.settings.link_color }};
+  --footer-text-color: {{ section.settings.text_color }};
+">
+  <div class="kw-new-footer__container">
+    
+    {% comment %} 1. Top Logo Row {% endcomment %}
+    <div class="kw-new-footer__top">
+      <a href="{{ routes.root_url }}" class="kw-new-footer__logo-link" aria-label="{{ shop.name }}">
+        {% if section.settings.logo != blank %}
+          {{ section.settings.logo | image_url: width: 500 | image_tag: class: 'kw-new-footer__logo-img', loading: 'lazy', alt: shop.name }}
+        {% else %}
+          <span class="kw-new-footer__logo-text">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+    </div>
+
+
+    {% comment %} 2. Main 4 Navigation Columns {% endcomment %}
+    <div class="kw-new-footer__nav">
+      
+      {% comment %} Column 1 {% endcomment %}
+      <div class="kw-new-footer__column">
+        {% if section.settings.heading_1 != blank %}
+          <h4 class="kw-new-footer__heading">{{ section.settings.heading_1 }}</h4>
+        {% endif %}
+        {% if section.settings.menu_1 != blank %}
+          <ul class="kw-new-footer__links">
+            {% for link in linklists[section.settings.menu_1].links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {% comment %} Column 2 {% endcomment %}
+      <div class="kw-new-footer__column">
+        {% if section.settings.heading_2 != blank %}
+          <h4 class="kw-new-footer__heading">{{ section.settings.heading_2 }}</h4>
+        {% endif %}
+        {% if section.settings.menu_2 != blank %}
+          <ul class="kw-new-footer__links">
+            {% for link in linklists[section.settings.menu_2].links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {% comment %} Column 3 {% endcomment %}
+      <div class="kw-new-footer__column">
+        {% if section.settings.heading_3 != blank %}
+          <h4 class="kw-new-footer__heading">{{ section.settings.heading_3 }}</h4>
+        {% endif %}
+        {% if section.settings.menu_3 != blank %}
+          <ul class="kw-new-footer__links">
+            {% for link in linklists[section.settings.menu_3].links %}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+
+      {% comment %} Column 4 - Store Info / Contact {% endcomment %}
+      <div class="kw-new-footer__column">
+        {% if section.settings.heading_4 != blank %}
+          <h4 class="kw-new-footer__heading">{{ section.settings.heading_4 }}</h4>
+        {% endif %}
+        {% if section.settings.store_info != blank %}
+          <div class="kw-new-footer__store-info">
+            {{ section.settings.store_info }}
+          </div>
+        {% endif %}
+      </div>
+
+    </div>
+
+    {% comment %} 3. Newsletter & Social Media Row {% endcomment %}
+    <div class="kw-new-footer__newsletter-social">
+      <div class="kw-new-footer__newsletter">
+        {% if section.settings.newsletter_heading != blank %}
+          <h4 class="kw-new-footer__newsletter-title">{{ section.settings.newsletter_heading }}</h4>
+        {% endif %}
+        {% if section.settings.newsletter_desc != blank %}
+          <p class="kw-new-footer__newsletter-desc">{{ section.settings.newsletter_desc }}</p>
+        {% endif %}
+
+        {% form 'customer', class: 'kw-new-footer__form' %}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="kw-new-footer__form-group">
+            <input
+              type="email"
+              name="contact[email]"
+              class="kw-new-footer__input"
+              value="{{ form.email }}"
+              placeholder="{{ section.settings.newsletter_placeholder | default: 'Jouw e-mailadres...' }}"
+              required
+            >
+            <button type="submit" class="btn-global btn--secondary kw-new-footer__form-btn">
+              <span class="btn__text">{{ section.settings.newsletter_btn_text | default: 'SCHRIJF IN' }}</span>
+              <span  class="btn__icon">{% render 'svg-btn-global-icon' %}</span>
+            </button>
+          </div>
+        {% endform %}
+      </div>
+
+      <div class="kw-new-footer__social-section">
+        {% if section.settings.social_heading != blank %}
+          <div class="kw-new-footer__social-title">{{ section.settings.social_heading }}</div>
+        {% endif %}
+        <div class="kw-new-footer__social-links">
+          {% if section.settings.social_facebook != blank %}
+            <a href="{{ section.settings.social_facebook }}" target="_blank" rel="noopener noreferrer" class="kw-new-footer__social-btn" aria-label="Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </a>
+          {% endif %}
+          {% if section.settings.social_instagram != blank %}
+            <a href="{{ section.settings.social_instagram }}" target="_blank" rel="noopener noreferrer" class="kw-new-footer__social-btn" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+
+    {% comment %} 4. Bottom Copyright & Legal Menu {% endcomment %}
+
+  </div>
+    <div class="kw-new-footer__bottom section">
+      <div class="kw-new-footer__bottom-content">
+        <p class="kw-new-footer__copyright">
+          {{ section.settings.copyright_text | default: '© 2026 Kampeerwinkel Roermond' }}
+        </p>
+        {% if section.settings.show_legal_links and section.settings.bottom_menu != blank %}
+          <div class="kw-new-footer__legal">
+            {% for link in linklists[section.settings.bottom_menu].links %}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+</footer>
+
+{% stylesheet %}
+  .kw-new-footer.section.section {
+    background-color: var(--footer-bg, #3C4127);
+    color: var(--footer-link-color, #F0F1ED);
+  }
+  .kw-new-footer__top {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 50px 0 40px;
+  }
+  .kw-new-footer__logo-link {
+    display: inline-block;
+    text-decoration: none;
+  }
+  .kw-new-footer__logo-img {
+    height: 70px;
+    width: auto;
+    display: block;
+    mix-blend-mode: screen;
+    @media screen and (max-width: 749px) {
+      height: 38px;
+    }
+  }
+  .kw-new-footer__logo-text {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+  }
+
+  /* 4 Columns Grid */
+  .kw-new-footer__nav {
+    display: grid;
+    grid-template-columns: repeat(4,auto);
+    gap: 40px;
+    justify-content: space-between;
+    padding: 40px 0;
+    border-top: 1px solid #FFFFFF1A;
+    @media screen and (max-width: 749px) {
+      grid-template-columns: repeat(2,auto);
+    }
+  }
+  .kw-new-footer__column {
+    display: flex;
+    flex-direction: column;
+  }
+  .kw-new-footer__heading {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--footer-heading-color, #ffffff);
+    margin: 0 0 20px;
+    text-transform: capitalize;
+  }
+  .kw-new-footer__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .kw-new-footer__links li a {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--footer-link-color, #ffffff);
+    text-decoration: none;
+    opacity: 0.70;
+    transition: opacity 0.2s ease-out, color 0.2s ease-out;
+  }
+  .kw-new-footer__links li a:hover {
+    opacity: 1;
+    color: #ffffff;
+  }
+  .kw-new-footer__store-info {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--footer-link-color, #DFE2D6);
+    opacity: 0.85;
+    display: flex;
+    flex-direction: column;
+    grid-gap: 20px;
+  }
+  .kw-new-footer__store-info p {
+    margin: 0;
+  }
+
+  /* Newsletter & Social Row */
+  .kw-new-footer__newsletter-social {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    padding: 40px 0 30px;
+    border-top: 1px solid #FFFFFF1A;
+    @media screen and (max-width: 749px) {
+      flex-direction: column;
+      padding: 40px 0 42px;
+    }
+  }
+  .kw-new-footer__newsletter {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .kw-new-footer__newsletter-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 98%;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .kw-new-footer__newsletter-desc {
+    font-size: 14px;
+    color: #ffffff;
+    font-weight: 200;
+    margin: 0 0 22px;
+  }
+  .kw-new-footer__form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    @media screen and (max-width: 749px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  .kw-new-footer__input {
+    background-color: #4D5432;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 18px 20px;
+    font-size: 14px;
+    width: 427px;
+    max-width: 100%;
+    outline: none;
+    height: 50px;
+    &:hover{
+      background-color: #4D5432;
+    }
+  }
+  .kw-new-footer__input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .kw-new-footer__form-btn.btn-global {
+    border-radius: 10px;
+    border: none;
+    padding: 15px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 50px;
+    svg{
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .kw-new-footer__social-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .kw-new-footer__social-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 100%;
+    color: #ffffff;
+  }
+  .kw-new-footer__social-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .kw-new-footer__social-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: #F0F1ED;
+    color: #636B40;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    svg{
+      width: 14px;
+      height: 14px;
+    }
+  }
+  .kw-new-footer__social-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  /* Bottom Row */
+  .kw-new-footer__bottom {
+    padding: 20px 0;
+    border-top: 1px solid #FFFFFF1A;
+    grid-column: span 3;
+  }
+  .kw-new-footer__bottom-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    @media screen and (max-width: 749px) {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
+  }
+  .kw-new-footer__copyright {
+    font-size: 12px;
+    color: #FFFFFF;
+    opacity: 0.5;
+    margin: 0;
+  }
+  .kw-new-footer__legal {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 36px;
+  }
+  .kw-new-footer__legal a {
+    font-size: 12px;
+    color: #FFFFFF;
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+  .kw-new-footer__legal a:hover {
+    opacity: 1;
+  }
+
+
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "KW - New Footer",
+  "tag": "section",
+  "class": "kw-new-footer-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer Logo Image"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#3C4127"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "default": "#DFE2D6"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Column 1"
+    },
+    {
+      "type": "text",
+      "id": "heading_1",
+      "label": "Heading",
+      "default": "Klantenservivce"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Column 2"
+    },
+    {
+      "type": "text",
+      "id": "heading_2",
+      "label": "Heading",
+      "default": "Assortiment"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Column 3"
+    },
+    {
+      "type": "text",
+      "id": "heading_3",
+      "label": "Heading",
+      "default": "Over ons"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Column 4 (Contact)"
+    },
+    {
+      "type": "text",
+      "id": "heading_4",
+      "label": "Heading",
+      "default": "Contact"
+    },
+    {
+      "type": "richtext",
+      "id": "store_info",
+      "label": "Contact Information",
+      "default": "<p>Retailpark Roermond<br>Schaarbroekerweg 4a, 6042 EJ Roermond<br>Ma - Zo: 10.00u - 18.00u</p>"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter Heading",
+      "default": "SCHRIJF JE IN VOOR ONZE NIEUWSBRIEF"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_desc",
+      "label": "Newsletter Description",
+      "default": "En ontvang 10% korting op je volgende bestelling"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Input Placeholder",
+      "default": "Jouw e-mailadres..."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_btn_text",
+      "label": "Button Label",
+      "default": "SCHRIJF IN"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "text",
+      "id": "social_heading",
+      "label": "Social Heading",
+      "default": "Volg ons op social media"
+    },
+    {
+      "type": "url",
+      "id": "social_facebook",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "social_instagram",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Section"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "© 2026 Kampeerwinkel Roermond"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_legal_links",
+      "label": "Show Legal Links",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "bottom_menu",
+      "label": "Bottom Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - New Footer"
+    }
+  ]
+}
+{% endschema %}

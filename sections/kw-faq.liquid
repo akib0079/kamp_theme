@@ -1,0 +1,354 @@
+{% comment %}
+  KW - FAQ Section
+  Based on Figma design node 1080:961
+  Accordion-style FAQ with expand/collapse functionality
+{% endcomment %}
+
+<section class="kw-faq" style="
+  --faq-padding-top: {{ section.settings.padding_top }}px;
+  --faq-padding-bottom: {{ section.settings.padding_bottom }}px;
+" >
+  <div class="kw-faq__container">
+    <div class="kw-faq__header" data-animate="fade">
+      <h2 class="kw-faq__title">{{ section.settings.title }}</h2>
+      {% if section.settings.subtitle != blank %}
+        <p class="kw-faq__subtitle">{{ section.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+    
+    <div class="kw-faq__list" data-animate="fade-up"  data-animate-stagger="0.1">
+      {% for block in section.blocks %}
+        <div class="kw-faq__item" {{ block.shopify_attributes }}>
+          <button class="kw-faq__question" aria-expanded="false" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true'); this.parentElement.classList.toggle('is-open');">
+            <span class="kw-faq__question-text">{{ block.settings.question }}</span>
+            <span class="kw-faq__icon">
+              <svg class="kw-faq__icon-plus" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg class="kw-faq__icon-minus" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 10H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+          <div class="kw-faq__answer-wrapper">
+            <div class="kw-faq__answer">
+              <p>{{ block.settings.answer }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .kw-faq {
+    padding-top: var(--faq-padding-top, 80px);
+    padding-bottom: var(--faq-padding-bottom, 80px);
+    background-color: #ffffff;
+  }
+
+  .kw-faq__container {
+    max-width: 1026px;
+    margin: 0 auto;
+    padding: 0 50px;
+  }
+
+  /* Header */
+  .kw-faq__header {
+    text-align: center;
+    margin-bottom: 100px;
+  }
+
+  .kw-faq__title {
+    font-size: 36px;
+    font-weight: 600;
+    color: #202020;
+    text-transform: uppercase;
+    margin: 0 0 20px 0;
+    line-height: 1;
+  }
+
+  .kw-faq__subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: #313131;
+    line-height: 1.5;
+    margin: 0 auto;
+    max-width: 646px;
+  }
+
+  /* FAQ List - 30px gap between all elements */
+  .kw-faq__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* FAQ Item */
+  .kw-faq__item {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .kw-faq__item:first-child {
+    padding-top: 0;
+  }
+
+  .kw-faq__item:last-child {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  /* Question Button */
+  .kw-faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0;
+    cursor: pointer;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+  }
+
+  .kw-faq__question-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  /* Icon */
+  .kw-faq__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: #000000;
+    position: relative;
+  }
+
+  .kw-faq__icon svg {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  /* Default state: show plus, hide minus */
+  .kw-faq .kw-faq__icon .kw-faq__icon-plus {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .kw-faq .kw-faq__icon .kw-faq__icon-minus {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* Open state: hide plus, show minus */
+  .kw-faq .kw-faq__item.is-open .kw-faq__icon .kw-faq__icon-plus {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .kw-faq .kw-faq__item.is-open .kw-faq__icon .kw-faq__icon-minus {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Answer with smooth animation */
+  .kw-faq__answer-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1), margin-top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 0;
+  }
+
+  .kw-faq__item.is-open .kw-faq__answer-wrapper {
+    grid-template-rows: 1fr;
+    margin-top: 10px;
+  }
+
+  .kw-faq__answer {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .kw-faq__answer p {
+    font-size: 16px;
+    font-weight: 400;
+    color: #414141;
+    line-height: 1.5;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+  }
+
+  .kw-faq__item.is-open .kw-faq__answer p {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Focus State */
+  .kw-faq__question:focus {
+    outline: none;
+  }
+
+  .kw-faq__question:focus-visible {
+    outline: 2px solid #8A916B;
+    outline-offset: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .kw-faq {
+      padding-top: 60px;
+      padding-bottom: 60px;
+    }
+
+    .kw-faq__container {
+      padding: 0 20px;
+    }
+
+    .kw-faq__header {
+      margin-bottom: 60px;
+    }
+
+    .kw-faq__title {
+      font-size: 28px;
+    }
+
+    .kw-faq__subtitle {
+      font-size: 16px;
+    }
+
+    .kw-faq__question-text {
+      font-size: 15px;
+    }
+
+    .kw-faq__answer p {
+      font-size: 14px;
+    }
+
+    .kw-faq__item {
+      padding-top: 18px;
+      padding-bottom: 18px;
+    }
+
+    .kw-faq__item:first-child {
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .kw-faq__title {
+      font-size: 24px;
+    }
+
+    .kw-faq__subtitle {
+      font-size: 15px;
+    }
+
+    .kw-faq__question-text {
+      font-size: 14px;
+    }
+
+    .kw-faq__item {
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
+    .kw-faq__item:first-child {
+      padding-top: 0;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - FAQ",
+  "tag": "section",
+  "class": "kw-section-faq",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Veelgestelde vragen"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "A comprehensive guide to retroreflection, material grades, and safety applications for industrial and commercial use."
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 80,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq_item",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "What delivery options do you offer?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "We offer standard, express, and same-day delivery options. The availability depends on your location and the items you're purchasing."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - FAQ",
+      "blocks": [
+        { "type": "faq_item", "settings": { "question": "What delivery options do you offer?", "answer": "We offer standard, express, and same-day delivery options. The availability depends on your location and the items you're purchasing." }},
+        { "type": "faq_item", "settings": { "question": "Can I change my delivery address after placing the order?", "answer": "Yes, you can change your delivery address within 24 hours of placing your order by contacting our customer service." }},
+        { "type": "faq_item", "settings": { "question": "What should I do if my order hasn't arrived yet?", "answer": "Please check your tracking information first. If there are issues, contact our customer service team for assistance." }},
+        { "type": "faq_item", "settings": { "question": "Do you ship internationally?", "answer": "Yes, we ship to most European countries. Shipping costs and delivery times vary by destination." }},
+        { "type": "faq_item", "settings": { "question": "What happens if I'm not home during delivery?", "answer": "The carrier will leave a notice and attempt redelivery or you can pick up your package at a nearby collection point." }},
+        { "type": "faq_item", "settings": { "question": "How can I track my order?", "answer": "Once your order ships, you'll receive an email with tracking information. You can also track your order in your account dashboard." }}
+      ]
+    }
+  ]
+}
+{% endschema %}

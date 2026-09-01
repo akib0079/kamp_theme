@@ -1,0 +1,281 @@
+{% comment %}
+  KW - Service Section
+  Two images on left, text content with CTA button on right
+  Based on Figma design node 1080:358
+{% endcomment %}
+
+<section class="kw-service section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+" data-animate="fade">
+  {% comment %} <div class="kw-service__container"> {% endcomment %}
+    <div class="kw-service__content">
+      <div class="kw-service__images">
+        <div class="kw-service__image-card kw-service__image-card--small">
+          {% if section.settings.image_1 != blank %}
+            {{ section.settings.image_1 | image_url: width: 500 | image_tag: 
+              class: 'kw-service__image',
+              loading: 'lazy',
+              alt: section.settings.title
+            }}
+          {% else %}
+            <div class="kw-service__image-placeholder"></div>
+          {% endif %}
+        </div>
+        <div class="kw-service__image-card kw-service__image-card--large">
+          {% if section.settings.image_2 != blank %}
+            {{ section.settings.image_2 | image_url: width: 800 | image_tag: 
+              class: 'kw-service__image',
+              loading: 'lazy',
+              alt: section.settings.title
+            }}
+          {% else %}
+            <div class="kw-service__image-placeholder"></div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="kw-service__text">
+        <div class="kw-service__text-wrapper">
+          <span class="kw-service__label">{{ section.settings.label }}</span>
+          <h2 class="kw-service__title">{{ section.settings.title }}</h2>
+          <div class="kw-service__description">
+            {{ section.settings.description }}
+          </div>
+        </div>
+        
+        {% if section.settings.button_text != blank %}
+          
+          {% render 'btn-global', label: section.settings.button_text, url: section.settings.button_link, class: 'kw-service__button', icon: true %}
+        {% endif %}
+      </div>
+    </div>
+  {% comment %} </div> {% endcomment %}
+</section>
+
+<style>
+  .kw-service {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+  }
+
+  .kw-service__container {
+    max-width: 1628px;
+    margin: 0 auto;
+  }
+
+  .kw-service__content {
+    display: flex;
+    gap: 102px;
+    align-items: center;
+  }
+
+  .kw-service__images {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+    width: 724px;
+  }
+
+  .kw-service__image-card {
+    height: 523px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #F4F4F4;
+  }
+
+  .kw-service__image-card--small {
+    flex: 1;
+  }
+
+  .kw-service__image-card--large {
+    flex: 0 0 458px;
+  }
+
+  .kw-service__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-service__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+  }
+
+  .kw-service__text {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    max-width: 548px;
+  }
+
+  .kw-service__text-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .kw-service__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .kw-service__title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .kw-service__description {
+    font-size: 16px;
+    font-weight: 400;
+    color: #4A4A4A;
+    line-height: 1.5;
+    max-width: 433px;
+  }
+
+  .kw-service__description p {
+    margin: 0 0 1em;
+  }
+
+  .kw-service__description p:last-child {
+    margin-bottom: 0;
+  }
+  .kw-service__button{
+    align-self: flex-start;
+    background-color: #8A916B;
+    height: 52px;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1400px) {
+    .kw-service__content {
+      flex-direction: column;
+      gap: 50px;
+    }
+
+    .kw-service__images {
+      width: 100%;
+    }
+
+    .kw-service__text {
+      max-width: 100%;
+    }
+
+    .kw-service__description {
+      max-width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-service {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 60px);
+    }
+
+    .kw-service__images {
+      flex-direction: column;
+    }
+
+    .kw-service__image-card {
+      height: 280px;
+      flex: none;
+    }
+
+    .kw-service__image-card--large {
+      flex: 1;
+    }
+
+    .kw-service__title {
+      font-size: 26px;
+    }
+
+    .kw-service__button {
+      width: 100%;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Service",
+  "tag": "section",
+  "class": "kw-section-service",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1 (Small)"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2 (Large)"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Onze service"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Deskundig advies in de winkel"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Bij ons draait het niet alleen om verkopen. Wij nemen de tijd om jouw situatie te begrijpen en praktisch advies te geven.</p><p>Of je nu voor het eerst een kampeervakantie plant of je ski's wil upgraden voor een nieuwe winter, wij helpen je naar een beslissing waar je écht wat aan hebt.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Explore More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Service"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,613 @@
+{%- comment -%}
+  Hero banner (Kampeerwinkel)
+  Gebaseerd op het Figma-ontwerp.
+  - Links/rechts: tekstblok (eyebrow, titel, tekst) + knop, op een egale achtergrondkleur
+  - Andere kant: afbeelding of video (upload), of YouTube/Vimeo
+  - Zelfde maximale breedte als de rest van de pagina
+  - Instelbare ruimte boven en onder
+  - Volledig responsive: stapelt onder elkaar op mobiel
+  - Geen animaties bij openen (optioneel een langzame zoom op de media)
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+
+  assign overlay_alpha = s.overlay_opacity | divided_by: 100.0
+  assign media_w = 100 | minus: s.content_width
+  assign image_sizes = '(max-width: 749px) 100vw, ' | append: media_w | append: 'vw'
+
+  assign image_alt = s.heading
+  if s.image != blank and s.image.alt != blank
+    assign image_alt = s.image.alt
+  endif
+
+  assign video_show_controls = false
+  if s.video_controls or s.video_autoplay == false
+    assign video_show_controls = true
+  endif
+
+  # Kolom-indeling en volgorde (in Liquid bepaald, geen CSS-specificiteitsconflict)
+  if s.content_position == 'right'
+    assign grid_cols = '1fr ' | append: s.content_width | append: '%'
+    assign content_order = 2
+    assign media_order = 1
+  else
+    assign grid_cols = s.content_width | append: '% 1fr'
+    assign content_order = 0
+    assign media_order = 0
+  endif
+
+  # Volgorde op mobiel
+  if s.mobile_media_first
+    assign m_content_order = 2
+    assign m_media_order = 1
+  else
+    assign m_content_order = 1
+    assign m_media_order = 2
+  endif
+
+  # Tekstuitlijning
+  if s.text_align == 'center'
+    assign align_items = 'center'
+    assign inner_margin = 'auto'
+  else
+    assign align_items = 'flex-start'
+    assign inner_margin = '0'
+  endif
+
+  assign root_classes = 'hero'
+  if s.enable_kenburns and s.media_type != 'video_url'
+    assign root_classes = root_classes | append: ' hero--kenburns'
+  endif
+-%}
+
+{%- style -%}
+  #Hero-{{ section.id }} *,
+  #Hero-{{ section.id }} *::before,
+  #Hero-{{ section.id }} *::after { box-sizing: border-box; }
+
+  #Hero-{{ section.id }} {
+    position: relative;
+    padding-top: {{ s.padding_top }}px;
+    padding-bottom: {{ s.padding_bottom }}px;
+  }
+
+  #Hero-{{ section.id }} .hero__page {
+    max-width: var(--page-width, {{ s.page_width }}px);
+    margin-inline: auto;
+    padding-inline: {{ s.page_padding }}px;
+  }
+
+  #Hero-{{ section.id }} .hero__grid {
+    display: grid;
+    grid-template-columns: {{ grid_cols }};
+    min-height: {{ s.height_desktop }}px;
+    overflow: hidden;
+    {% if s.corner_radius > 0 %}border-radius: {{ s.corner_radius }}px;{% endif %}
+  }
+
+  /* Tekstpaneel (egale kleur) */
+  #Hero-{{ section.id }} .hero__content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: {{ s.color_content_bg }};
+    order: {{ content_order }};
+  }
+  #Hero-{{ section.id }} .hero__content-inner {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    margin-inline: {{ inner_margin }};
+    padding: {{ s.content_padding }}px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: {{ align_items }};
+    text-align: {{ s.text_align }};
+  }
+
+  #Hero-{{ section.id }} .hero__eyebrow {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: {{ s.color_text }};
+    opacity: .72;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #Hero-{{ section.id }} .hero__eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 2px;
+    background: currentColor;
+    opacity: .65;
+  }
+
+  #Hero-{{ section.id }} .hero__heading {
+    margin: 0;
+    font-weight: 600;
+    font-size: clamp(28px, 6.5vw, {{ s.heading_size }}px);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: {{ s.color_text }};
+    overflow-wrap: break-word;
+  }
+
+  #Hero-{{ section.id }} .hero__body {
+    margin: 0;
+    color: {{ s.color_text }};
+    font-size: 16px;
+    line-height: 1.55;
+    opacity: .85;
+    max-width: 48ch;
+    overflow-wrap: break-word;
+  }
+  #Hero-{{ section.id }} .hero__body > * { margin: 0 0 .5em; }
+  #Hero-{{ section.id }} .hero__body > *:last-child { margin-bottom: 0; }
+
+  /* Knop (egaal, zonder hover-animatie) */
+  #Hero-{{ section.id }} .hero__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 14px 30px;
+    border-radius: 11px;
+    background-color: {{ s.color_button }};
+    color: {{ s.color_button_text }};
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, .14);
+  }
+  #Hero-{{ section.id }} .hero__button:focus-visible {
+    outline: 2px solid {{ s.color_text }};
+    outline-offset: 3px;
+  }
+  #Hero-{{ section.id }} .hero__button-icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* Media */
+  #Hero-{{ section.id }} .hero__media {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background-color: #e9e9e6;
+    order: {{ media_order }};
+  }
+  #Hero-{{ section.id }} .hero__media-zoom { position: absolute; inset: 0; }
+  #Hero-{{ section.id }} .hero__img,
+  #Hero-{{ section.id }} .hero__video,
+  #Hero-{{ section.id }} .hero__picture,
+  #Hero-{{ section.id }} .hero__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  #Hero-{{ section.id }} .hero__picture img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #Hero-{{ section.id }} .hero__external { position: absolute; inset: 0; overflow: hidden; }
+  #Hero-{{ section.id }} .hero__external iframe,
+  #Hero-{{ section.id }} .hero__external-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  #Hero-{{ section.id }} .hero__overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-color: {{ s.overlay_color }};
+    opacity: {{ overlay_alpha }};
+    pointer-events: none;
+  }
+
+  /* Mobiel: alles onder elkaar */
+  @media screen and (max-width: 749px) {
+    #Hero-{{ section.id }} .hero__page { padding-inline: 16px; }
+    #Hero-{{ section.id }} .hero__grid {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    #Hero-{{ section.id }} .hero__content { order: {{ m_content_order }}; }
+    #Hero-{{ section.id }} .hero__media {
+      order: {{ m_media_order }};
+      height: {{ s.height_mobile }}px;
+    }
+    #Hero-{{ section.id }} .hero__content-inner {
+      padding: clamp(28px, 7vw, {{ s.content_padding }}px);
+      max-width: none;
+      margin-inline: 0;
+    }
+  }
+
+  /* Optionele langzame zoom op de media */
+  @media (prefers-reduced-motion: no-preference) {
+    #Hero-{{ section.id }}.hero--kenburns .hero__media-zoom {
+      animation: heroKenBurns-{{ section.id }} 20s ease-in-out infinite alternate;
+    }
+  }
+  @keyframes heroKenBurns-{{ section.id }} {
+    0% { transform: scale(1.02); }
+    100% { transform: scale(1.1); }
+  }
+{%- endstyle -%}
+
+<div id="Hero-{{ section.id }}" class="{{ root_classes }}">
+  <div class="hero__page">
+    <div class="hero__grid">
+
+      <div class="hero__content">
+        <div class="hero__content-inner">
+          {%- if s.eyebrow != blank -%}
+            <p class="hero__eyebrow">{{ s.eyebrow | escape }}</p>
+          {%- endif -%}
+
+          {%- if s.heading != blank -%}
+            <h2 class="hero__heading">{{ s.heading | escape }}</h2>
+          {%- endif -%}
+
+          {%- if s.body != blank -%}
+            <div class="hero__body">{{ s.body }}</div>
+          {%- endif -%}
+
+          {%- if s.button_label != blank -%}
+            <div class="hero__actions">
+              <a class="hero__button" {% if s.button_link != blank %}href="{{ s.button_link }}"{% else %}href="#"{% endif %}>
+                <span class="hero__button-label">{{ s.button_label | escape }}</span>
+                {%- if s.show_button_icon -%}
+                  <svg class="hero__button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                {%- endif -%}
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="hero__media">
+        <div class="hero__media-zoom">
+          {%- if s.media_type == 'video' and s.video != blank -%}
+            <video
+              class="hero__video"
+              playsinline
+              preload="metadata"
+              {% if s.video_autoplay %}autoplay muted{% endif %}
+              {% if s.video_loop %}loop{% endif %}
+              {% if video_show_controls %}controls{% endif %}
+              {% if s.video.preview_image %}poster="{{ s.video.preview_image | image_url: width: 1600 }}"{% endif %}
+            >
+              {%- for source in s.video.sources -%}
+                <source src="{{ source.url }}" type="{{ source.mime_type }}">
+              {%- endfor -%}
+            </video>
+
+          {%- elsif s.media_type == 'video_url' and s.video_url != blank -%}
+            <div class="hero__external">
+              {{ s.video_url | external_video_tag: class: 'hero__external-iframe', loading: 'lazy' }}
+            </div>
+
+          {%- elsif s.image != blank -%}
+            <picture class="hero__picture">
+              {%- if s.image_mobile != blank -%}
+                <source media="(max-width: 749px)" srcset="{{ s.image_mobile | image_url: width: 1100 }}">
+              {%- endif -%}
+              {{ s.image | image_url: width: 2000 | image_tag:
+                loading: 'eager',
+                fetchpriority: 'high',
+                widths: '600, 800, 1000, 1200, 1400, 1600, 2000',
+                sizes: image_sizes,
+                class: 'hero__img',
+                alt: image_alt
+              }}
+            </picture>
+
+          {%- else -%}
+            {{ 'lifestyle-1' | placeholder_svg_tag: 'hero__placeholder' }}
+          {%- endif -%}
+        </div>
+        <div class="hero__overlay" aria-hidden="true"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "tag": "section",
+  "class": "section-hero-banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Indeling"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Tekst aan kant",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "right", "label": "Rechts" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "content_width",
+      "min": 30,
+      "max": 55,
+      "step": 1,
+      "unit": "%",
+      "label": "Breedte tekstpaneel (desktop)",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "page_width",
+      "min": 1000,
+      "max": 1600,
+      "step": 10,
+      "unit": "px",
+      "label": "Maximale breedte",
+      "info": "Wordt automatisch gelijkgetrokken met je theme als die een paginabreedte gebruikt. Stel anders dezelfde waarde in als je andere secties.",
+      "default": 1280
+    },
+    {
+      "type": "range",
+      "id": "page_padding",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Zijruimte",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "color_content_bg",
+      "label": "Achtergrond tekstpaneel",
+      "default": "#F0F1ED"
+    },
+    {
+      "type": "range",
+      "id": "height_desktop",
+      "min": 360,
+      "max": 760,
+      "step": 10,
+      "unit": "px",
+      "label": "Hoogte (desktop)",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "height_mobile",
+      "min": 240,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Hoogte media (mobiel)",
+      "default": 360
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_media_first",
+      "label": "Media boven tekst op mobiel",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Ronde hoeken",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Ruimte"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte boven",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Ruimte onder",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Tekst"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Klein label boven titel (optioneel)"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titel",
+      "default": "Het barbecue seizoen is hier!"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 26,
+      "max": 72,
+      "step": 1,
+      "unit": "px",
+      "label": "Titelgrootte (desktop)",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Tekstkleur",
+      "default": "#202020"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Tekst (optioneel)"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Uitlijning tekst",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Gecentreerd" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "min": 24,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Binnenruimte tekstpaneel",
+      "default": 72
+    },
+    {
+      "type": "header",
+      "content": "Knop"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Knoptekst",
+      "default": "Shop nu"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Knoplink"
+    },
+    {
+      "type": "color",
+      "id": "color_button",
+      "label": "Knopkleur",
+      "default": "#F8843E"
+    },
+    {
+      "type": "color",
+      "id": "color_button_text",
+      "label": "Knoptekstkleur",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button_icon",
+      "label": "Pijltje tonen",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Media (andere kant)"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Type",
+      "options": [
+        { "value": "image", "label": "Afbeelding" },
+        { "value": "video", "label": "Video (upload)" },
+        { "value": "video_url", "label": "Video (YouTube/Vimeo)" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Afbeelding"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Afbeelding mobiel (optioneel)"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (upload)"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video-URL (YouTube/Vimeo)",
+      "accept": ["youtube", "vimeo"]
+    },
+    {
+      "type": "checkbox",
+      "id": "video_autoplay",
+      "label": "Video automatisch afspelen",
+      "info": "Wordt automatisch gedempt zodat autoplay werkt.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_loop",
+      "label": "Video herhalen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_controls",
+      "label": "Bediening tonen",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlaykleur",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "%",
+      "label": "Overlay dekking",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_kenburns",
+      "label": "Langzame zoom op media",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,356 @@
+{% comment %}
+  KW - Values Grid Section
+  Three equal cards with image backgrounds and text overlays
+  Based on Figma design node 1080:388
+{% endcomment %}
+
+<section class="kw-values-grid section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --blur-amount: {{ section.settings.blur_amount }}px;
+">
+  {% comment %} <div class="kw-values-grid__container"> {% endcomment %}
+    <div class="kw-values-grid__grid" data-animate="fade-up" data-animate-stagger="0.15">
+      {% for block in section.blocks %}
+        {% if block.type == 'value_card' %}
+          <div class="kw-values-grid__card" {{ block.shopify_attributes }}>
+            <div class="kw-values-grid__card-image-wrapper">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 800 | image_tag: 
+                  class: 'kw-values-grid__card-image',
+                  loading: 'lazy',
+                  alt: block.settings.title
+                }}
+              {% else %}
+                <div class="kw-values-grid__card-placeholder"></div>
+              {% endif %}
+              {% if block.settings.overlay != blank %}
+                {{ block.settings.overlay | image_url: width: 800 | image_tag: 
+                  class: 'kw-values-grid__card-overlay-img',
+                  loading: 'lazy',
+                  alt: ''
+                }}
+              {% endif %}
+            </div>
+            
+            <div class="kw-values-grid__card-overlay">
+              <div class="kw-values-grid__card-content">
+                <div class="kw-values-grid__card-titles">
+                  <span class="kw-values-grid__card-label">{{ block.settings.label }}</span>
+                  <h3 class="kw-values-grid__card-title">{{ block.settings.title }}</h3>
+                </div>
+                <p class="kw-values-grid__card-description">{{ block.settings.description }}</p>
+                {%- if block.settings.btn_text != blank -%}
+                  <div class="kw-values-grid__card-btn-wrap">
+                    {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'kw-values-grid__card-btn', icon: true %}
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% comment %} </div> {% endcomment %}
+</section>
+
+<style>
+  .kw-values-grid {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+  }
+
+  .kw-values-grid__container {
+    max-width: 1728px;
+    margin: 0 auto;
+  }
+
+  .kw-values-grid__grid {
+    display: flex;
+    gap: 20px;
+  }
+
+  .kw-values-grid__card {
+    flex: 1;
+    height: 654px;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    background: #F4F4F4;
+  }
+
+  .kw-values-grid__card-image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kw-values-grid__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .7s ease-out;
+  }
+  .kw-values-grid__card:hover .kw-values-grid__card-image {
+    transform: scale(1.04);
+  }
+  .kw-values-grid__card-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+  }
+  .kw-values-grid__card-overlay-img{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+    object-fit: cover;
+  }
+  .kw-values-grid__card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    padding-top: 64px;
+  }
+
+  .kw-values-grid__card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kw-values-grid__card-titles {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .kw-values-grid__card-label {
+    font-size: 20px;
+    font-weight: 500;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: -0.8px;
+    line-height: 1.08;
+  }
+
+  .kw-values-grid__card-title {
+    font-size: 40px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: -0.8px;
+    line-height: 1.08;
+    margin: 0;
+  }
+
+  .kw-values-grid__card-description {
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFFFFF;
+    opacity: 0.7;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 421px;
+  }
+  .kw-values-grid__card-btn-wrap{
+    height: 0;
+    transition: height 0.3s ease-out;
+  }
+  .kw-values-grid__card:hover .kw-values-grid__card-btn-wrap{
+    height: 52px;
+  }
+  .kw-values-grid__card-btn{
+    margin-top: 12px;
+    border-radius: 13px;
+    border: 1.065px solid rgba(255, 255, 255, .28);
+    background: rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(10.65px);
+    backdrop-filter: blur(10.65px);
+    color: #fff;
+    height: 40px;
+    grid-gap: 8px;
+    text-transform: unset;
+    transition: background .3s ease-out;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 98%;
+    align-self: flex-start;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.4s ease-out;
+    transition-property: background, visibility, opacity;
+  }
+  .kw-values-grid__card:hover .kw-values-grid__card-btn{
+    visibility: visible;
+    opacity: 1;
+  }
+  .kw-values-grid__card-btn::before{
+      content: unset;
+  }
+  .kw-values-grid__card-btn:hover{
+      background: rgba(255, 255, 255, 0.3);
+  }
+  .kw-values-grid__card-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-values-grid__card {
+      height: 550px;
+    }
+
+    .kw-values-grid__card-title {
+      font-size: 32px;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .kw-values-grid__grid {
+      flex-direction: column;
+    }
+
+    .kw-values-grid__card {
+      height: 450px;
+      flex: none;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-values-grid {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 60px);
+    }
+
+    .kw-values-grid__grid {
+      gap: 16px;
+    }
+
+    .kw-values-grid__card {
+      height: 400px;
+    }
+
+    .kw-values-grid__card-overlay {
+      padding: 25px;
+      padding-top: 50px;
+    }
+
+    .kw-values-grid__card-label {
+      font-size: 16px;
+    }
+
+    .kw-values-grid__card-title {
+      font-size: 28px;
+    }
+
+    .kw-values-grid__card-description {
+      font-size: 13px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Values Grid",
+  "tag": "section",
+  "class": "kw-section-values-grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "blur_amount",
+      "label": "Glass Effect Blur",
+      "info": "Adjust the backdrop blur intensity of the card overlays",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 8,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value_card",
+      "name": "Value Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "overlay",
+          "label": "Overlay Image"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label (small text)",
+          "default": "Expertise"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title (large text)",
+          "default": "boven alles"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "We selecteren merken en producten op kwaliteit, functionaliteit en waarde."
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Shop Alles"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Values Grid",
+      "blocks": [
+        { "type": "value_card", "settings": { "label": "Expertise", "title": "boven alles", "description": "We selecteren merken en producten op kwaliteit, functionaliteit en waarde." }},
+        { "type": "value_card", "settings": { "label": "Breed assortiment", "title": "met diepgang", "description": "We selecteren merken en producten op kwaliteit, functionaliteit en waarde." }},
+        { "type": "value_card", "settings": { "label": "Service", "title": "die werkt", "description": "Wij lossen problemen op, beantwoorden vragen en zorgen dat je outdoor echt top wordt." }}
+      ]
+    }
+  ]
+}
+{% endschema %}

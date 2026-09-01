@@ -1,0 +1,481 @@
+<script
+  src="{{ 'countdown-timer.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+<div class="section home-timer-section section-id-{{ section.id }}">
+    {% for block in section.blocks %}
+        {% if block.type == 'timer' %}
+            <div class="home-timer__wrap" {{ block.shopify_attributes }} data-animate="fade">
+                <div class="home-timer__column">
+                    {% if block.settings.title != blank %}
+                        <h3 class="home-timer__title">{{ block.settings.title }}</h3>
+                    {% endif %}
+                    <countdown-timer
+                        class="countdown-timer"
+                        data-end-date="{{ block.settings.end_datetime | strip }}"
+                        data-timezone="{{block.settings.timezone }}"
+                        data-hide-on-complete="{{block.settings.hide_on_complete }}"
+                    >
+                        {% capture separator %}
+                          {%- if block.settings.separator != blank -%}
+                            <span class="countdown-timer__separator">{{ block.settings.separator }}</span>
+                          {%- endif -%}
+                        {% endcapture %}
+                    <div class="countdown-timer__wrap" aria-live="polite">
+                        <div class="countdown-timer__unit">
+                        <span data-days>00</span>
+                        <small class="countdown-timer__label">Days</small>
+                        </div>
+                        {{ separator }}
+                        <div class="countdown-timer__unit">
+                        <span data-hours>00</span>
+                        <small class="countdown-timer__label">Hours</small>
+                        </div>
+                        {{ separator }}
+                        <div class="countdown-timer__unit">
+                        <span data-minutes>00</span>
+                        <small class="countdown-timer__label">Minutes</small>
+                        </div>
+                        {{ separator }}
+                        <div class="countdown-timer__unit">
+                        <span data-seconds>00</span>
+                        <small class="countdown-timer__label">Seconds</small>
+                        </div>
+                    </div>
+                    </countdown-timer>
+
+                </div>
+                <div class="home-timer__column">
+                    {% if block.settings.desc != blank %}
+                        <div class="home-timer__desc desc">{{ block.settings.desc }}</div>
+                    {% endif %}
+                    {%- if block.settings.btn_text != blank -%}
+                        {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-timer__btn', icon: true %}
+                    {%- endif -%}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <div class="home-timer__blocks" data-animate="fade-up" data-animate-stagger="0.15">
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+            <div class="home-timer__block" {{ block.shopify_attributes }}>
+                {% if block.settings.title != blank %}
+                    <h4 class="home-timer__block-title">{{ block.settings.title }}</h4>
+                {% endif %}
+                {% if block.settings.desc != blank %}
+                    <div class="home-timer__block-desc desc">{{ block.settings.desc }}</div>
+                {% endif %}
+                {%- if block.settings.btn_text != blank -%}
+                    {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-timer__block-btn', icon: true %}
+                {%- endif -%}
+                {% if block.settings.img != blank %}
+                    {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-timer__img bg-img hidden--mobile' }}
+                    {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'home-timer__img bg-img hidden--desktop' }}
+                {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'home-timer__img bg-img placeholder' }}
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.countdown').forEach(initCountdown);
+});
+
+    function initCountdown(container) {
+        const endTimeStr = container.dataset.endTime;
+        const timezone = container.dataset.timezone;
+        const hideOnComplete = container.dataset.hideOnComplete === 'true';
+
+        if (!endTimeStr) return;
+
+        let endDate;
+
+        if (timezone === 'utc') {
+            endDate = new Date(endTimeStr + ' UTC');
+        } else {
+            // Store timezone assumed to match theme rendering timezone
+            endDate = new Date(endTimeStr.replace(' ', 'T'));
+        }
+
+        const daysEl = container.querySelector('[data-days]');
+        const hoursEl = container.querySelector('[data-hours]');
+        const minutesEl = container.querySelector('[data-minutes]');
+        const secondsEl = container.querySelector('[data-seconds]');
+
+        function tick() {
+            const now = new Date();
+            let diff = endDate - now;
+
+            if (diff <= 0) {
+            clearInterval(interval);
+            update(0, 0, 0, 0);
+
+            if (hideOnComplete) {
+                container.style.display = 'none';
+            }
+
+            container.dispatchEvent(new CustomEvent('countdown:finished'));
+            return;
+            }
+
+            const days = Math.floor(diff / 86400000);
+            diff %= 86400000;
+
+            const hours = Math.floor(diff / 3600000);
+            diff %= 3600000;
+
+            const minutes = Math.floor(diff / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+
+            update(days, hours, minutes, seconds);
+        }
+
+        function update(d, h, m, s) {
+            daysEl.textContent = pad(d);
+            hoursEl.textContent = pad(h);
+            minutesEl.textContent = pad(m);
+            secondsEl.textContent = pad(s);
+        }
+
+        function pad(num) {
+            return String(num).padStart(2, '0');
+        }
+
+        tick();
+        const interval = setInterval(tick, 1000);
+        }
+</script>
+{%stylesheet %}
+  .home-timer-section{
+    padding: 40px 0;
+  }
+  .home-timer__wrap {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    grid-gap: 30px;
+    padding: 50px;
+    background: #F0F1ED;
+    border-radius: 20px;
+    }
+    .home-timer__column {
+        display: flex;
+        /* flex-basis: 100%; */
+        justify-content: space-between;
+        align-items: center;
+        grid-gap: 20px;
+    }
+    .home-timer__title {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 98%;
+        color: #2E321D;
+        letter-spacing: -0.02em;
+        text-transform: none;
+    }
+    /* .home-timer__time {
+        font-family: Inter;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 98%;
+        white-space: pre;
+        letter-spacing: -0.02em;
+        color: #2E321D;
+    } */
+    .countdown-timer__wrap {
+        display: flex;
+        grid-gap: 1ch;
+        font-family: Inter;
+        font-size: 41px;
+        font-weight: 700;
+        line-height: 98%;
+    }
+    .countdown-timer__label{
+        display: none;
+    }
+    .home-timer__desc{
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 130%;
+        letter-spacing: -0.02em;
+        max-width: 368px;
+        color: #3C4127;
+    }
+    .home-timer__blocks{
+        margin-top: 20px;
+        display: flex;
+        grid-gap: 20px;
+    }
+    .home-timer__block {
+        position: relative;
+        z-index: 1;
+        min-height: 654px;
+        flex-basis: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 30px;
+        border-radius: 16px;
+        overflow: hidden;
+        color: #FFF;
+        text-align: center;
+    }
+    .home-timer__block::after{
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        z-index: -1;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.80) 100%);
+        backdrop-filter: blur(var(--blur-amount, 12px));
+        -webkit-backdrop-filter: blur(var(--blur-amount, 12px));
+        mask-image: linear-gradient(to top, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    }
+    .home-timer__img{
+        z-index: -2;
+        transition: transform 0.5s ease-out;
+    }
+    .home-timer__block:hover .home-timer__img{
+        transform: scale(1.05);
+    }
+    .home-timer__img.placeholder{
+        background: #7d7d7d80;
+    }
+    .home-timer__block-title{
+        margin: 0;
+        font-size: 38px;
+        font-weight: 600;
+        line-height: 100%; 
+        letter-spacing: -0.02em;
+    }
+    .home-timer__block-desc{
+        margin-top: 18px;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%;
+        max-width: 369px;
+    }
+    .btn-global.home-timer__block-btn{
+        margin-top: 18px;
+        border-radius: 13px;
+        border: 1.065px solid rgba(255, 255, 255, 0.28);
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10.65px);
+        color: #FFF;
+        height: 40px;
+        grid-gap: 8px;
+        text-transform: unset;
+        transition: background 0.3s ease-out;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 98%; 
+    }
+    .btn-global.home-timer__block-btn::before{
+        content: unset;
+    }
+    .btn-global.home-timer__block-btn:hover{
+        background: rgba(255, 255, 255, 0.3);
+    }
+    .btn-global.home-timer__block-btn svg{
+        width: 12px;
+        height: 12px;
+    }
+    @media screen and (max-width: 1024px) {
+        .home-timer__wrap{
+            grid-template-columns: 1fr;
+        }
+    }
+    @media screen and (max-width: 749px) {
+        .home-timer-section{
+            display: flex;
+            flex-direction: column;
+        }
+        .home-timer__wrap{
+            grid-gap: 20px;
+            padding: 30px;
+            border-radius: 0;
+            text-align: center;
+        }
+        .home-timer__column{
+            flex-direction: column;
+        }
+        .home-timer__title{
+            font-size: 14px;
+        }
+        .countdown-timer__wrap{
+            font-size: 37px;
+        }
+        .home-timer__desc{
+            font-size: 14px;
+        }
+        .home-timer__blocks {
+            margin-top: 6px;
+            grid-gap: 6px;
+            flex-direction: column;
+        }
+        .home-timer__block{
+            min-height: 531px;
+            border-radius: 0
+        }
+        .home-timer__block-title{
+            font-size: 30px;
+        }
+        .home-timer__block-desc{
+            margin-top: 15px;
+            font-size: 12px;
+            max-width: 300px;
+        }
+    }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Home Timer",
+"settings": [
+        {
+        "type": "inline_richtext",
+        "id": "title",
+        "label": "Title",
+        "default": "Shop per categorie",
+        },
+        {
+        "type": "richtext",
+        "id": "desc",
+        "label": "Description",
+        "default": "<p>30% Discount for black Friday valid till 30th November</p>"
+        },
+    ],
+    "blocks": [
+        {
+        "type": "timer",
+        "name": "Timer",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "Flash Sale now on!",
+          },
+          {
+            "type": "text",
+            "id": "end_datetime",
+            "label": "End date & time (YYYY-MM-DD HH:MM)",
+            "info": "Example: 2026-02-10 23:59"
+        },
+        {
+        "type": "inline_richtext",
+        "id": "separator",
+        "label": "Separator",
+        "default": ":",
+        },
+        {
+            "type": "select",
+            "id": "timezone",
+            "label": "Timezone",
+            "default": "store",
+            "options": [
+                { "value": "store", "label": "Store timezone" },
+                { "value": "utc", "label": "UTC" }
+            ]
+        },
+        {
+            "type": "checkbox",
+            "id": "hide_on_complete",
+            "label": "Hide section when expired",
+            "default": true
+        },
+        {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>See your best prices and special discount. Dont miss the chance time is limited! </p>"
+        },
+            
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Shop Alles"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+        ]
+      },
+      {
+        "type": "block",
+        "name": "Block",
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "Snow full kit",
+          },
+        {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>30% Discount for black Friday valid till 30th November only for limited time!</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Shop Alles"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+        {
+            "type": "image_picker",
+            "id": "img",
+            "label": "Image"
+        },
+        {
+            "type": "image_picker",
+            "id": "img_mobile",
+            "label": "Image mobile"
+        }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Home Timer",
+        "blocks": [
+          {
+            "type": "timer"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,169 @@
+{%- doc -%}
+  Renders the cart summary totals.
+
+  @param {string} [accelerated_checkout_buttons_layout] - { 'vertical' } Forced layout of the additional checkout buttons, instead of relying on platform's layout.
+{%- enddoc -%}
+{%- unless cart.empty? -%}
+<div class="cart__summary-totals">
+  {% # We need to keep this node in place to allow morphing to work properly # %}
+  <div class="cart__original-total-container cart-primary-typography">
+    {%- if cart.cart_level_discount_applications.size > 0 -%}
+      <span class="cart__summary-item cart__original-total">
+        <span class="cart__original-total-label">{{ 'content.cart_subtotal' | t }}</span>
+        <span class="cart__original-total-value cart-secondary-typography">
+          {{- cart.original_total_price | money -}}
+        </span>
+      </span>
+      <div class="cart__summary-discounts">
+        <ul
+          class="discounts list-unstyled"
+          role="list"
+          aria-label="{{ 'content.discounts' | t }}"
+        >
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <li class="cart__summary-item cart__discount">
+              <span class="cart__discount-label">
+                {{- 'icon-discount.svg' | inline_asset_content -}}
+                {{ discount.title | escape }}
+              </span>
+              <span class="cart__discount-value cart-secondary-typography"
+                >-{{ discount.total_allocated_amount | money -}}
+              </span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {% if settings.show_cart_note or settings.show_add_discount_code %}
+    <div class="cart-actions">
+      {% if settings.show_cart_note %}
+        {% render 'cart-note' %}
+      {% endif %}
+      {% if settings.show_cart_note and settings.show_add_discount_code %}
+        <div class="cart-actions__divider"></div>
+      {% endif %}
+      {% if settings.show_add_discount_code %}
+        {% render 'cart-discount', section_id: section.id %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- liquid
+    if settings.currency_code_enabled_cart_total
+      assign total_price = cart.total_price | money_with_currency
+    else
+      assign total_price = cart.total_price | money
+    endif
+  -%}
+
+  <div class="cart__total-container{% if settings.show_installments %} cart__total-container--has-installments{% endif %}">
+    <span
+      class="cart__summary-item cart__total"
+      role="status"
+    >
+      <span class="cart__total-label cart-primary-typography">{{ 'content.cart_estimated_total' | t }}</span>
+      <text-component
+        ref="cartTotal"
+        value="{{ total_price | strip_html }}"
+        class="cart__total-value cart-secondary-typography"
+        {% comment %} Used by payment_terms web component {% endcomment %}
+        data-cart-subtotal
+      >
+        {{ total_price }}
+      </text-component>
+    </span>
+    {% if settings.show_installments %}
+      <span class="cart__summary-item cart__installments">
+        {% form 'cart', cart %}
+          {{ form | payment_terms }}
+        {% endform %}
+      </span>
+    {% endif %}
+    {% if settings.show_tax_info %}
+    <div class="cart__summary-item tax-note cart-primary-typography">
+      {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endunless %}
+{% if settings.trustpilot_rating_text %}
+  <div class="cart__summary-item trustpilot-rating">
+    <span class="cart__summary-rating_text">{{  settings.trustpilot_rating_text }}</span>
+    {% if settings.trustpilot_rating_img != blank %}
+      {{ settings.trustpilot_rating_img | image_url: width: nil | image_tag: class: 'cart__summary-rating_img'  }}
+    {% endif %}
+  </div>
+{% endif %}
+{%- unless cart.empty? -%}
+<div class="cart__ctas">
+  <button
+    type="submit"
+    id="checkout"
+    class="cart__checkout-button button btn-global"
+    name="checkout"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    form="cart-form"
+  >
+    <span>{{ 'content.checkout' | t }}</span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
+      <path d="M2.83366 8.5L14.167 8.5M14.167 8.5L9.91699 4.25M14.167 8.5L9.91699 12.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+    <div
+      class="
+        additional-checkout-buttons
+        {% if accelerated_checkout_buttons_layout == 'vertical' %}additional-checkout-buttons--vertical{% endif %}
+      "
+    >
+      {{ content_for_additional_checkout_buttons }}
+    </div>
+  {% endif %}
+</div>
+{% if settings.delivery_note != blank or settings.payment_icons_img != blank %}
+  <div class="cart__bottom-contents">
+    {% if settings.delivery_note != blank %}
+      <div class="cart__delivery-note">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M8.3987 7.66871L10.9927 10.2627L10.4274 10.8287L7.5987 8.00004V4.00004H8.3987V7.66871ZM7.9987 14.6667C4.3167 14.6667 1.33203 11.682 1.33203 8.00004C1.33203 4.31804 4.3167 1.33337 7.9987 1.33337C11.6807 1.33337 14.6654 4.31804 14.6654 8.00004C14.6654 11.682 11.6807 14.6667 7.9987 14.6667ZM7.9987 13.8667C9.55463 13.8667 11.0468 13.2486 12.1471 12.1484C13.2473 11.0482 13.8654 9.55598 13.8654 8.00004C13.8654 6.4441 13.2473 4.95189 12.1471 3.85168C11.0468 2.75147 9.55463 2.13337 7.9987 2.13337C6.44276 2.13337 4.95055 2.75147 3.85034 3.85168C2.75012 4.95189 2.13203 6.4441 2.13203 8.00004C2.13203 9.55598 2.75012 11.0482 3.85034 12.1484C4.95055 13.2486 6.44276 13.8667 7.9987 13.8667Z" fill="#2F2F2F"/>
+        </svg>
+        <span>{{ settings.delivery_note }}</span>
+      </div>
+    {% endif %}
+    {% if settings.payment_icons_img != blank %}
+      {{ settings.payment_icons_img | image_url: width: nil | image_tag: class: 'cart__payment-icons'  }}
+    {% endif %}
+  </div>
+{% endif %}
+{% endunless %}
+
+{% stylesheet %}
+  .cart-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-sm);
+    border-block: 1px solid var(--color-border);
+    padding-block: var(--padding-sm);
+    margin-block-start: var(--margin-3xs);
+  }
+
+  .cart-actions__divider {
+    border-block-start: 1px solid var(--color-border);
+  }
+
+  .cart__summary-totals:not(:has(.cart-actions)) {
+    margin-block-start: var(--margin-3xs);
+    border-block-start: 1px solid var(--color-border);
+    padding-block-start: var(--margin-xl);
+  }
+
+  .cart__installments {
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}

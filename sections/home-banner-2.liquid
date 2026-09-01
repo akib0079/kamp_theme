@@ -1,0 +1,134 @@
+<div class="section home-banner-2-section section-id-{{ section.id }}" >
+    <div class="home-banner-2__grid">
+        <div class="home-banner-2__content">
+            {% if section.settings.title != blank %}
+                <h2 class="home-banner-2__title">{{ section.settings.title }}</h2>
+            {% endif %}
+            {% if section.settings.desc != blank %}
+                <div class="home-banner-2__desc desc">{{ section.settings.desc }}</div>
+            {% endif %}
+            {%- if section.settings.btn_text != blank -%}
+                {% render 'btn-global', label: section.settings.btn_text, url: section.settings.btn_url, class: 'btn--secondary home-banner-2__btn', icon: true %}
+            {%- endif -%}
+        </div>
+        <div class="home-banner-2__img-wrap">
+            {% if section.settings.img != blank %}
+                {{ section.settings.img | image_url: width: nil | image_tag: class: 'home-banner-2__img bg-img hidden--mobile' }}
+                {{ section.settings.img_mobile | default: section.settings.img | image_url: width: nil | image_tag: class: 'home-banner-2__img bg-img hidden--desktop' }}
+            {% else %}
+                {{ 'image' | placeholder_svg_tag: 'home-banner-2__img bg-img placeholder' }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{%stylesheet %}
+  .home-banner-2-section{
+    padding: 20px 0;
+  }
+  .home-banner-2__grid{
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    background-color: #3C4127;
+    color: #F0F1ED;
+    border-radius: 15px;
+    overflow: hidden;
+    @media screen and (max-width: 749px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .home-banner-2__content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px;
+    overflow: hidden;
+    @media screen and (max-width: 749px) {
+      padding: 60px 30px;
+    }
+  }
+  .home-banner-2__title{
+    font-size: 50px;
+    font-weight: 600;
+    line-height: 98%;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+    max-width: 522px;
+    @media screen and (max-width: 749px) {
+      font-size: 32px;
+    }
+  }
+  .home-banner-2__desc{
+    font-size: 14px;
+    margin-bottom: 30px;
+    font-weight: 500;
+    line-height: 150%;
+  }
+  .home-banner-2__btn.btn-global{
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 50px;
+    padding: 15px 20px 15px 20px;
+    letter-spacing: 0;
+    svg{
+        width: 16px;
+        height: 16px;
+    }
+  }
+  .home-banner-2__img-wrap{
+    position: relative;
+    z-index: 1;
+    min-height: 500px;
+    height: 100%;
+    @media screen and (max-width: 749px) {
+      min-height: 345px;
+    }
+  }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Home Banner",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "Kampeerdagen t/m zondag 5 juli",
+        },
+        {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>Vele last minute aanbiedingen en summer sale op kleding.</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Shop now"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all"
+        },
+        {
+            "type": "image_picker",
+            "id": "img",
+            "label": "Image"
+        },
+        {
+            "type": "image_picker",
+            "id": "img_mobile",
+            "label": "Image mobile"
+        },
+    ],
+    "presets": [
+      {
+        "name": "KW - Home Banner 2",
+      }
+    ]
+  }
+{% endschema %}

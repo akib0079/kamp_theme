@@ -1,0 +1,218 @@
+<div class="section category-slider-section section-id-{{ section.id }}">
+    <div class="category-slider__header" data-animate="fade">
+        <div class="category-slider__header-content">
+            {% if section.settings.title != blank %}
+            <h2 class="category-slider__title">{{ section.settings.title }}</h2>
+            {% endif %}
+            {% if section.settings.desc != blank %}
+                <div class="category-slider__desc desc">
+                    {{ section.settings.desc | newline_to_br }}
+                </div>
+            {% endif %}
+        </div>
+        {% render 'slider-nav' %}
+    </div>
+    <div class="category-slider__swiper swiper">
+        <div class="swiper-wrapper" data-animate="fade-up" data-animate-stagger="0.1">
+            {% for block in section.blocks %}
+                {% if block.type == 'block' %}
+                    <div class="swiper-slide">
+                        <a class="link-underline" href="{{block.settings.url }}">
+                            <div class="category-slider__block" {{ block.shopify_attributes }}>
+                                <div class="category-slider__block_img-wrap">
+                                    {% if block.settings.img != blank %}
+                                        {{ block.settings.img | image_url: width: nil | image_tag: class: 'category-slider__block_img hidden--mobile' }}
+                                        {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'category-slider__block_img hidden--desktop' }}
+                                    {% else %}
+                                        {{ 'image' | placeholder_svg_tag: 'category-slider__block_img placeholder' }}
+                                    {% endif %}
+                                </div>
+                                {% if block.settings.title != blank %}
+                                    <h4 class="category-slider__block_title"><span class="link-underline-text">{{ block.settings.title }}</span>{% render 'svg-btn-global-icon' %}</h4>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% if section.blocks.size > 1 %}
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+      new Swiper('.section-id-{{ section.id }} .category-slider__swiper', {
+        slidesPerView: 'auto',
+        speed: 400,
+        freeMode: {
+          enabled: true,
+          sticky: true,
+          momentumRatio: 0.8,
+        },
+        navigation: {
+          nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+          prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+        },
+      });
+  });     
+</script>
+{% endif %}
+{%stylesheet %}
+  .category-slider-section{
+    padding: 66px 0;
+    overflow: hidden;
+  }
+  .category-slider__block_img-wrap{
+    height: 232px;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f2f2ef;
+  }
+  .category-slider__block_img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform .5s ease-out;
+  }
+  .category-slider__block:hover .category-slider__block_img{
+    transform: scale(1.05);
+  }
+  .category-slider__title {
+        margin: 0;
+        font-weight: 600;
+        line-height: 98%;
+        letter-spacing: -0.02em;
+        font-size: 24px;
+    }
+    .category-slider__desc{
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 100%;
+        color: #908F90;
+        margin-top: 8px;
+    }
+    .category-slider__header{
+        margin-bottom: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .category-slider__swiper {
+        overflow: visible;
+        --gap: 21px;
+        margin: 0 calc(-1 * var(--gap) / 2);
+        user-select: none;
+    }
+    .category-slider__swiper .swiper-slide{
+        width: 250px;
+    }
+    .category-slider__block{
+        margin: 0 calc(var(--gap) / 2);
+    }
+    .category-slider__block_title{
+        margin-top: 14px;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 98%;
+        letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        grid-gap: 5px;
+    }
+    
+    .category-slider__block_title svg{
+        width: 14px;
+        height: 14px;
+        flex-shrink: 0;
+    }
+    @media screen and (max-width: 749px) {
+      .category-slider-section{
+        padding-bottom: 40px;
+      }
+        .category-slider__header-content {
+          max-width: 233px;
+        }
+        .category-slider__title{
+          font-size: 18px;
+        }
+        .category-slider__desc{
+          font-size: 12px;
+          line-height: 140%;
+        }
+        .category-slider__header{
+          margin-bottom: 25px;
+        }
+        .category-slider__swiper .swiper-slide {
+            width: 228px;
+        }
+    }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Category Slider",
+"settings": [
+        {
+        "type": "inline_richtext",
+        "id": "title",
+        "label": "Title",
+        "default": "Shop per categorie",
+        },
+        {
+        "type": "richtext",
+        "id": "desc",
+        "label": "Description",
+        "default": "<p>30% Discount for black Friday valid till 30th November</p>"
+        },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Slide",
+        "settings": [
+          {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "Snow full kit",
+          },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Image mobile"
+            },
+            {
+                "type": "url",
+                "id": "url",
+                "label": "URL",
+                "default": "/collections/all"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Category Slider",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          },
+          {
+            "type": "block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

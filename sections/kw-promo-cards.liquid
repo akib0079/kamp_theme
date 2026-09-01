@@ -1,0 +1,115 @@
+{{ 'kw-components.css' | asset_url | stylesheet_tag }}
+
+<section class="kw-promo-cards">
+  <div class="kw-promo-cards__container">
+    {% for block in section.blocks %}
+      {% if block.type == 'promo_card' %}
+        <div class="kw-promo-cards__card" {{ block.shopify_attributes }}>
+          {%- comment -%} Background Image {%- endcomment -%}
+          <div class="kw-promo-cards__image-wrapper">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 800 | image_tag: 
+                class: 'kw-promo-cards__image',
+                loading: 'lazy',
+                alt: block.settings.title
+              }}
+            {% else %}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'kw-promo-cards__placeholder' }}
+            {% endif %}
+          </div>
+
+          {%- comment -%} Content Overlay {%- endcomment -%}
+          <div class="kw-promo-cards__content">
+            <h3 class="kw-promo-cards__title">{{ block.settings.title }}</h3>
+            <p class="kw-promo-cards__description">{{ block.settings.description }}</p>
+            
+            {% if block.settings.button_text != blank %}
+              <a href="{{ block.settings.button_link }}" class="kw-promo-cards__button kw-promo-cards__button--glass">
+                <span>{{ block.settings.button_text }}</span>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "KW - Promo Cards",
+  "tag": "section",
+  "class": "kw-section-promo-cards",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "promo_card",
+      "name": "Promo Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Hiking Discount"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "30% Discount for black Friday valid till 30th November only for limited time!"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Shop Alles"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Promo Cards",
+      "blocks": [
+        {
+          "type": "promo_card",
+          "settings": {
+            "title": "Hiking Discount",
+            "description": "30% Discount for black Friday valid till 30th November only for limited time!",
+            "button_text": "Shop Alles"
+          }
+        },
+        {
+          "type": "promo_card",
+          "settings": {
+            "title": "25% Off",
+            "description": "30% Discount for black Friday valid till 30th November only for limited time!",
+            "button_text": "Shop Alles"
+          }
+        },
+        {
+          "type": "promo_card",
+          "settings": {
+            "title": "Winter Deals",
+            "description": "30% Discount for black Friday valid till 30th November only for limited time!",
+            "button_text": "Shop Alles"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

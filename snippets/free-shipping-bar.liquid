@@ -1,0 +1,37 @@
+
+{%- liquid
+  assign all_amounts = settings.free_shipping_amounts | newline_to_br | strip_newlines | split: '<br />'
+  assign current_amount = false
+  for amount in all_amounts
+    assign split_amount = amount | split: ':'
+    if split_amount.size == 2 and split_amount[0] == localization.country.currency.iso_code
+      assign current_amount = split_amount
+      break
+    elsif split_amount.size == 3 and split_amount[0] == localization.country.iso_code and split_amount[1] == localization.country.currency.iso_code
+      assign current_amount = split_amount
+      break
+    endif
+  endfor
+  if current_amount
+    assign free_shipping_progress = 1.0 | times: cart.total_price | divided_by: current_amount.last | at_least: 0 | at_most: 1
+    assign free_shipping_difference = current_amount.last | minus: cart.total_price | at_least: 0 | money
+  endif
+
+  if free_shipping_progress < 1
+    assign bar_col = settings.free_shipping_bar_col_under
+  else
+    assign bar_col = settings.free_shipping_bar_col_met
+  endif
+-%}
+{%- if current_amount -%}
+  <div class="free-shipping-bar{% if cart.items == empty %} free-shipping-bar--no-cart{% endif %}"
+      style="--free-shipping-progress: {{ free_shipping_progress }}; --free-shipping-bar-color: {{ bar_col }}"
+      data-free-shipping-progress="{{ free_shipping_progress | replace: '1.0', '1' }}"
+      data-free-shipping-current-cart="{{ cart.total_price }}"
+      data-free-shipping-amount="{{ current_amount.last }}"
+      ref="free-shipping">
+    <div class="free-shipping-bar__message free-shipping-bar__message--no" data-merge="free-shipping-not-met-text">{{ 'cart.free_shipping_bar.free_shipping_not_met_html' | t: difference: free_shipping_difference }} {% render 'svg-delivery-boxes' %}</div>
+    <div class="free-shipping-bar__message free-shipping-bar__message--yes">{{ 'cart.free_shipping_bar.free_shipping_met_html' | t }} {% render 'svg-delivery-boxes' %}</div>
+    <div class="free-shipping-bar__bar"></div>
+  </div>
+{%- endif -%}

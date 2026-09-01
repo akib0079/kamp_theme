@@ -1,0 +1,328 @@
+<div class="section home-video-section section-id-{{ section.id }}">
+    <div class="home-video__grid">
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+            <div class="home-video__block" {{ block.shopify_attributes }} data-animate="fade-left">
+                {% if block.settings.title != blank %}
+                    <h4 class="home-video__block_title">{{ block.settings.title }}</h4>
+                {% endif %}
+                {% if block.settings.desc != blank %}
+                    <div class="home-video__block-desc desc">{{ block.settings.desc }}</div>
+                {% endif %}
+                <ul class="home-video__list">
+                {% for block in section.blocks %}
+                    {% if block.type == 'item' %}
+                        <li class="home-video__item" {{ block.shopify_attributes }}>
+                            {% if block.settings.img != blank %}
+                                {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-video__item-img' }}
+                            {% endif %}
+                            {% if block.settings.title != blank %}
+                            <p class="home-video__item-text">{{ block.settings.title }}</p>
+                        {% endif %}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+                {%- if block.settings.btn_text != blank -%}
+                    {% render 'btn-global', label: block.settings.btn_text, url: block.settings.btn_url, class: 'home-video__block-btn', icon: true %}
+                {%- endif -%}
+                {% if block.settings.img != blank %}
+                    {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-video__img bg-img hidden--mobile' }}
+                    {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'home-video__img bg-img hidden--desktop' }}
+                {% endif %}
+            </div>
+        {% endif %}
+        {% endfor %}
+        {% if section.settings.video != blank %}
+        <div class="home-video__video-wrap" data-animate="fade-right">
+            {{ section.settings.video | video_tag: class: 'home-video__video', autoplay: true, loop: true }}
+            {% if section.settings.mute_btn == true %}
+            <button class="home-video__video-mute">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="500" height="500" viewBox="0 0 75 75">
+                <path d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z" stroke="currentColor" stroke-width="5" stroke-linejoin="round" fill="currentColor"/>
+                <path d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6"stroke="currentColor" stroke-width="5" stroke-linecap="round" fill="none" />
+                </svg>
+            </button>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+    {% if section.settings.video != blank and section.settings.mute_btn == true %}
+    <script>
+        const wrap = document.querySelector('.section-id-{{ section.id }} .home-video__video-wrap');
+        const button = wrap.querySelector('.home-video__video-mute');
+        const media = wrap.querySelector('.home-video__video');
+
+        button.addEventListener('click', () => {
+            media.muted = !media.muted;
+
+            wrap.classList.toggle('is-unmuted', !media.muted);
+            button.setAttribute('aria-pressed', String(!media.muted));
+        });
+    </script>
+    {% endif %}
+{%stylesheet %}
+  .home-video-section{
+    padding: 60px 0;
+    overflow: hidden;
+  }
+  .home-video__grid {
+        display: grid;
+        grid-template-columns: 456px 1fr;
+        grid-gap: 18px;
+    }
+    .home-video__block {
+        position: relative;
+        z-index: 1;
+        padding: 91px 34px 91px 52px;
+        background-color: #F0F1ED;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .home-video__block_title{
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 110%;
+        margin: 0;
+    }
+    .home-video__block-desc{
+        margin-top: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 98%;
+    }
+    .home-video__list {
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        grid-gap: 12px;
+        max-width: 100%;
+    }
+    .home-video__item {
+        display: flex;
+        grid-gap: 13px;
+        align-items: center;
+    }
+    .home-video__item-img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+    }
+    .home-video__item-text {
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 110%;
+    }
+    .home-video__block-btn{
+        margin-top: 24px;
+    }
+    .home-video__video-wrap{
+        height: 100%;
+        width: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+    video.home-video__video{
+        height: 0;
+        min-height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    .home-video__video-mute {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        backdrop-filter: blur(32px);
+        background: rgba(0, 0, 0, 0.24);
+        border: none;
+        border-radius: 50%;
+        width: 91px;
+        height: 91px;
+        color: #FFF;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer;
+        transition: opacity .25s ease-out
+    }
+    .is-unmuted .home-video__video-mute{
+        opacity: 0.5;
+    }
+    .home-video__video-mute svg{
+        width: 36px;
+        height: 36px;
+    }
+    .home-video__video-mute::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: currentColor;
+        transform: rotateZ(-45deg);
+        transition: transform .25s ease-out;
+    }
+    .is-unmuted .home-video__video-mute::after{
+        transform: rotateZ(-45deg) scale(0);
+    }
+@media screen and (max-width: 749px) {
+    .home-video-section{
+        padding: 40px 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .home-video__grid{
+        grid-template-columns: 1fr;
+        grid-gap: 6px;
+    }
+    .home-video__block{
+        padding: 62px 30px;
+        border-radius: 0;
+    }
+    .home-video__block_title{
+        font-size: 28px;
+        max-width: 347px;
+    }
+    .home-video__block-desc{
+        font-size: 14px;
+    }
+    .home-video__item{
+        grid-gap: 12px;
+    }
+    .home-video__item-img{
+        width: 22px;
+        height: 22px;
+    }
+    .home-video__item-text{
+        font-size: 12px;
+    }
+    .home-video__img.bg-img{
+        top: auto;
+        left: auto;
+        bottom: 0;
+        right: 0;
+        height: 80%;
+        width: 90%;
+    }
+    .home-video__video-wrap{
+        border-radius: 0;
+        height: 455px;
+    }
+    .home-video__video-mute{
+        width: 50px;
+        height: 50px;
+    }
+    .home-video__video-mute svg {
+        width: 20px;
+        height: 20px;
+    }
+    .home-video__video-mute:after{
+        height: 2px;
+    }
+}
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Home Video",
+"settings": [
+        {
+            "type": "video",
+            "id": "video",
+            "label": "Video"
+        },
+        {
+            "type": "checkbox",
+            "id": "mute_btn",
+            "label": "Enable Mute Button",
+            "default": true
+        },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Block",
+        "limit": 1,
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "DE PRODUCTEN TOCH EVEN IN HET ECHT ZIEN?",
+            },
+            {
+                "type": "richtext",
+                "id": "desc",
+                "label": "Description",
+                "default": "<p>KOM LANgS IN ONZE WINKEL!</p>"
+            },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Background Image"
+            },
+            {
+                "type": "image_picker",
+                "id": "img_mobile",
+                "label": "Background Image mobile"
+            },
+            {
+                "type": "text",
+                "id": "btn_text",
+                "label": "Button Text",
+                "default": "Shop Alles"
+            },
+            {
+                "type": "url",
+                "id": "btn_url",
+                "label": "Button URL",
+                "default": "/collections/all"
+            },
+        ]
+      },
+      {
+        "type": "item",
+        "name": "List item",
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "ONTDEK HET NU IN ONZE WINKEL!",
+            },
+            {
+                "type": "image_picker",
+                "id": "img",
+                "label": "Icon"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Home Video",
+        "blocks": [
+          {
+            "type": "block"
+          },
+          {
+            "type": "item"
+          },
+          {
+            "type": "item"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

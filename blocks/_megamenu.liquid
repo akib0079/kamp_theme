@@ -1,0 +1,372 @@
+{% liquid
+  assign block_settings = block.settings
+  assign animation_speed = 200
+%}
+    <li
+          role="presentation"
+          class="menu-list__list-item megamenu"
+        >
+        <a
+            href="{{ block_settings.link | default: '#' }}"
+            data-skip-node-update="true"
+            class="menu-list__link"
+            ref="menuitem"
+          >
+            <span class="menu-list__link-title">{{- block_settings.text -}}</span>
+            {%- if block_settings.mega_menu != blank -%}
+                {{- 'icon-caret.svg' | inline_asset_content -}}
+            {% endif %}
+        </a>
+    {%- if block_settings.mega_menu != blank -%}
+        <mega-menu class="kw-mega-menu" data-skip-node-update="true">
+            <div class="section section--page-width">
+                <div class="menu-drawer__header">
+                    <h4 class="menu-drawer__header-title">{{- block_settings.text -}}</h4>
+                    <button
+                    class="button button-unstyled"
+                    type="button"
+                    aria-label="{{ 'actions.close' | t }}"
+                    on:click="header-drawer/close"
+                    >
+                    <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
+                        {{- 'icon-close.svg' | inline_asset_content -}}
+                    </span>
+                    </button>
+                </div>
+                
+                <a class="megamenu__close-button" href="#">{%render 'svg-chevron-left'%} <span>{{ 'actions.back_to_menu' | t }}</span></a>
+                <div class="mega-menu__grid">
+                    <ul class="mega-menu__headers">
+                    {% for link in block_settings.mega_menu.links %}
+                        <li>
+                            <a
+                                href="{{ link.url }}"
+                                class="mega-menu__anchor-link{% if forloop.first %} active{% endif %}"
+                                data-id="{{ forloop.index }}"
+                                data-skip-node-update
+                            >
+                                {% if link.type == 'collection_link' %}
+                                    {% unless link.object.metafields.custom.megamenu_icon == blank %}
+                                        <div class="mega-menu__anchor-icon-wrap">
+                                        {{link.object.metafields.custom.megamenu_icon | image_url: width: nil | image_tag: class: 'mega-menu__anchor-icon' }}
+                                        </div>
+                                    {% endunless %}
+                                {% endif %}
+                                <div class="mega-menu__anchor-title-wrap">
+                                    <div class="mega-menu__anchor-title">{{ link.title }}</div>
+                                    {% if link.type == 'collection_link' %}
+                                        <span class="mega-menu__anchor-count">{{ 'content.search_results_resource_products_count' | t: count: link.object.products_count }}</span>
+                                    {% endif %}
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                <path d="M6.75 13.5L11.25 9L6.75 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    <div class="mega-menu__contents">
+                    {% for link in block_settings.mega_menu.links %}
+                        <div class="mega-menu__content{% if forloop.first %} active{% endif %}" data-id="{{ forloop.index }}" data-skip-node-update>
+                            <div class="mega-menu__content-inner">
+                                <h4 class="mega-menu__content-title"><a class="link-underline" href="{{ link.url }}"><span class="link-underline-text">{{ link.title }}</span></a></h4>
+                                <div class="menu-drawer__header">
+                                    <h4 class="menu-drawer__header-title"><a class="link-underline" href="{{ link.url }}"><span class="link-underline-text">{{- link.title -}}</span></a></h4>
+                                    <button
+                                    class="button button-unstyled"
+                                    type="button"
+                                    aria-label="{{ 'actions.close' | t }}"
+                                    on:click="header-drawer/close"
+                                    >
+                                    <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
+                                        {{- 'icon-close.svg' | inline_asset_content -}}
+                                    </span>
+                                    </button>
+                                </div>
+                                <a class="megamenu__close-button content-close" href="#">{%render 'svg-chevron-left'%} <span>{{ 'actions.back_to_menu' | t }}</span></a>
+                                <div class="mega-menu__items">
+                                    {% for link in link.links %}
+                                        {% if link.links != blank %}
+                                            <div class="mega-menu__item">
+                                                <h5 class="mega-menu__item-title"><a class="link-underline" href="{{ link.url }}"><span class="link-underline-text">{{ link.title }}</span></a></h5>
+                                                <ul class="mega-menu__item-list">
+                                                    {% for link in link.links %}
+                                                    <li>
+                                                        <a
+                                                            href="{{ link.url }}"
+                                                            class="mega-menu__item-link link-underline"
+                                                            data-id="{{ forloop.index }}"
+                                                        >
+                                                            <span class="link-underline-text">{{ link.title }}</span>
+                                                        </a>
+                                                    </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {%  else %}
+                                            <a
+                                                href="{{ link.url }}"
+                                                class="mega-menu__link"
+                                            >
+                                                {{ link.title }}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <script
+                src="{{ 'mega-menu.js' | asset_url }}"
+                type="module"
+                fetchpriority="low"
+            ></script>
+        </mega-menu>
+    {% endif %}
+    </li>
+    {% stylesheet %}
+        .mega-menu__list{
+            padding: 0;
+            margin: 0;
+            border-right: 2px solid #A6A6A6;
+            --header-padding: var(--padding-sm);
+            flex-shrink: 0;
+        }
+        .menu-list__list-item.megamenu{
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 100%;
+        }
+        .menu-list__list-item.megamenu.active{
+            color: #8A916B;
+        }
+        .menu-list__list-item.megamenu .menu-list__link-title{
+            margin-bottom: -2px;
+        }
+        .menu-list__list-item.megamenu .menu-list__link svg{
+            flex-shrink: 0;
+            margin-left: 4px;
+            transition: transform 0.4s ease-out;
+        }
+        .menu-list__list-item.megamenu.active .menu-list__link svg{
+            transform: rotate(180deg);
+        }
+        .kw-mega-menu{
+            border-radius: 0 0 25px 25px;
+            background: #FFF;
+            position: absolute;
+            width: 100%;
+            left: 0;
+            top: calc(100% - 1px + var(--border-bottom-width));
+            z-index: calc(var(--layer-header-menu) + 1);
+            opacity: 0;
+            visibility: hidden;
+            transform: rotateX(-10deg) scale(.9);
+            transition: 0.3s ease-out;
+            transition-property: transform, opacity, visibility;
+        }
+        .menu-list__list-item.active .kw-mega-menu{
+            transform: rotateX(0deg) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+        .mega-menu__grid{
+            display: grid;
+            grid-template-columns: 3fr 13fr;
+            padding: 27px 0 52px;
+        }
+        .mega-menu__headers {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            grid-gap: 10px;
+            list-style: none;
+            padding-right: 57px;
+            border-right: 1px solid #F2F2F2;
+        }
+        .mega-menu__anchor-link {
+            display: flex;
+            padding: 8px;
+            grid-gap: 14px;
+            border-radius: 10px;
+            align-items: center;
+            transition: background-color 0.4s ease-out;
+        }
+        .mega-menu__anchor-link.active{
+            background-color: #F7FAEB;
+        }
+        .mega-menu__anchor-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+        .mega-menu__anchor-icon-wrap{
+            display: flex;
+            width: 44px;
+            height: 44px;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            background: #FFF;
+            box-shadow: 0 4px 4px 0 rgba(210, 219, 172, 0.29);
+        }
+        .mega-menu__anchor-title-wrap{
+            margin-bottom: -5px;
+        }
+        .mega-menu__anchor-title {
+            margin: 0 0 3px;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 100%;
+        }
+        .mega-menu__headers .mega-menu__anchor-link svg{
+            color: #8A916B;
+            width: 18px;
+            height: 18px;
+            margin-left: auto;
+            display: none;
+        }
+        .header__drawer--mobile .mega-menu__anchor-link svg{
+            display: flex;
+        }
+        .mega-menu__anchor-count{
+            color: #5C5B5C;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .mega-menu__content-title{
+            font-weight: 600;
+            line-height: 140%;
+            margin-bottom: 25px;
+        }
+        .mega-menu__content-title a{
+            color: inherit;
+        }
+        .mega-menu__contents {
+            position: relative;
+            height: var(--megamenu-content-height);
+            transition: height 0.4s ease-out;
+            overflow: hidden;
+        }
+        .mega-menu__content {
+            padding: 10px 47px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+        }
+        body.megamenu-active .mega-menu__content.active{
+            opacity: 1;
+            visibility: visible;
+        }
+        .mega-menu__items {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-column-gap: 40px;
+        }
+        @media screen and (min-width: 750px) {
+            .kw-mega-menu{
+                max-height: calc(100vh - 125px);
+                overflow: auto;
+                scrollbar-width: thin;
+            }
+            .mega-menu__item:not(:nth-child(4n)){
+                padding-right: 40px;
+                border-right: 1px solid #F2F2F2;
+            }
+            .mega-menu__item:nth-child(4n)~.mega-menu__item{
+                padding-top: 40px;
+            }
+        }
+        .mega-menu__item-title{
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 18px;
+            white-space: normal;
+            color: #202020
+        }
+        .mega-menu__item-title a{
+            color: inherit;
+        }
+        .megamenu__close-button {
+            display: none;
+            grid-gap: 4px;
+            padding: 20px 30px 0;
+            color: #9DA383;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 100%;
+            max-width: 100%;
+        }
+        .header__drawer--mobile .megamenu__close-button {
+            display: flex;
+        }
+        .megamenu__close-button svg{
+            width: 16px;
+            height: 16px;
+        }
+        .mega-menu__item-list{
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+        }
+        .mega-menu__item-link{
+            color: #908F90;
+            font-size: 14px;
+            line-height: 200%;
+            -webkit-text-stroke: 0.3px transparent;
+            transition: -webkit-text-stroke-color 0.3s ease-out;
+            font-weight: 400;
+        }
+        .mega-menu__item-link:hover{
+            color: #8a916b;
+            -webkit-text-stroke-color: currentColor;
+        }
+        @media screen and (max-width: 749px) {
+            .header__column.header__column--left .mega-menu__list{
+                display: none;
+            }
+            .mega-menu__anchor-link{
+                padding-right: 12px;
+            }
+        }
+    {% endstylesheet %}
+{% schema %}
+{
+  "name": "Megamenu",
+  "tag": null,
+  "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "text",
+            "label": "t:settings.text",
+            "default": "Alle Categorieën"
+        },
+        {
+            "type": "url",
+            "id": "link",
+            "label": "t:settings.link"
+        },
+        {
+            "type": "link_list",
+            "id": "mega_menu",
+            "label": "t:settings.menu"
+        },
+    ],
+    "presets": [
+        {"name": "Megamenu"}
+    ]
+}
+{% endschema %}

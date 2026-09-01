@@ -1,0 +1,322 @@
+<div class="section products-slider-section{% if section.blocks.size > 1 %} tabbed-slider{% endif %} section-id-{{ section.id }}">
+    <div class="products-slider__header" data-animate="fade">
+        <div class="products-slider__header-content">
+            {% if section.settings.title != blank %}
+            <h2 class="products-slider__title">{{ section.settings.title }}</h2>
+            {% endif %}
+            {% if section.settings.desc != blank %}
+                <div class="products-slider__desc desc">
+                    {{ section.settings.desc }}
+                </div>
+            {% endif %}
+        {% if section.blocks.size > 1 %}
+            <div class="products-slider__tab__swiper swiper">
+                <div class="swiper-wrapper">
+                {% for block in section.blocks %}
+                    <div class="swiper-slide">
+                        <a href="#" class="products-slider__tab-anchor" data-id="{{ forloop.index }}">
+                            {{ block.settings.title }}
+                        </a>
+                    </div> 
+                {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        </div>
+        {%- if section.settings.btn_text != blank -%}
+            <a class="products-slider__btn underlined-btn underlined-btn-hover hidden--mobile" href="{{ section.settings.btn_url }}">
+                <span>{{ section.settings.btn_text }}</span>
+            </a>
+        {%- endif -%}
+    </div>
+    <div class="products-slider__tab-content">
+        {% for block in section.blocks %}
+            {% if block.type == 'block' %}
+                <div class="products-slider__tab" data-id="{{ forloop.index }}" {{ block.shopify_attributes }}>
+                    <div class="products-slider__swiper swiper">
+                        <div class="swiper-wrapper" data-animate="fade-up" data-animate-stagger="0.15">
+                            {%- if block.settings.products != blank -%}
+                                {% for product in block.settings.products %}
+                                    {%- if product.price > 0 -%}
+                                        <div class="swiper-slide">
+                                            <div class="products-slider__block">
+                                                {% render 'product-block-alt', product: product %}
+                                            </div>
+                                        </div>
+                                    {%- endif -%}
+                                {% endfor %}
+                            {%- else -%}
+                            {% for i in (1..12) %}
+                            <div class="swiper-slide">
+                                <a class="link-underline" href="#">
+                                    <div class="products-slider__block">
+                                        {% render 'product-placeholder-block', index: i %}
+                                    </div>
+                                </a>
+                            </div>
+                            {% endfor %}
+                            {%- endif -%}
+                        </div>
+                        {% render 'slider-nav-scrollbar' %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
+    {%- if section.settings.btn_text != blank -%}
+        <a class="products-slider__btn underlined-btn underlined-btn-hover hidden--desktop" href="{{ section.settings.btn_url }}">
+            <span>{{ section.settings.btn_text }}</span>
+        </a>
+    {%- endif -%}
+</div>
+{% if section.blocks.size > 0 %}
+<script>
+    {% if section.blocks.size > 1 %}
+    const headerWrap = document.querySelector(".section-id-{{ section.id }} .products-slider__tab__swiper");
+    const contentWrap = document.querySelector(".section-id-{{ section.id }} .products-slider__tab-content");
+    initializeTabSlider(headerWrap,contentWrap)
+    headerWrap.querySelectorAll('.products-slider__tab-anchor').forEach(anchor => {
+        const content = contentWrap.querySelector(`.products-slider__tab[data-id="${anchor.dataset.id}"]`);
+        anchor.addEventListener('click', e => {
+            e.preventDefault();
+            if(anchor.classList.contains('active')) return;
+            contentWrap.style.setProperty('--content-height', content.scrollHeight + 'px');
+            headerWrap.querySelector('.products-slider__tab-anchor.active').classList.remove('active')
+            contentWrap.querySelector('.products-slider__tab.active').classList.remove('active');
+            anchor.classList.add('active');
+            content.classList.add('active');
+        })
+    })
+    {% endif %}
+    function initializeTabSlider(headerWrap,contentWrap){
+        const anchor = headerWrap.querySelector('.products-slider__tab-anchor');
+        const content = contentWrap.querySelector(`.products-slider__tab[data-id="${anchor.dataset.id}"]`);
+        contentWrap.style.setProperty('--content-height', content.scrollHeight + 'px');
+        anchor.classList.add('active');
+        content.classList.add('active');
+        document.querySelector(".section-id-{{ section.id }}").classList.add("tab-slider-initialized")
+    }
+   document.addEventListener("DOMContentLoaded", () => {
+        new Swiper('.section-id-{{ section.id }} .products-slider__tab__swiper', {
+            slidesPerView: 'auto',
+            freeMode: {
+            enabled: true,
+            sticky: true,
+            momentumRatio: 0.8,
+            },
+        })
+        
+    document.querySelectorAll('.section-id-{{ section.id }} .products-slider__tab').forEach(tab => {
+        new Swiper(tab.querySelector('.products-slider__swiper'), {
+            slidesPerView: 'auto',
+            speed: 400,
+            freeMode: {
+                enabled: true,
+                sticky: true,
+                momentumRatio: 0.8,
+            },
+            navigation: {
+                nextEl: tab.querySelector('.slider_nav.nav-next'),
+                prevEl: tab.querySelector('.slider_nav.nav-prev'),
+            },
+            scrollbar: {
+                el: tab.querySelector('.swiper-scrollbar'),
+                draggable: true
+            },
+        });
+    });     
+  });     
+</script>
+{% endif %}
+{%stylesheet %}
+  .products-slider-section{
+    padding: 45px 0 45px;
+    overflow: hidden;
+  }
+.products-slider__header{
+    margin-bottom: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 30px;
+}
+    .products-slider__desc{
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 100%;
+        color: #908F90;
+        margin-top: 16px;
+    }
+  .products-slider__title {
+        margin: 0;
+        font-weight: 600;
+        line-height: 98%;
+        letter-spacing: -0.02em;
+        font-size: 32px;
+    }
+    .products-slider__tab__swiper {
+        overflow: visible;
+        --gap: 24px;
+        margin: 0 calc(-1 * var(--gap) / 2);
+        margin-top: 16px;
+    }
+    .products-slider__tab__swiper .swiper-slide{
+        width: auto;
+    }
+    .products-slider__tab-anchor{
+        margin: 0 calc(var(--gap) / 2);
+        color: #A6A6A6;
+        font-size: 16px;
+        font-weight: 500;   
+        background-repeat: no-repeat;
+        line-height: 1.2;
+        transition: .25s ease;
+        transition-property: background-size, color;
+        background-size: 0% 1px;
+        background-position: 0 100%;
+        background-image: linear-gradient(currentColor, currentColor);
+    }
+    .tab-slider-initialized .products-slider__tab-anchor.active{
+        color: #202020;
+        background-size: 100% 1px;
+    }
+    .products-slider__swiper {
+        overflow: visible;
+        --gap: 12px;
+        margin: 0 calc(-1 * var(--gap) / 2);
+        user-select: none;
+    }
+    .products-slider__swiper .swiper-slide{
+        width: 347px;
+    }
+    .products-slider__block:hover .product-card__alt_img{
+    transform: scale(1.05);
+    }
+    .products-slider__block{
+        margin: 0 calc(var(--gap) / 2);
+    }
+    .products-slider__btn{
+        display: flex;
+        align-items: center;
+        grid-gap: 5px;
+        margin-top: 14px;
+        text-transform: uppercase;
+        transition: color .3s ease-out;
+        flex-shrink: 0;
+    }
+    .products-slider__btn:hover{
+        color: #8a916b;
+    }
+    .products-slider__swiper .slider_controls-wrap{
+        margin-top: 40px;
+    }
+    .tab-slider-initialized .products-slider__tab-content{
+        position: relative;
+        transition: height .4s ease-out;
+        height: var(--content-height, auto);
+    }
+    .tab-slider-initialized .products-slider__tab{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: .4s ease-out;
+        transition-property: opacity, visibility;
+    }
+    .tab-slider-initialized .products-slider__tab.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    @media screen and (max-width: 749px) {
+        .template-product .section.products-slider-section{
+            background-color: #FFF;
+        }
+        .products-slider__header{
+            align-items: flex-start;
+            flex-direction: column;
+        }
+        .products-slider__title{
+            font-size: 18px;
+        }
+        .products-slider__tab-anchor{
+            font-size: 14px;
+        }
+        .products-slider__swiper .swiper-slide{
+            max-width: 85vw;
+            width: 200px;
+        }
+        .product-card__alt_title{
+            margin-top: 12px;
+        }
+        .products-slider__swiper .slider_controls-wrap{
+            margin-top: 36px;
+        }
+        .products-slider__btn{
+            justify-self: left;
+        }
+    }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Products Slider",
+    "settings": [
+        {
+            "type": "inline_richtext",
+            "id": "title",
+            "label": "Title",
+            "default": "NEW Arrivals",
+        },
+        {
+            "type": "richtext",
+            "id": "desc",
+            "label": "Description",
+            "default": "<p>30% Discount for black Friday valid till 30th November</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "LEES MEER"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Tab",
+        "settings": [
+            {
+                "type": "inline_richtext",
+                "id": "title",
+                "label": "Title",
+                "default": "Sports & Fashion",
+            },
+            {
+                "type": "product_list",
+                "id": "products",
+                "label": "Product List"
+            },
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "KW - Products Slider",
+        "blocks": [
+          {
+            "type": "block"
+          },
+        ]
+      }
+    ]
+  }
+{% endschema %}

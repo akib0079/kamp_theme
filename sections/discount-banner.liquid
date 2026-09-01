@@ -1,0 +1,260 @@
+<div class="section discount-banner-section section-id-{{ section.id }}" data-animate="fade-up">
+    <div class="discount-banner__content">
+        {% if section.settings.big_title != blank %}
+            <div class="discount-banner__big-title">{{ section.settings.big_title }}</div>
+        {% endif %}
+        <div class="discount-banner__marquee-wrap">
+            {% for i in (1..4) %}
+            <div class="discount-banner__marquee-inner">
+                {% if section.settings.marquee != blank %}
+                    {% for i in (1..4) %}
+                        
+                    <div class="discount-banner__marquee-item">
+                        {% if section.settings.marquee_icon != blank %}
+                            {{ section.settings.marquee_icon | image_url: width: nil | image_tag: class: 'discount-banner__marquee-icon' }}
+                        {% endif %}
+                        <div class="discount-banner__marquee-text"><span class="text--offset">{{ section.settings.marquee }}</span></div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="discount-banner__row">
+            <div class="discount-banner__left">
+                {% if section.settings.title != blank %}
+                <h2 class="discount-banner__title">{{ section.settings.title }}</h2>
+                {% endif %}
+                {% if section.settings.desc != blank %}
+                <div class="discount-banner__desc desc">{{ section.settings.desc }}</div>
+                {% endif %}
+                {%- if section.settings.btn_text != blank -%}
+                    {% render 'btn-global', label: section.settings.btn_text, url: section.settings.btn_url, class: 'discount-banner__btn', icon: true %}
+                {%- endif -%}
+            </div>
+            {% if section.settings.img != blank %}
+                {{ section.settings.img | image_url: width: nil | image_tag: class: 'discount-banner__img hidden--mobile' }}
+                {{ section.settings.img_mobile | default: section.settings.img | image_url: width: nil | image_tag: class: 'discount-banner__img hidden--desktop' }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{%stylesheet %}
+  .discount-banner-section{
+    padding: 80px 0 40px;
+  }
+  .discount-banner__content{
+    padding: 53px 59px 0;
+    border-radius: 20px;
+    background: #F6F6F6;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+  .discount-banner__big-title{
+    font-size: clamp(4.375rem, 1.9712rem + 5.1282vw, 8.125rem);
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 98%;
+    letter-spacing: -.02em;
+    z-index: -2;
+    text-align: center;
+    position: relative;
+  }
+  .discount-banner__marquee-wrap {
+        position: absolute;
+        display: flex;
+        background: #f8843e;
+        color: #fff;
+        padding: 26px 0;
+        z-index: -1;
+        left: -50px;
+        top: clamp(-1.25rem, -5.0962rem + 8.2051vw, 4.75rem);
+        transform: rotate(-2.596deg);
+        width: max-content;
+        animation: marqueeAnim infinite 20s linear;
+    }
+    @keyframes marqueeAnim{
+        0%{
+            transform: rotate(-2.596deg) translateX(0%);
+        }
+        100%{
+            transform: rotate(-2.596deg) translateX(-25%);
+        }
+    }
+    .discount-banner__marquee-inner {
+        display: flex;
+        flex-shrink: 0;
+    }
+    .discount-banner__marquee-item {
+        display: flex;
+        align-items: center;
+        grid-gap: 10px;
+        padding: 0 9px;
+    }
+    .discount-banner__marquee-icon{
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+    }
+    .discount-banner__marquee-text {
+        font-size: 47.591px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 98%;
+        text-transform: uppercase;
+        letter-spacing: -.02em;
+    }
+  .discount-banner__row{
+    display: flex;
+    justify-content: space-between;
+  }
+  .discount-banner__left{
+    padding-bottom: 134px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: 133px;
+  }
+  .discount-banner__title {
+        font-size: 55px;
+        font-weight: 600;
+        line-height: 119%;
+        letter-spacing: -.02em;
+        max-width: 574px;
+        margin: 0;
+    }
+  .discount-banner__img {
+    width: 55%;
+    margin-top: -5%;
+    object-fit: contain;
+    object-position: bottom center;
+    }
+    .discount-banner__desc {
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%;
+        color: #908F90;
+        max-width: 445px;
+        margin-top: 12px;
+    }
+    .discount-banner__btn.btn-global{
+        margin-top: 24px;
+        background-color: #8A916B;
+    }
+    @media screen and (max-width: 1024px) {
+        .discount-banner-section {
+            padding: 40px 0 40px;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+        }
+        .discount-banner__content{
+            padding: 23px 36px 0;
+            border-radius: 0;
+        }
+        .discount-banner__row{
+            margin-top: 28px;
+            flex-direction: column;
+        }
+        .discount-banner__left{
+            justify-content: center;
+            align-items: center;
+            padding-top: 0;
+        }
+        .discount-banner__big-title{
+            font-size: 36px;
+        }
+        .discount-banner__title{
+            font-size: 20px;
+        }
+        .discount-banner__desc{
+            font-size: 12px;
+            margin-top: 6px;
+            max-width: 368px;
+        }
+        .discount-banner__marquee-wrap{
+            padding: 16px 0;
+            top: 220px;
+        }
+        .discount-banner__marquee-text{
+            font-size: 29px;
+        }
+        .discount-banner__img{
+            width: 70%;
+            margin: -20% auto 0;
+        }
+    }
+    @media screen and (max-width: 749px) {
+        .discount-banner__img{
+            width: 100%;
+            margin: -30% auto 0;
+        }
+    }
+{% endstylesheet %}
+      
+{% schema %}
+  {
+    "name": "KW - Discount Banner",
+    "settings": [
+        {
+        "type": "inline_richtext",
+        "id": "big_title",
+        "label": "Big Title",
+        "default": "Special discounts",
+        },
+        {
+        "type": "inline_richtext",
+        "id": "marquee",
+        "label": "Marquee text",
+        "default": "Special Offer",
+        },
+        {
+        "type": "inline_richtext",
+        "id": "title",
+        "label": "Title",
+        "default": "Special Discount! UP TO 50% OFF",
+        },
+        {
+        "type": "richtext",
+        "id": "desc",
+        "label": "Description",
+        "default": "<p>30% Discount for black Friday valid till 30th November only for limited time!</p>"
+        },
+        {
+            "type": "text",
+            "id": "btn_text",
+            "label": "Button Text",
+            "default": "Shop Alles"
+        },
+        {
+            "type": "url",
+            "id": "btn_url",
+            "label": "Button URL",
+            "default": "/collections/all",
+        },
+        {
+            "type": "image_picker",
+            "id": "img",
+            "label": "Image"
+        },
+        {
+            "type": "image_picker",
+            "id": "img_mobile",
+            "label": "Image mobile"
+        },
+        {
+            "type": "image_picker",
+            "id": "marquee_icon",
+            "label": "Marquee Icon"
+        },
+    ],
+    "presets": [
+      {
+        "name": "KW - Discount Banner"
+      }
+    ]
+  }
+{% endschema %}

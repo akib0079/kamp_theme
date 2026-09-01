@@ -1,0 +1,418 @@
+{% comment %}
+  KW - Team Section
+  Team members horizontal carousel with image cards
+  Based on Figma design node 1080:311
+{% endcomment %}
+
+<section class="kw-team section section-id-{{ section.id }}" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --blur-amount: {{ section.settings.blur_amount }}px;
+" data-animate="fade">
+  <div class="kw-team__container">
+    <div class="kw-team__header">
+      <div class="kw-team__header-text">
+        <span class="kw-team__label">{{ section.settings.label }}</span>
+        <h2 class="kw-team__title">{{ section.settings.title }}</h2>
+      </div>
+      
+      {%render 'slider-nav'%}
+    </div>
+    
+    <div class="kw-team__swiper swiper">
+      <div class="swiper-wrapper" data-animate="fade-up" data-animate-stagger="0.15">
+        {% for block in section.blocks %}
+          {% if block.type == 'team_member' %}
+            <div class="swiper-slide">
+              <div class="kw-team__card" {{ block.shopify_attributes }}>
+                <div class="kw-team__card-image-wrapper">
+                  {% if block.settings.image != blank %}
+                    {{ block.settings.image | image_url: width: 800 | image_tag: 
+                      class: 'kw-team__card-image',
+                      loading: 'lazy',
+                      alt: block.settings.name
+                    }}
+                  {% else %}
+                    <div class="kw-team__card-placeholder"></div>
+                  {% endif %}
+                </div>
+                
+                <div class="kw-team__card-overlay">
+                  <div class="kw-team__card-content">
+                    <div class="kw-team__card-accent"></div>
+                    <div class="kw-team__card-info">
+                      <h3 class="kw-team__card-name">{{ block.settings.name }}</h3>
+                      <p class="kw-team__card-role">{{ block.settings.role }}</p>
+                    </div>
+                  </div>
+                  {% if block.settings.description != blank %}
+                    <p class="kw-team__card-description">{{ block.settings.description }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .kw-team {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+    overflow: hidden;
+  }
+
+  .kw-team__container {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+  }
+
+  .kw-team__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .kw-team__header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .kw-team__label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  .kw-team__title {
+    font-size: 32px;
+    font-weight: 600;
+    color: #000000;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+  }
+  .kw-team__swiper{
+    width: auto;
+    overflow: visible;
+    --gap: 28px;
+    margin: 0 calc(-1 * var(--gap) / 2);
+    user-select: none;
+  }
+  
+  .kw-team__swiper .swiper-slide{
+    width: 33.5%;
+  }
+  .kw-team .slider_nav{
+    border: 1px solid #636B40;
+    background: transparent;
+    color: #6d7646;
+  }
+  .kw-team .slider_nav.swiper-button-disabled {
+    cursor: auto;
+    opacity: 1;
+    border-color: #d2d5c666;
+  }
+
+  .kw-team__card {
+    margin: 0 calc(var(--gap) / 2);
+    flex: 0 0 524px;
+    height: 578px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    background: #F2F2F2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+
+  .kw-team__card-content {
+    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    will-change: transform;
+  }
+
+  .kw-team__card-image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kw-team__card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease-out;
+    will-change: transform;
+  }
+  .kw-team__card:hover .kw-team__card-image{
+    transform: scale(1.05);
+  }
+
+  .kw-team__card-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #E8E8E8 0%, #D0D0D0 100%);
+  }
+
+  .kw-team__card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    padding-top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: backdrop-filter 0.3s ease;
+  }
+  .kw-team__card-overlay::before{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.85) 85%, rgba(0, 0, 0, 1) 100%);
+    backdrop-filter: blur(var(--blur-amount, 12px));
+    -webkit-backdrop-filter: blur(var(--blur-amount, 12px));
+    mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+  }
+  .kw-team__card:hover .kw-team__card-content {
+    transform: translateY(-15px);
+  }
+
+  .kw-team__card-content {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .kw-team__card-accent {
+    width: 2px;
+    min-height: 44px;
+    background: #FFFFFF;
+    flex-shrink: 0;
+    align-self: stretch;
+  }
+
+  .kw-team__card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .kw-team__card-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: -0.4px;
+    line-height: 1.08;
+    margin: 0;
+  }
+
+  .kw-team__card-role {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.69);
+    letter-spacing: -0.36px;
+    line-height: 1.08;
+    margin: 0;
+  }
+
+  .kw-team__card-description {
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
+    opacity: 0;
+    line-height: 1.5;
+    margin: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1) 0.1s, 
+                height 0.7s cubic-bezier(0.19, 1, 0.22, 1) 0.1s;
+  }
+
+  .kw-team__card:hover .kw-team__card-description {
+    opacity: 0.7;
+    height: var(--height, 1.5em);
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-team__card {
+      flex: 0 0 400px;
+      height: 500px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-team {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 60px);
+    }
+
+    .kw-team__container {
+      gap: 40px;
+    }
+
+    .kw-team__header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .kw-team__title {
+      font-size: 26px;
+    }
+
+    .kw-team__card {
+      flex: 0 0 300px;
+      height: 400px;
+    }
+
+    .kw-team__card-overlay {
+      padding: 20px;
+      padding-top: 50px;
+      gap: 0px;
+    }
+
+    .kw-team__card-name {
+      font-size: 18px;
+    }
+
+    .kw-team__card-role {
+      font-size: 15px;
+    }
+    .kw-team__swiper .swiper-slide{
+      width: min(100%, 450px);
+    }
+  }
+</style>
+
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+      new Swiper('.section-id-{{ section.id }} .kw-team__swiper', {
+        slidesPerView: 'auto',
+        speed: 400,
+        freeMode: {
+          enabled: true,
+          sticky: true,
+          momentumRatio: 0.8,
+        },
+        navigation: {
+          nextEl: '.section-id-{{ section.id }} .slider_nav.nav-next',
+          prevEl: '.section-id-{{ section.id }} .slider_nav.nav-prev',
+        },
+      });
+  });    
+  document.querySelectorAll('.section-id-{{ section.id }} .kw-team__card-description').forEach(desc => {
+    desc.style.setProperty('--height', desc.scrollHeight + 'px');
+  })
+</script>
+
+{% schema %}
+{
+  "name": "KW - Team",
+  "tag": "section",
+  "class": "kw-section-team",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Team & Expertise"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "De helden achter de balie"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "blur_amount",
+      "label": "Glass Effect Blur",
+      "info": "Adjust the backdrop blur intensity of the overlay",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "team_member",
+      "name": "Team Member",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Photo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Name",
+          "default": "Robin"
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Role",
+          "default": "Winkelmanager"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Team",
+      "blocks": [
+        { "type": "team_member", "settings": { "name": "Robin", "role": "Winkelmanager", "description": "Retail expert en outdoor-denker. Richt onze operationele strategie in en zorgt voor een optimale klantbeleving. Altijd in voor een strategische tip of productadvies." }},
+        { "type": "team_member", "settings": { "name": "Carmen", "role": "Outdoor Specialist" }},
+        { "type": "team_member", "settings": { "name": "Lars", "role": "Winter Sports & Gear Guru" }},
+        { "type": "team_member", "settings": { "name": "Floor", "role": "Outdoor Specialist" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,360 @@
+<div class="section home-brands-section section-id-{{ section.id }}" style="--marquee-speed: {{ section.settings.marquee_speed | default: 25 }}s;">
+  <div class="home-brands__container">
+    {% if section.settings.title != blank %}
+      <h3 class="home-brands__title">{{ section.settings.title }}</h3>
+    {% endif %}
+    
+    <div class="home-brands__wrapper" data-home-brands-wrapper>
+      <div class="home-brands__track" data-home-brands-track>
+        {% for block in section.blocks %}
+          {% if block.type == 'brand' %}
+            {% liquid
+              assign tag = 'div'
+              if block.settings.url != blank
+                assign tag = 'a'
+              endif
+            %}
+            <{{ tag }}
+              class="home-brands__item"
+              {% if block.settings.url != blank %}href="{{ block.settings.url }}"{% endif %}
+              {% if block.settings.height != blank %}style="--height: {{ block.settings.height }}px; --height-mobile: {{ block.settings.height_mobile }}px;"{% endif %}
+              {{ block.shopify_attributes }}
+            >
+              {% if block.settings.img != blank %}
+                {{ block.settings.img | image_url: width: 350 | image_tag: class: 'home-brands__logo hidden--mobile', loading: 'lazy', alt: block.settings.title | default: 'Brand logo' }}
+                {{ block.settings.img_mobile | default: block.settings.img | image_url: width: 350 | image_tag: class: 'home-brands__logo hidden--desktop', loading: 'lazy', alt: block.settings.title | default: 'Brand logo' }}
+              {% else %}
+                <div class="home-brands__placeholder-text">{{ block.settings.title | default: 'BRAND' }}</div>
+              {% endif %}
+            </{{ tag }}>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div class="home-brands__track home-brands__track--clone" aria-hidden="true">
+        {% for block in section.blocks %}
+          {% if block.type == 'brand' %}
+            {% liquid
+              assign tag = 'div'
+              if block.settings.url != blank
+                assign tag = 'a'
+              endif
+            %}
+            <{{ tag }}
+              class="home-brands__item"
+              {% if block.settings.url != blank %}href="{{ block.settings.url }}"{% endif %}
+              {% if block.settings.height != blank %}style="--height: {{ block.settings.height }}px; --height-mobile: {{ block.settings.height_mobile }}px;"{% endif %}
+              tabindex="-1"
+            >
+              {% if block.settings.img != blank %}
+                {{ block.settings.img | image_url: width: 350 | image_tag: class: 'home-brands__logo hidden--mobile', loading: 'lazy', alt: block.settings.title | default: 'Brand logo' }}
+                {{ block.settings.img_mobile | default: block.settings.img | image_url: width: 350 | image_tag: class: 'home-brands__logo hidden--desktop', loading: 'lazy', alt: block.settings.title | default: 'Brand logo' }}
+              {% else %}
+                <div class="home-brands__placeholder-text">{{ block.settings.title | default: 'BRAND' }}</div>
+              {% endif %}
+            </{{ tag }}>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initHomeBrands(section) {
+      if (!section) return;
+      const wrapper = section.querySelector('[data-home-brands-wrapper]');
+      const primaryTrack = section.querySelector('[data-home-brands-track]');
+      if (!wrapper || !primaryTrack) return;
+
+      function getContentWidth() {
+        const items = Array.from(primaryTrack.children);
+        if (items.length === 0) return 0;
+        
+        let totalWidth = 0;
+        items.forEach(item => {
+          totalWidth += item.getBoundingClientRect().width;
+        });
+        
+        const style = window.getComputedStyle(primaryTrack);
+        const gap = parseFloat(style.gap || style.columnGap) || 0;
+        totalWidth += gap * (items.length - 1);
+        
+        return totalWidth;
+      }
+
+      function checkOverflow() {
+        const containerWidth = wrapper.clientWidth;
+        if (!containerWidth) return;
+
+        const totalContentWidth = getContentWidth();
+
+        if (totalContentWidth > containerWidth + 2) {
+          wrapper.classList.add('is-marquee');
+        } else {
+          wrapper.classList.remove('is-marquee');
+        }
+      }
+
+      // Initial check
+      checkOverflow();
+
+      // Check after images finish loading
+      const images = primaryTrack.querySelectorAll('img');
+      images.forEach(img => {
+        if (img.complete) return;
+        img.addEventListener('load', checkOverflow, { once: true });
+      });
+
+      // ResizeObserver handles dynamic layout/container size updates
+      {% comment %} if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => checkOverflow());
+        ro.observe(wrapper);
+        ro.observe(primaryTrack);
+      } else { {% endcomment %}
+        window.addEventListener('resize', checkOverflow);
+      {% comment %} } {% endcomment %}
+    }
+
+    function initAll() {
+      document.querySelectorAll('.home-brands-section').forEach(initHomeBrands);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', (e) => {
+      if (e.target && e.target.classList.contains('home-brands-section')) {
+        initHomeBrands(e.target);
+      }
+    });
+  })();
+</script>
+
+{% stylesheet %}
+  .home-brands-section {
+    padding: 50px 0;
+    overflow: hidden;
+  }
+  .home-brands__title {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+    color: #3C4127;
+  }
+  .home-brands__wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+  }
+  .home-brands__track {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+    flex-wrap: nowrap;
+  }
+  .home-brands__track--clone {
+    display: none;
+  }
+
+  /* Marquee state active when content overflows container */
+  .home-brands__wrapper.is-marquee {
+    justify-content: flex-start;
+    user-select: none;
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+  }
+  .home-brands__wrapper.is-marquee .home-brands__track {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    justify-content: flex-start;
+    padding-right: 90px;
+    animation: home-brands-marquee var(--marquee-speed, 25s) linear infinite;
+    will-change: transform;
+  }
+  .home-brands__wrapper.is-marquee .home-brands__track--clone {
+    display: flex;
+  }
+  .home-brands__wrapper.is-marquee:hover .home-brands__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes home-brands-marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .home-brands__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    height: var(--height, 35px);
+    width: auto;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    @media screen and (max-width: 749px) {
+      height: var(--height-mobile, var(--height, 35px));
+    }
+  }
+  .home-brands__item:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+  }
+  .home-brands__logo {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    display: block;
+    mix-blend-mode: multiply;
+  }
+  .home-brands__placeholder-text {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: #4A512D;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 749px) {
+    .home-brands__track {
+      gap: 30px;
+    }
+    .home-brands__wrapper.is-marquee .home-brands__track {
+      gap: 30px;
+      padding-right: 30px;
+    }
+    .home-brands__placeholder-text {
+      font-size: 14px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "KW - Home Brands",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading (Optional)"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "label": "Marquee Speed (seconds)",
+      "min": 5,
+      "max": 60,
+      "step": 5,
+      "default": 25,
+      "unit": "s"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand Logo",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Brand Name (Alt text)",
+          "default": "Brand Name"
+        },
+        {
+          "type": "image_picker",
+          "id": "img",
+          "label": "Brand Logo (Desktop)"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_mobile",
+          "label": "Brand Logo (Mobile)"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Brand Link"
+        },
+        {
+          "type": "range",
+          "id": "height",
+          "label": "t:settings.height",
+          "min": 10,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 35
+        },
+        {
+          "type": "range",
+          "id": "height_mobile",
+          "label": "t:settings.height_mobile",
+          "min": 5,
+          "max": 50,
+          "step": 1,
+          "unit": "px",
+          "default": 21
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Home Brands",
+      "blocks": [
+        {
+          "type": "brand",
+          "settings": {
+            "title": "DOMETIC"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "MEINDL"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "Coleman"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "THULE"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "LOWA"
+          }
+        },
+        {
+          "type": "brand",
+          "settings": {
+            "title": "weber"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

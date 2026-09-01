@@ -1,0 +1,1110 @@
+/* ============================================
+   About Us Section - Kampeerwinkel
+   Custom CSS based on Figma design
+   ============================================ */
+
+/* Color Variables */
+:root {
+  --about-color-white: #FFFFFF;
+  --about-color-green-50: #F0F1ED;
+  --about-color-green-100: #D2D5C6;
+  --about-color-green-300: #9DA383;
+  --about-color-green-400: #8A916B;
+  --about-color-green-600: #636B40;
+  --about-color-green-700: #4D5432;
+  --about-color-green-800: #3C4127;
+  --about-color-green-900: #2E321D;
+  --about-color-primary: #6D7646;
+  --about-color-text-black: #202020;
+  --about-color-text-600: #A6A6A6;
+  --about-color-text-700: #908F90;
+  --about-color-text-800: #4A4A4A;
+  --about-color-background: #F6F8EF;
+}
+
+/* Font Face - Roundo (replace with your actual font or use fallback) */
+@font-face {
+  font-family: 'Roundo';
+  src: url('roundo-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roundo';
+  src: url('roundo-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roundo';
+  src: url('roundo-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roundo';
+  src: url('roundo-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base Styles */
+.about-us-page {
+  font-family: 'Roundo', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--about-color-text-black);
+  overflow-x: hidden;
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.about-hero {
+  position: relative;
+  height: 691px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 50px 50px;
+}
+
+.about-hero__image-wrapper {
+  position: absolute;
+  inset: 0;
+}
+
+.about-hero__image,
+.about-hero__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.about-hero__content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 50px 70px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.8) 167.9%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.about-hero__title {
+  font-size: 50px;
+  font-weight: 600;
+  color: var(--about-color-white);
+  text-transform: uppercase;
+  line-height: 1.08;
+  letter-spacing: -1px;
+  margin: 0 0 12px;
+}
+
+.about-hero__subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.71);
+  letter-spacing: -0.36px;
+  margin: 0;
+}
+
+/* ============================================
+   Our Story Section
+   ============================================ */
+.about-story {
+  background: var(--about-color-background);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 20px;
+  padding: 84px 55px;
+  margin: 0 50px 100px;
+}
+
+.about-story__container {
+  display: flex;
+  gap: 80px;
+  max-width: 1495px;
+  margin: 0 auto;
+}
+
+.about-story__header {
+  flex-shrink: 0;
+}
+
+.about-story__title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--about-color-green-900);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.about-story__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 58px;
+}
+
+.about-story__text {
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--about-color-text-800);
+  line-height: 1.5;
+}
+
+.about-story__text p {
+  margin: 0 0 1em;
+}
+
+.about-story__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Statistics */
+.about-story__stats {
+  display: flex;
+  align-items: center;
+  gap: 64px;
+}
+
+.about-stat {
+  display: flex;
+  flex-direction: column;
+  width: 147px;
+}
+
+.about-stat__number {
+  font-size: 60px;
+  font-weight: 500;
+  color: var(--about-color-green-800);
+  line-height: 1;
+}
+
+.about-stat__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--about-color-text-800);
+  line-height: 1.3;
+}
+
+.about-stat__divider {
+  width: 1px;
+  height: 80px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   What to Expect Section
+   ============================================ */
+.about-expect {
+  padding: 0 50px 100px;
+}
+
+.about-expect__container {
+  display: flex;
+  gap: 67px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.about-expect__content {
+  flex-shrink: 0;
+  width: 522px;
+}
+
+.about-expect__title {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0 0 20px;
+  max-width: 433px;
+}
+
+.about-expect__text {
+  font-size: 14px;
+  color: var(--about-color-text-800);
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.about-expect__text strong {
+  font-weight: 700;
+}
+
+.about-expect__text ul {
+  margin: 1em 0;
+  padding-left: 21px;
+}
+
+.about-expect__text li {
+  line-height: 1.9;
+}
+
+/* Slider Controls */
+.about-expect__controls {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.about-expect__counter {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--about-color-text-600);
+}
+
+.about-expect__counter .about-expect__current {
+  color: var(--about-color-primary);
+}
+
+.about-expect__progress {
+  width: 291px;
+  height: 2px;
+  background: var(--about-color-green-50);
+  position: relative;
+}
+
+.about-expect__progress-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  background: var(--about-color-green-400);
+  transition: width 0.3s ease;
+}
+
+.about-expect__arrows {
+  display: flex;
+  gap: 16px;
+}
+
+.about-expect__arrow,
+.about-team__arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.about-expect__arrow:hover,
+.about-team__arrow:hover {
+  background: var(--about-color-green-400);
+  border-color: var(--about-color-green-400);
+}
+
+.about-expect__arrow:hover svg,
+.about-team__arrow:hover svg {
+  color: white;
+}
+
+/* Images Slider */
+.about-expect__images {
+  display: flex;
+  gap: 12px;
+  width: 976px;
+}
+
+.about-expect__image-card {
+  background: #f4f4f4;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 523px;
+}
+
+.about-expect__image-card:first-child {
+  width: 458px;
+  flex-shrink: 0;
+}
+
+.about-expect__image-card:not(:first-child) {
+  flex: 1;
+}
+
+.about-expect__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================
+   Team Section
+   ============================================ */
+.about-team {
+  padding: 0 50px 100px;
+}
+
+.about-team__container {
+  max-width: 1628px;
+  margin: 0 auto;
+}
+
+.about-team__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 60px;
+}
+
+.about-team__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-team__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+}
+
+.about-team__title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.about-team__arrows {
+  display: flex;
+  gap: 16px;
+}
+
+/* Team Slider */
+.about-team__slider {
+  display: flex;
+  gap: 28px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.about-team__slider::-webkit-scrollbar {
+  display: none;
+}
+
+.about-team__card {
+  flex-shrink: 0;
+  width: 524px;
+  scroll-snap-align: start;
+}
+
+.about-team__card-image-wrapper {
+  position: relative;
+  height: 578px;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #f2f2f2;
+}
+
+.about-team__card-image,
+.about-team__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-team__card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  padding-top: 64px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9) 167.9%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+}
+
+.about-team__card-info {
+  display: flex;
+  gap: 10px;
+}
+
+.about-team__card-accent {
+  width: 2px;
+  background: var(--about-color-white);
+  align-self: stretch;
+}
+
+.about-team__card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.about-team__card-name {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--about-color-white);
+  text-transform: uppercase;
+  letter-spacing: -0.4px;
+  margin: 0;
+}
+
+.about-team__card-role {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.69);
+  letter-spacing: -0.36px;
+}
+
+.about-team__card-description {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--about-color-white);
+  opacity: 0.7;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ============================================
+   Service Section
+   ============================================ */
+.about-service {
+  padding: 0 50px 100px;
+}
+
+.about-service__container {
+  display: flex;
+  gap: 102px;
+  align-items: center;
+}
+
+.about-service__images {
+  display: flex;
+  gap: 12px;
+  width: 724px;
+}
+
+.about-service__image-card {
+  background: #f4f4f4;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 523px;
+}
+
+.about-service__image-card--small {
+  flex: 1;
+}
+
+.about-service__image-card--large {
+  width: 458px;
+  flex-shrink: 0;
+}
+
+.about-service__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-service__content {
+  max-width: 548px;
+}
+
+.about-service__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.about-service__title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0 0 18px;
+}
+
+.about-service__text {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--about-color-text-800);
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.about-service__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--about-color-green-400);
+  color: var(--about-color-white);
+  padding: 16px 30px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: -0.28px;
+  transition: background 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.about-service__button:hover {
+  background: var(--about-color-green-600);
+}
+
+.about-service__button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   Ski Doctor Section
+   ============================================ */
+.about-ski-doctor {
+  padding: 0 50px 100px;
+}
+
+.about-ski-doctor__wrapper {
+  position: relative;
+  height: 697px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.about-ski-doctor__bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-ski-doctor__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.about-ski-doctor__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(calc(-50% - 471px), -50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(26.65px);
+  -webkit-backdrop-filter: blur(26.65px);
+  border-radius: 20px;
+  padding: 50px;
+  width: 559px;
+}
+
+.about-ski-doctor__title {
+  font-size: 42px;
+  font-weight: 600;
+  color: var(--about-color-green-700);
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0 0 16px;
+}
+
+.about-ski-doctor__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--about-color-text-800);
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.about-ski-doctor__text ul {
+  list-style: disc;
+  margin: 1em 0;
+  padding-left: 21px;
+}
+
+.about-ski-doctor__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--about-color-green-400);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-ski-doctor__link:hover {
+  color: var(--about-color-green-600);
+}
+
+.about-ski-doctor__link svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================
+   Features Section
+   ============================================ */
+.about-features {
+  padding: 0 50px 100px;
+}
+
+.about-features__container {
+  display: flex;
+  gap: 20px;
+}
+
+.about-features__card {
+  flex: 1;
+}
+
+.about-features__card-image-wrapper {
+  position: relative;
+  height: 654px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f4f4f4;
+}
+
+.about-features__card-image,
+.about-features__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-features__card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 30px;
+  padding-top: 64px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.9) 167.9%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.about-features__card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.about-features__card-label {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--about-color-white);
+  text-transform: uppercase;
+  letter-spacing: -0.8px;
+}
+
+.about-features__card-title {
+  font-size: 40px;
+  font-weight: 600;
+  color: var(--about-color-white);
+  text-transform: uppercase;
+  letter-spacing: -0.8px;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.about-features__card-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--about-color-white);
+  opacity: 0.7;
+  line-height: 1.5;
+  margin: 0;
+  max-width: 421px;
+}
+
+/* ============================================
+   FAQ Section
+   ============================================ */
+.about-faq {
+  padding: 0 50px 100px;
+}
+
+.about-faq__container {
+  max-width: 1628px;
+  margin: 0 auto;
+}
+
+.about-faq__header {
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.about-faq__title {
+  font-size: 36px;
+  font-weight: 600;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  margin: 0 0 20px;
+}
+
+.about-faq__subtitle {
+  font-size: 18px;
+  font-weight: 400;
+  color: #313131;
+  line-height: 1.5;
+  max-width: 646px;
+  margin: 0 auto;
+}
+
+/* FAQ List */
+.about-faq__list {
+  max-width: 1026px;
+  margin: 0 auto;
+}
+
+.about-faq__item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 30px 0;
+}
+
+.about-faq__item:first-child {
+  padding-top: 0;
+}
+
+.about-faq__question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.about-faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.about-faq__question-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--about-color-text-black);
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.about-faq__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.about-faq__icon svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.2s ease;
+}
+
+/* Show plus icon by default, minus when open */
+.about-faq__icon svg:first-child {
+  opacity: 1;
+}
+
+.about-faq__icon svg:last-child {
+  opacity: 0;
+}
+
+.about-faq__item[open] .about-faq__icon svg:first-child {
+  opacity: 0;
+}
+
+.about-faq__item[open] .about-faq__icon svg:last-child {
+  opacity: 1;
+}
+
+.about-faq__answer {
+  padding-top: 10px;
+}
+
+.about-faq__answer p {
+  font-size: 16px;
+  font-weight: 400;
+  color: #414141;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+@media screen and (max-width: 1200px) {
+  .about-hero {
+    margin: 0 30px 30px;
+  }
+
+  .about-story {
+    margin: 0 30px 60px;
+    padding: 50px 40px;
+  }
+
+  .about-story__container {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .about-story__stats {
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+
+  .about-expect {
+    padding: 0 30px 60px;
+  }
+
+  .about-expect__container {
+    flex-direction: column-reverse;
+    gap: 40px;
+  }
+
+  .about-expect__content {
+    width: 100%;
+  }
+
+  .about-expect__images {
+    width: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .about-expect__image-card {
+    min-width: 300px;
+    height: 400px;
+    scroll-snap-align: start;
+  }
+
+  .about-team {
+    padding: 0 30px 60px;
+  }
+
+  .about-team__card {
+    width: 350px;
+  }
+
+  .about-team__card-image-wrapper {
+    height: 450px;
+  }
+
+  .about-service {
+    padding: 0 30px 60px;
+  }
+
+  .about-service__container {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .about-service__images {
+    width: 100%;
+  }
+
+  .about-ski-doctor {
+    padding: 0 30px 60px;
+  }
+
+  .about-ski-doctor__card {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 559px;
+    margin: 50px auto;
+  }
+
+  .about-features {
+    padding: 0 30px 60px;
+  }
+
+  .about-features__container {
+    flex-direction: column;
+  }
+
+  .about-features__card-image-wrapper {
+    height: 450px;
+  }
+
+  .about-faq {
+    padding: 0 30px 60px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .about-hero {
+    height: 500px;
+    margin: 0 15px 20px;
+    border-radius: 15px;
+  }
+
+  .about-hero__content {
+    padding: 30px;
+  }
+
+  .about-hero__title {
+    font-size: 32px;
+  }
+
+  .about-hero__subtitle {
+    font-size: 16px;
+  }
+
+  .about-story {
+    margin: 0 15px 40px;
+    padding: 40px 25px;
+    border-radius: 15px;
+  }
+
+  .about-story__title {
+    font-size: 24px;
+  }
+
+  .about-story__text {
+    font-size: 16px;
+  }
+
+  .about-stat__number {
+    font-size: 40px;
+  }
+
+  .about-stat__divider {
+    height: 50px;
+  }
+
+  .about-expect {
+    padding: 0 15px 40px;
+  }
+
+  .about-expect__title {
+    font-size: 28px;
+  }
+
+  .about-expect__controls {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .about-expect__progress {
+    width: 100%;
+    order: 3;
+  }
+
+  .about-team {
+    padding: 0 15px 40px;
+  }
+
+  .about-team__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .about-team__title {
+    font-size: 24px;
+  }
+
+  .about-team__card {
+    width: 280px;
+  }
+
+  .about-team__card-image-wrapper {
+    height: 380px;
+  }
+
+  .about-service {
+    padding: 0 15px 40px;
+  }
+
+  .about-service__images {
+    flex-direction: column;
+  }
+
+  .about-service__image-card {
+    height: 300px;
+  }
+
+  .about-service__image-card--large {
+    width: 100%;
+  }
+
+  .about-service__title {
+    font-size: 24px;
+  }
+
+  .about-ski-doctor {
+    padding: 0 15px 40px;
+  }
+
+  .about-ski-doctor__wrapper {
+    height: auto;
+    min-height: 500px;
+  }
+
+  .about-ski-doctor__card {
+    padding: 30px;
+    margin: 30px 15px;
+    width: calc(100% - 30px);
+  }
+
+  .about-ski-doctor__title {
+    font-size: 28px;
+  }
+
+  .about-features {
+    padding: 0 15px 40px;
+  }
+
+  .about-features__card-image-wrapper {
+    height: 400px;
+  }
+
+  .about-features__card-title {
+    font-size: 28px;
+  }
+
+  .about-faq {
+    padding: 0 15px 40px;
+  }
+
+  .about-faq__header {
+    margin-bottom: 50px;
+  }
+
+  .about-faq__title {
+    font-size: 28px;
+  }
+
+  .about-faq__question-text {
+    font-size: 16px;
+  }
+}

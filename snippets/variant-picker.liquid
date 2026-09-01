@@ -1,0 +1,154 @@
+{%- if product.has_only_default_variant == false -%}
+    <div class="product-alt__option-selectors" data-disable-unavailable>
+    {%- for option in product.options_with_values -%}
+    {%- capture option_id -%}{{ section.id }}-{{ product.id }}-{{ option.name | handle }}-selector{%- endcapture -%}
+    {%- liquid
+        assign uses_swatches = false
+        assign sanitized_setting = settings.swatch_option_name | downcase
+        assign option_name = option.name | downcase
+        if settings.swatch_enabled and sanitized_setting contains option_name
+            assign uses_swatches = true
+        endif
+    -%}
+    <div class="product-alt__option-selector{% if uses_swatches %} option-selector--swatch{% if settings.show_variant_image %} variant-image{% endif %}{% endif %}"  data-option-index="{{ forloop.index0 }}" role="radiogroup" aria-labelledby="{{ option_id }}-Label">
+        <div class="opposing-items">
+            <label class="product-alt__option_name" id="{{ option_id }}-Label">{{ option.name }}</label>
+            <span class="product-alt__selected_option">{{ option.selected_value }}</span>
+        </div>
+        <div class="product-alt__option-selector_btns">
+            {%- for value in option.values -%}
+                {% if settings.show_variant_image %}
+                    <input class="product-alt__opt-btn js-option"
+                        type="radio"
+                        name="{{ option_id }}"
+                        id="{{ option_id }}-opt-{{ forloop.index0 }}"
+                        value="{{ value | escape }}"
+                        {% if product.variants.size == 1 or variant != blank %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
+                        required>
+                        <label class="product-alt__opt-label" for="{{ option_id }}-opt-{{ forloop.index0 }}">
+                            {% if uses_swatches %}
+                                {% if value.variant.featured_image != blank %}
+                                    {{value.variant.featured_image | image_url: width: 100 | image_tag }}
+                                {% else %}
+                                    {{ 'product-1' | placeholder_svg_tag }}
+                                {% endif %}
+                            {% endif %}
+                            <span class="product-alt__opt-label_text">{{ value }}</span>
+                        </label>
+                {% else %}
+                    {% liquid
+                    if uses_swatches
+                        assign handle = value | handleize
+                        assign entry = metaobjects.color[handle]
+                        assign bg = '#FFF'
+                        if entry
+                            if entry.color_s.value.size == 1
+                                assign bg = entry.color_s.value
+                            elsif entry.color_s.value.size > 1
+                                assign bg = 'linear-gradient(to right'
+                                for color in entry.color_s.value
+                                    assign bg = bg | append: ', ' | append: color
+                                endfor
+                                assign bg = bg | append: ')'
+                            endif
+                        endif
+                    endif
+                    %}
+                <input class="product-alt__opt-btn js-option"
+                        type="radio"
+                        name="{{ option_id }}"
+                        id="{{ option_id }}-opt-{{ forloop.index0 }}"
+                        value="{{ value | escape }}"
+                        {% if product.variants.size == 1 or variant != blank %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
+                        required>
+                <label class="product-alt__opt-label"{% if uses_swatches %} style="--bg:{{ bg }}" data-swatch="{{ value | replace: '"', '' | downcase }}"{% endif %} for="{{ option_id }}-opt-{{ forloop.index0 }}">
+                    
+                    <span class="product-alt__opt-label_text">{{ value }}</span>
+                </label>
+            {% endif %}
+            {%- endfor -%}
+        </div>
+    </div>
+{%- endfor -%}
+</div>
+{%- endif -%}
+<script>  
+    function getSelectedOptions(productContainer) {
+        const selectors = productContainer.querySelectorAll('.product-alt__variant-picker .product-alt__option-selector');
+        const values = [];
+
+        selectors.forEach((selector) => {
+            const checked = selector.querySelector('.js-option:checked');
+            values.push(checked ? checked.value : null);
+        });
+
+        return values;
+    }
+    function findVariantByOptions(product, options) {
+        return product.variants.find(variant => {
+            return options.every((value, index) => {
+            return variant[`option${index + 1}`] === value;
+            });
+        });
+    }
+    function updateOptionVisibility(product, options, productContainer) {
+        options.forEach((option, index) => {
+            const nextSelector = productContainer.querySelector(`.product-alt__option-selector[data-option-index="${index+1}"]`);
+            const slice = options.slice(0,index+1);
+            if(nextSelector){
+                nextSelector.querySelectorAll('.js-option').forEach(input => {
+                    const variant = product.variants.find(variant => {
+                        return [...slice, input.value].every((value, index) => {
+                            return variant[`option${index + 1}`] === value;
+                        });
+                    });
+                    console.log(variant)
+                    input.classList.toggle('variant-option-hidden', variant === undefined)
+                })
+            }
+        })
+    }
+    function updateSelectedBasedOnVisibility(options, productContainer) {
+        options.forEach((option, index) => {
+            const selector = productContainer.querySelector(`.product-alt__option-selector[data-option-index="${index}"]`);
+            const checked = selector.querySelector('.js-option:checked');
+            if(checked.classList.contains('variant-option-hidden'))
+            {
+                const availableOption = selector.querySelector('.js-option:not(.variant-option-hidden)');
+                if(availableOption){
+                    availableOption.checked = true;
+                }
+                options[index] = availableOption?.value || null;
+            }
+        })
+    }
+    
+
+    const productContainer = document.querySelector('[data-section-type="main-product"]');
+    productContainer.addEventListener('change', (e) => {
+        if (!e.target.classList.contains('js-option')) return;
+
+        const selectedOptions = getSelectedOptions(productContainer);
+        updateOptionVisibility(Theme.currentProduct, selectedOptions, productContainer)
+        updateSelectedBasedOnVisibility(selectedOptions, productContainer)
+        console.log(selectedOptions)
+        // if not all options selected yet, bail
+        if (selectedOptions.includes(null)) return;
+        const variant = findVariantByOptions(
+            Theme.currentProduct,
+            selectedOptions
+        );
+        if (!variant) return;
+        e.target.dispatchEvent(
+            new CustomEvent('variant_changed', {
+            bubbles: true,
+            detail: {
+                variant,
+                product: Theme.currentProduct,
+                options: selectedOptions
+            }
+            })
+        );
+    });
+
+</script>  

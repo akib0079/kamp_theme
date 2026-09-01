@@ -1,0 +1,259 @@
+/* ============================================
+   KWR 404 Page — Kampeerwinkel Roermond
+   ============================================ */
+
+.kwr-404 {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #2E2E28;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
+}
+
+/* ---------- SVG Scene ---------- */
+.kwr-404__scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* ---------- Grain ---------- */
+.kwr-404__grain {
+  position: absolute;
+  inset: -50%;
+  z-index: 1;
+  width: 200%;
+  height: 200%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  animation: kwr404-grain 0.5s steps(4) infinite;
+}
+
+/* ---------- Vignette ---------- */
+.kwr-404__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(46, 46, 40, 0.65) 100%);
+  pointer-events: none;
+}
+
+/* ---------- Content ---------- */
+.kwr-404__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* ---------- Badge ---------- */
+.kwr-404__badge-wrap {
+  position: absolute;
+  top: 1.25rem;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.kwr-404__badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #C8A84E;
+}
+
+.kwr-404__badge-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #C8A84E;
+  flex-shrink: 0;
+  animation: kwr404-pulseDot 2s ease-in-out infinite;
+}
+
+/* ---------- 404 Number ---------- */
+.kwr-404__number {
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-size: clamp(6rem, 18vw, 14rem);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  color: #F5F1EA;
+  margin: 0 0 0.2rem;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+  animation: kwr404-fadeScaleIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+}
+
+/* ---------- Headline ---------- */
+.kwr-404__headline {
+  font-family: 'Bebas Neue', 'Impact', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #D4C9B5;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  animation: kwr404-fadeScaleIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+
+/* ---------- Divider ---------- */
+.kwr-404__divider {
+  width: 60px;
+  height: 2px;
+  background: #5C6432;
+  margin: 1.5rem auto;
+  animation: kwr404-expandLine 1s ease 1s both;
+}
+
+/* ---------- Subtitle ---------- */
+.kwr-404__subtitle {
+  font-size: clamp(0.85rem, 1.3vw, 1.05rem);
+  font-weight: 400;
+  color: rgba(245, 241, 234, 0.55);
+  max-width: 440px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  margin: 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+  animation: kwr404-fadeSlideUp 1s ease 1.2s both;
+}
+
+/* ---------- CTA Button ---------- */
+.kwr-404__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding: 0.8rem 2rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #2E2E28;
+  background: #C8A84E;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(200, 168, 78, 0.3);
+  animation: kwr404-fadeSlideUp 1s ease 1.5s both;
+}
+
+.kwr-404__cta:hover {
+  background: #d4b65e;
+  box-shadow: 0 6px 28px rgba(200, 168, 78, 0.45);
+  transform: translateY(-1px);
+}
+
+.kwr-404__cta:active {
+  transform: translateY(0);
+}
+
+/* ---------- Bottom Bar ---------- */
+.kwr-404__bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(0deg, rgba(46, 46, 40, 0.5) 0%, rgba(46, 46, 40, 0) 100%);
+  animation: kwr404-fadeSlideUp 1s ease 1.8s both;
+}
+
+.kwr-404__contact {
+  font-size: 0.78rem;
+  color: rgba(245, 241, 234, 0.4);
+  line-height: 1.8;
+}
+
+.kwr-404__contact a {
+  color: #D4C9B5;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(212, 201, 181, 0.3);
+  padding-bottom: 1px;
+  transition: all 0.3s ease;
+}
+
+.kwr-404__contact a:hover {
+  color: #C8A84E;
+  border-color: #C8A84E;
+}
+
+.kwr-404__brand {
+  font-size: 0.75rem;
+  color: rgba(245, 241, 234, 0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Animations ---------- */
+@keyframes kwr404-pulseDot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200, 168, 78, 0.5); }
+  50% { opacity: 0.75; box-shadow: 0 0 0 10px rgba(200, 168, 78, 0); }
+}
+
+@keyframes kwr404-fadeScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes kwr404-fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kwr404-expandLine {
+  from { width: 0; opacity: 0; }
+  to { width: 60px; opacity: 1; }
+}
+
+@keyframes kwr404-grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, -1%); }
+  50% { transform: translate(1%, 2%); }
+  75% { transform: translate(-1%, -2%); }
+  100% { transform: translate(2%, 1%); }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .kwr-404__bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.8rem;
+    padding: 1.2rem 1.5rem;
+  }
+
+  .kwr-404__badge-wrap {
+    top: 0.8rem;
+  }
+
+  .kwr-404__content {
+    padding: 1.5rem;
+  }
+}

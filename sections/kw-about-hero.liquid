@@ -1,0 +1,246 @@
+{% comment %}
+  KW - About Hero Banner
+  Large full-width image with gradient overlay and title
+  Based on Figma design node 1080:257
+{% endcomment %}
+
+<section class="kw-about-hero section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  --gradient-opacity: {{ section.settings.gradient_opacity | divided_by: 100.0 }};
+  --blur-amount: {{ section.settings.blur_amount }}px;
+" data-animate="fade">
+  {% comment %} <div class="kw-about-hero__container"> {% endcomment %}
+    <div class="kw-about-hero__wrapper">
+      <div class="kw-about-hero__image-wrapper">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1920 | image_tag: 
+            class: 'kw-about-hero__image',
+            loading: 'eager',
+            alt: section.settings.title
+          }}
+        {% else %}
+          <div class="kw-about-hero__placeholder"></div>
+        {% endif %}
+        <div class="kw-about-hero__overlay"></div>
+      </div>
+      
+      <div class="kw-about-hero__content">
+        <div class="kw-about-hero__text">
+          <h1 class="kw-about-hero__title">{{ section.settings.title }}</h1>
+          <p class="kw-about-hero__subtitle">{{ section.settings.subtitle }}</p>
+        </div>
+      </div>
+    </div>
+  {% comment %} </div> {% endcomment %}
+</section>
+
+<style>
+  .kw-about-hero {
+    padding: var(--section-padding-top, 0) 0 var(--section-padding-bottom, 50px);
+  }
+
+  .kw-about-hero__container {
+    max-width: 1628px;
+    margin: 0 auto;
+  }
+
+  .kw-about-hero__wrapper {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 691px;
+  }
+
+  .kw-about-hero__image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kw-about-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .kw-about-hero__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #3C4127 0%, #636B40 100%);
+  }
+
+  .kw-about-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .kw-about-hero__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 50px 70px;
+    padding-top: 174px;
+    z-index: 1;
+  }
+  .kw-about-hero__content:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, var(--gradient-opacity, 0.85)) 100%);
+    backdrop-filter: blur(var(--blur-amount, 0px));
+    -webkit-backdrop-filter: blur(var(--blur-amount, 0px));
+    mask-image: linear-gradient(to top, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+  }
+
+  .kw-about-hero__text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .kw-about-hero__title {
+    font-size: 50px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    line-height: 1.08;
+    letter-spacing: -1px;
+    margin: 0;
+  }
+
+  .kw-about-hero__subtitle {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.71);
+    letter-spacing: -0.36px;
+    line-height: 1.08;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media screen and (max-width: 1200px) {
+    .kw-about-hero__wrapper {
+      height: 550px;
+    }
+
+    .kw-about-hero__title {
+      font-size: 40px;
+    }
+
+    .kw-about-hero__content {
+      padding: 40px 50px;
+      padding-top: 120px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-about-hero {
+      padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 30px);
+    }
+
+    .kw-about-hero__wrapper {
+      height: 450px;
+      border-radius: 16px;
+    }
+
+    .kw-about-hero__title {
+      font-size: 28px;
+    }
+
+    .kw-about-hero__subtitle {
+      font-size: 15px;
+    }
+
+    .kw-about-hero__content {
+      padding: 30px 25px;
+      padding-top: 100px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - About Hero",
+  "tag": "section",
+  "class": "kw-section-about-hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Title",
+      "default": "Over Ons, De Kampeerwinkel Roermond"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Your trusted address for outdoor adventure, quality gear, and expert advice."
+    },
+    {
+      "type": "header",
+      "content": "Overlay Settings"
+    },
+    {
+      "type": "range",
+      "id": "gradient_opacity",
+      "label": "Gradient Opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 85,
+      "unit": "%"
+    },
+    {
+      "type": "range",
+      "id": "blur_amount",
+      "label": "Blur Effect",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 50,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - About Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,355 @@
+{{ 'kw-components.css' | asset_url | stylesheet_tag }}
+
+<section class="kw-reviews-carousel" id="reviews-carousel-{{ section.id }}">
+  {%- comment -%} Section Header {%- endcomment -%}
+  <div class="kw-reviews-carousel__header">
+    <div class="kw-reviews-carousel__header-content">
+      <h2 class="kw-reviews-carousel__title">{{ section.settings.title }}</h2>
+      <p class="kw-reviews-carousel__subtitle">{{ section.settings.subtitle }}</p>
+    </div>
+    {% if section.settings.show_see_all and section.settings.see_all_link != blank %}
+      <a href="{{ section.settings.see_all_link }}" class="kw-reviews-carousel__see-all">
+        {{ section.settings.see_all_text }}
+      </a>
+    {% endif %}
+  </div>
+
+  {%- comment -%} Main Card Container {%- endcomment -%}
+  <div class="kw-reviews-carousel__card">
+    {%- comment -%} Background Logo {%- endcomment -%}
+    {% if section.settings.background_logo != blank %}
+      <div class="kw-reviews-carousel__bg-logo">
+        {{ section.settings.background_logo | image_url: width: 400 | image_tag: loading: 'lazy' }}
+      </div>
+    {% else %}
+      <div class="kw-reviews-carousel__bg-logo">
+        {% render 'kw-tent-logo' %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} Navigation Arrows {%- endcomment -%}
+    <button class="kw-reviews-carousel__nav kw-reviews-carousel__nav--prev" aria-label="Previous review">
+      {% render 'icon-chevron-left' %}
+    </button>
+    <button class="kw-reviews-carousel__nav kw-reviews-carousel__nav--next" aria-label="Next review">
+      {% render 'icon-chevron-right' %}
+    </button>
+
+    {%- comment -%} Reviews Slider {%- endcomment -%}
+    <div class="kw-reviews-carousel__slider">
+      {% for block in section.blocks %}
+        {% if block.type == 'review' %}
+          <div class="kw-reviews-carousel__slide {% if forloop.first %}is-active{% endif %}" data-slide-index="{{ forloop.index0 }}" {{ block.shopify_attributes }}>
+            <div class="kw-reviews-carousel__content">
+              {%- comment -%} Reviewer Image {%- endcomment -%}
+              <div class="kw-reviews-carousel__image-wrapper">
+                {% if block.settings.reviewer_image != blank %}
+                  {{ block.settings.reviewer_image | image_url: width: 600 | image_tag: 
+                    class: 'kw-reviews-carousel__image',
+                    loading: 'lazy',
+                    alt: block.settings.reviewer_name
+                  }}
+                {% else %}
+                  {{ 'image' | placeholder_svg_tag: 'kw-reviews-carousel__placeholder' }}
+                {% endif %}
+
+                {%- comment -%} Product Hotspot Card {%- endcomment -%}
+                {% if block.settings.product != blank %}
+                  {% assign hotspot_product = block.settings.product %}
+                  <a href="{{ hotspot_product.url }}" class="kw-reviews-carousel__product-card">
+                    <div class="kw-reviews-carousel__product-image">
+                      {% if hotspot_product.featured_image != blank %}
+                        {{ hotspot_product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy' }}
+                      {% else %}
+                        {{ 'product-1' | placeholder_svg_tag }}
+                      {% endif %}
+                    </div>
+                    <div class="kw-reviews-carousel__product-info">
+                      <div class="kw-reviews-carousel__product-details">
+                        <span class="kw-reviews-carousel__product-name">{{ hotspot_product.title }}</span>
+                        <span class="kw-reviews-carousel__product-link">Learn More</span>
+                      </div>
+                      <div class="kw-reviews-carousel__product-arrow">
+                        {% render 'icon-arrow-up-right' %}
+                      </div>
+                    </div>
+                  </a>
+                {% endif %}
+              </div>
+
+              {%- comment -%} Review Content {%- endcomment -%}
+              <div class="kw-reviews-carousel__review">
+                {%- comment -%} Quote Icon {%- endcomment -%}
+                <div class="kw-reviews-carousel__quote">
+                  {% render 'icon-quote' %}
+                </div>
+
+                {%- comment -%} Trustpilot Badge {%- endcomment -%}
+                {% if section.settings.show_trustpilot %}
+                  <div class="kw-reviews-carousel__trustpilot">
+                    <span class="kw-reviews-carousel__trustpilot-text">
+                      <strong>{{ section.settings.trustpilot_score }}</strong> reviews on
+                    </span>
+                    <span class="kw-reviews-carousel__trustpilot-logo">
+                      {% render 'icon-trustpilot' %}
+                      <span>Trustpilot</span>
+                    </span>
+                  </div>
+                {% endif %}
+
+                {%- comment -%} Review Text {%- endcomment -%}
+                <p class="kw-reviews-carousel__text">{{ block.settings.review_text }}</p>
+
+                {%- comment -%} Star Rating {%- endcomment -%}
+                <div class="kw-reviews-carousel__rating">
+                  {% assign rating = block.settings.star_rating | default: 5 %}
+                  {% for i in (1..5) %}
+                    <span class="kw-reviews-carousel__star {% if i <= rating %}kw-reviews-carousel__star--filled{% endif %}">
+                      {% render 'icon-star' %}
+                    </span>
+                  {% endfor %}
+                </div>
+
+                {%- comment -%} Reviewer Info {%- endcomment -%}
+                <div class="kw-reviews-carousel__reviewer">
+                  <span class="kw-reviews-carousel__reviewer-name">{{ block.settings.reviewer_name }}</span>
+                  <span class="kw-reviews-carousel__reviewer-title">{{ block.settings.reviewer_title }}</span>
+                </div>
+
+                {%- comment -%} Pagination Dots {%- endcomment -%}
+                <div class="kw-reviews-carousel__dots">
+                  {% for block in section.blocks %}
+                    {% if block.type == 'review' %}
+                      <button class="kw-reviews-carousel__dot {% if forloop.first %}is-active{% endif %}" data-dot-index="{{ forloop.index0 }}" aria-label="Go to review {{ forloop.index }}"></button>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<script>
+  (function() {
+    const section = document.getElementById('reviews-carousel-{{ section.id }}');
+    if (!section) return;
+
+    const slides = section.querySelectorAll('.kw-reviews-carousel__slide');
+    const dots = section.querySelectorAll('.kw-reviews-carousel__dot');
+    const prevBtn = section.querySelector('.kw-reviews-carousel__nav--prev');
+    const nextBtn = section.querySelector('.kw-reviews-carousel__nav--next');
+    
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+
+    function goToSlide(index) {
+      if (index < 0) index = totalSlides - 1;
+      if (index >= totalSlides) index = 0;
+      
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('is-active', i === index);
+      });
+      
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('is-active', i === index);
+      });
+      
+      currentIndex = index;
+    }
+
+    prevBtn?.addEventListener('click', () => goToSlide(currentIndex - 1));
+    nextBtn?.addEventListener('click', () => goToSlide(currentIndex + 1));
+    
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => goToSlide(i));
+    });
+
+    // Optional: Auto-play
+    {% if section.settings.autoplay %}
+      setInterval(() => goToSlide(currentIndex + 1), {{ section.settings.autoplay_speed | default: 5000 }});
+    {% endif %}
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "KW - Reviews Carousel",
+  "tag": "section",
+  "class": "kw-section-reviews-carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Onze Reviews"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "30% Discount for black Friday valid till 30th November"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_see_all",
+      "label": "Show 'See All' Link",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "see_all_text",
+      "label": "See All Text",
+      "default": "See All"
+    },
+    {
+      "type": "url",
+      "id": "see_all_link",
+      "label": "See All Link"
+    },
+    {
+      "type": "header",
+      "content": "Trustpilot"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trustpilot",
+      "label": "Show Trustpilot Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "trustpilot_score",
+      "label": "Trustpilot Score",
+      "default": "5.0"
+    },
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_logo",
+      "label": "Background Logo",
+      "info": "Optional decorative logo (tent icon)"
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Autoplay Speed (ms)",
+      "min": 3000,
+      "max": 9000,
+      "step": 500,
+      "default": 5000
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Reviewer"
+        },
+        {
+          "type": "image_picker",
+          "id": "reviewer_image",
+          "label": "Reviewer Image"
+        },
+        {
+          "type": "text",
+          "id": "reviewer_name",
+          "label": "Reviewer Name",
+          "default": "Danial Smith"
+        },
+        {
+          "type": "text",
+          "id": "reviewer_title",
+          "label": "Reviewer Title",
+          "default": "Managing Director"
+        },
+        {
+          "type": "header",
+          "content": "Review"
+        },
+        {
+          "type": "textarea",
+          "id": "review_text",
+          "label": "Review Text",
+          "default": "I recently purchased a tent from this store for a camping trip to the Andaroo mountains. The quality was superb, and it withstood the unpredictable weather. The staff was incredibly helpful, providing expert advice. I highly recommend this store for all your camping needs. I will be back for more gear soon!"
+        },
+        {
+          "type": "range",
+          "id": "star_rating",
+          "label": "Star Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "header",
+          "content": "Product Hotspot"
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Featured Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Reviews Carousel",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Danial Smith",
+            "reviewer_title": "Managing Director",
+            "review_text": "I recently purchased a tent from this store for a camping trip to the Andaroo mountains. The quality was superb, and it withstood the unpredictable weather. The staff was incredibly helpful, providing expert advice. I highly recommend this store for all your camping needs!",
+            "star_rating": 5
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Sarah Johnson",
+            "reviewer_title": "Outdoor Enthusiast",
+            "review_text": "Amazing selection of camping gear! Found exactly what I needed for my hiking trip. The quality is outstanding and the prices are fair. Customer service was excellent - they really know their products.",
+            "star_rating": 5
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "reviewer_name": "Michael Peters",
+            "reviewer_title": "Adventure Guide",
+            "review_text": "As a professional guide, I need reliable equipment. This store never disappoints. Great advice, fast shipping, and top-notch products. Highly recommended for serious outdoor enthusiasts.",
+            "star_rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

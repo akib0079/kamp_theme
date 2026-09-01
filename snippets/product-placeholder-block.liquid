@@ -1,0 +1,14 @@
+<div class="product-card__alt">
+  <div class="product-card__alt_img-wrap">
+    {% if index != blank %}
+        {% assign placeholder = index | modulo: 6 | plus: 1 | prepend: 'product-' %}
+    {% else %}
+        {% assign placeholder = 'image' %}
+    {% endif %}
+    {{ placeholder | placeholder_svg_tag: 'product-card__alt_img placeholder' }}
+  </div>
+  <h4 class="product-card__alt_title">
+    <span class="link-underline-text">Product</span>
+  </h4>
+  <div class="product-card__alt_price">{{ '0' | money }}</div>
+</div>

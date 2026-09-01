@@ -1,0 +1,80 @@
+{% # theme-check-disable %}
+{%- unless settings.type_body_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_body_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}
+{%- unless settings.type_subheading_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_subheading_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}
+{%- unless settings.type_heading_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_heading_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}
+{%- unless settings.type_accent_font.system? -%}
+  <link
+    rel="preload"
+    as="font"
+    href="{{ settings.type_accent_font | font_url }}"
+    type="font/woff2"
+    crossorigin
+    fetchpriority="low"
+  >
+{%- endunless -%}
+{% # theme-check-enable %}
+<style>
+  @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-Regular.otf);
+      font-weight: 400;
+      font-display: fallback;
+    }
+    @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-Medium.otf);
+      font-weight: 500;
+      font-display: fallback;
+    }
+    @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-SemiBold.otf);
+      font-weight: 600;
+      font-display: fallback;
+    }
+    @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-Bold.otf);
+      font-weight: 700;
+      font-display: fallback;
+    }
+    @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-Light.otf);
+      font-weight: 300;
+      font-display: fallback;
+    }
+    @font-face {
+      font-family: Roundo;
+      src: url(https://cdn.shopify.com/s/files/1/0659/2610/3226/files/Roundo-ExtraLight.otf);
+      font-weight: 200;
+      font-display: fallback;
+    }
+</style>

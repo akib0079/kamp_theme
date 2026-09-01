@@ -1,0 +1,726 @@
+{% comment %}
+  KW - Contact Form + Hours Section
+  Based on Figma design node 1080:908
+  Two-column layout: Opening hours image + Contact form
+{% endcomment %}
+
+<section class="kw-contact-form-section section" style="
+  --section-padding-top: {{ section.settings.padding_top }}px;
+  --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+">
+  <div class="kw-contact-form-section__container" data-animate="fade" data-animate-stagger="0.15">
+    {%- comment -%} Opening Hours Card {%- endcomment -%}
+    <div class="kw-opening-hours">
+      <div class="kw-opening-hours__image-wrapper">
+        {% if section.settings.background_image != blank %}
+          {{ section.settings.background_image | image_url: width: 900 | image_tag: 
+            class: 'kw-opening-hours__image',
+            loading: 'lazy',
+            alt: section.settings.hours_title
+          }}
+        {% else %}
+          <div class="kw-opening-hours__placeholder"></div>
+        {% endif %}
+        <div class="kw-opening-hours__overlay"></div>
+      </div>
+      
+      <div class="kw-opening-hours__content">
+        <h3 class="kw-opening-hours__title">{{ section.settings.hours_title }}</h3>
+        <div class="kw-opening-hours__grid">
+          <div class="kw-opening-hours__column">
+            {% assign hours_count = 0 %}
+            {% for block in section.blocks %}
+              {% if block.type == 'hours_row' %}
+                {% assign hours_count = hours_count | plus: 1 %}
+                {% if hours_count <= 4 %}
+                  <div class="kw-opening-hours__row" {{ block.shopify_attributes }}>
+                    <span class="kw-opening-hours__day">{{ block.settings.day }}</span>
+                    <span class="kw-opening-hours__divider"></span>
+                    <span class="kw-opening-hours__time">{{ block.settings.hours }}</span>
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <div class="kw-opening-hours__column">
+            {% assign hours_count = 0 %}
+            {% for block in section.blocks %}
+              {% if block.type == 'hours_row' %}
+                {% assign hours_count = hours_count | plus: 1 %}
+                {% if hours_count > 4 %}
+                  <div class="kw-opening-hours__row" {{ block.shopify_attributes }}>
+                    <span class="kw-opening-hours__day">{{ block.settings.day }}</span>
+                    <span class="kw-opening-hours__divider"></span>
+                    <span class="kw-opening-hours__time">{{ block.settings.hours }}</span>
+                  </div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {%- comment -%} Contact Form {%- endcomment -%}
+    <div class="kw-contact-form">
+      <div class="kw-contact-form__inner">
+        <div class="kw-contact-form__header">
+          <h2 class="kw-contact-form__title">{{ section.settings.form_title }}</h2>
+          <p class="kw-contact-form__description">{{ section.settings.form_description }}</p>
+        </div>
+        
+        {% form 'contact', class: 'kw-contact-form__form' %}
+          {% if form.posted_successfully? %}
+            <div class="kw-contact-form__success">
+              <p>{{ section.settings.success_message }}</p>
+            </div>
+          {% endif %}
+          
+          {% if form.errors %}
+            <div class="kw-contact-form__errors">
+              {{ form.errors | default_errors }}
+            </div>
+          {% endif %}
+          
+          <div class="kw-contact-form__field">
+            <label for="contact-name" class="kw-contact-form__label">{{ section.settings.name_label }}</label>
+            <input type="text" id="contact-name" name="contact[name]" class="kw-contact-form__input" placeholder="{{ section.settings.name_placeholder }}" required>
+          </div>
+          
+          <div class="kw-contact-form__field">
+            <label for="contact-email" class="kw-contact-form__label">{{ section.settings.email_label }}</label>
+            <input type="email" id="contact-email" name="contact[email]" class="kw-contact-form__input" placeholder="{{ section.settings.email_placeholder }}" required>
+          </div>
+          
+          <div class="kw-contact-form__field">
+            <label for="contact-topic" class="kw-contact-form__label">{{ section.settings.topic_label }}</label>
+            <select id="contact-topic" name="contact[topic]" class="kw-contact-form__input kw-contact-form__select" required>
+              <option value="" disabled selected>{{ section.settings.topic_placeholder }}</option>
+              {% for block in section.blocks %}
+                {% if block.type == 'topic_option' %}
+                  <option value="{{ block.settings.topic_value }}">{{ block.settings.topic_value }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="kw-contact-form__field">
+            <label for="contact-message" class="kw-contact-form__label">{{ section.settings.message_label }}</label>
+            <textarea id="contact-message" name="contact[body]" class="kw-contact-form__input kw-contact-form__textarea" placeholder="{{ section.settings.message_placeholder }}" rows="5" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-global kw-contact-form__submit">
+            <span class="btn__text">{{ section.settings.button_text | escape }}</span>
+            <span  class="btn__icon">{% render 'svg-btn-global-icon' %}</span>
+          </button>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.getElementById('contact_form').addEventListener('submit', function(e) {
+  const nameVal  = document.getElementById('contact-name').value;
+  const emailVal = document.getElementById('contact-email').value;
+  const topicVal = document.getElementById('contact-topic').value;
+  const msgVal   = document.getElementById('contact-message').value;
+
+  // Get the web component and its open shadow root
+  const shopLeadCapture = document.querySelector('shopify-forms-embed');
+  const shadowRoot = shopLeadCapture?.shadowRoot;
+  // Helper: tries light DOM first, then shadow DOM
+  const setField = (selector, value) => {
+    const el = document.querySelector(selector) 
+            ?? shadowRoot?.querySelector(selector);
+    if (!el) return;
+
+    const proto = el instanceof HTMLTextAreaElement
+      ? window.HTMLTextAreaElement.prototype
+      : window.HTMLInputElement.prototype;
+
+    const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value')?.set;
+    nativeSetter?.call(el, value);
+
+    el.dispatchEvent(new Event('input',  { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+
+  // Populate app form fields (light DOM with shadow DOM fallback)
+  setField('#custom\\#full_name', nameVal);
+  setField('#email',              emailVal);
+  setField('textarea[name="custom#message"]', msgVal);
+
+  // Handle topic dropdown — it's a custom <button> not a <select>
+  // First open the dropdown, then click the matching option
+  const topicToggle = document.querySelector('[aria-controls="custom#topic-selector-dropdown"]')
+                   ?? shadowRoot?.querySelector('[aria-controls="custom#topic-selector-dropdown"]');
+
+  if (topicToggle) {
+    topicToggle.click(); // open dropdown
+
+    // Wait a tick for options to render
+    setTimeout(() => {
+      const allOptions = [
+        ...document.querySelectorAll('[id^="custom#topic-selector-dropdown"] [role="option"]'),
+        ...(shadowRoot?.querySelectorAll('[id^="custom#topic-selector-dropdown"] [role="option"]') ?? [])
+      ];
+
+      const match = allOptions.find(
+        opt => opt.textContent.trim().toLowerCase() === topicVal.toLowerCase()
+      );
+      match?.click();
+
+      // Submit app form after topic is selected
+      setTimeout(() => {
+        const appSubmit = document.querySelector('[data-testid="btn-form-submit"]')
+                       ?? shadowRoot?.querySelector('[data-testid="btn-form-submit"]');
+        appSubmit?.click();
+      }, 100);
+
+    }, 100);
+  } else {
+    // No topic dropdown found, submit directly
+    const appSubmit = document.querySelector('[data-testid="btn-form-submit"]')
+                   ?? shadowRoot?.querySelector('[data-testid="btn-form-submit"]');
+    appSubmit?.click();
+  }
+});
+</script>
+<style>
+  .kw-contact-form-section {
+    padding: var(--section-padding-top, 0) 0px var(--section-padding-bottom, 100px);
+  }
+
+  .kw-contact-form-section__container {
+    display: flex;
+    gap: 23px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ============================================
+     Opening Hours
+     ============================================ */
+  .kw-opening-hours {
+    flex: 1;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 809px;
+  }
+
+  .kw-opening-hours__image-wrapper {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kw-opening-hours__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s ease-out;
+  }
+  .kw-opening-hours:hover .kw-opening-hours__image {
+    transform: scale(1.05);
+  }
+
+  .kw-opening-hours__placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #3C4127 0%, #636B40 100%);
+  }
+
+  .kw-opening-hours__overlay {
+    display: none;
+  }
+
+  .kw-opening-hours__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 46px 30px;
+    padding-top: 174px;
+    z-index: 1;
+    {% comment %} background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%); {% endcomment %}
+  }
+  .kw-opening-hours__content::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.85) 85%, rgba(0, 0, 0, 1) 100%);
+      backdrop-filter: blur(var(--blur-amount, 12px));
+      -webkit-backdrop-filter: blur(var(--blur-amount, 12px));
+      mask-image: linear-gradient(to top, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+      z-index: -1;
+  }
+  .kw-opening-hours__title {
+    font-size: 30px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    letter-spacing: -0.6px;
+    margin: 0 0 28px;
+  }
+
+  .kw-opening-hours__grid {
+    display: flex;
+    gap: 25px;
+  }
+
+  .kw-opening-hours__column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-basis: 100%;
+  }
+
+  .kw-opening-hours__row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .kw-opening-hours__day {
+    
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    min-width: 97px;
+  }
+
+  .kw-opening-hours__divider {
+    min-width: 10px;
+    flex-grow: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .kw-opening-hours__time {
+    
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+  }
+
+  /* ============================================
+     Contact Form
+     ============================================ */
+  .kw-contact-form {
+    flex: 1;
+    background: #F6F6F6;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 20px;
+    padding: 65px 35px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .kw-contact-form__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+    max-width: 731px;
+  }
+
+  .kw-contact-form__header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .kw-contact-form__title {
+    
+    font-size: 36px;
+    font-weight: 600;
+    color: #2E321D;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .kw-contact-form__description {
+    
+    font-size: 12px;
+    font-weight: 500;
+    color: #2E321D;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 500px;
+  }
+
+  .kw-contact-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .kw-contact-form__form .h-captcha {
+    display: none;
+  }
+  .kw-contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .kw-contact-form__label {
+    
+    font-size: 14px;
+    font-weight: 500;
+    color: #3C4127;
+    text-transform: capitalize;
+    line-height: 1.1;
+  }
+
+  .kw-contact-form__input {
+    background: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    
+    font-size: 12px;
+    font-weight: 500;
+    color: #202020;
+    height: 42px;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+    box-shadow: inset 0 0 0 1px transparent;
+    transition: box-shadow 0.2s ease;
+    vertical-align: top;
+    display: block;
+    scroll-margin-top: 100px;
+  }
+
+  .kw-contact-form__input:focus {
+    box-shadow: inset 0 0 0 1px #8A916B;
+  }
+
+  .kw-contact-form__input:focus-visible {
+    outline: none;
+  }
+
+  .kw-contact-form__input::placeholder {
+    color: #A2A88C;
+  }
+
+  .kw-contact-form__select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23A2A88C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+    cursor: pointer;
+  }
+
+  /* Placeholder state (no valid option selected) - light green */
+  .kw-contact-form__select:invalid {
+    color: #A2A88C;
+  }
+
+  /* Valid option selected - black */
+  .kw-contact-form__select:valid {
+    color: #202020;
+  }
+
+  .kw-contact-form__select:focus {
+    box-shadow: inset 0 0 0 1px #8A916B;
+  }
+
+  .kw-contact-form__select option {
+    color: #202020;
+  }
+
+  .kw-contact-form__select option:disabled {
+    color: #A2A88C;
+  }
+
+  .kw-contact-form__textarea {
+    height: 136px;
+    resize: none;
+    vertical-align: top;
+  }
+  .kw-contact-form__submit{
+    border: none;
+    cursor: pointer;
+  }
+  {% comment %} {% comment %} .kw-contact-form__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #8A916B;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 11px;
+    padding: 16px 30px;
+    
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.28px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    height: 52px;
+    width: 100%;
+    box-sizing: border-box;
+  } {% endcomment %}
+
+  .kw-contact-form__submit:hover {
+    background: #636B40;
+  }
+
+  .kw-contact-form__submit svg {
+    width: 24px;
+    height: 24px;
+  } {% endcomment %}
+
+  .kw-contact-form__success {
+    background: #D4EDDA;
+    border: 1px solid #C3E6CB;
+    border-radius: 8px;
+    padding: 15px;
+  }
+
+  .kw-contact-form__success p {
+    color: #155724;
+    margin: 0;
+    
+    font-size: 14px;
+  }
+
+  .kw-contact-form__errors {
+    background: #F8D7DA;
+    border: 1px solid #F5C6CB;
+    border-radius: 8px;
+    padding: 15px;
+    color: #721C24;
+    
+    font-size: 14px;
+  }
+
+  /* ============================================
+     Responsive Styles
+     ============================================ */
+  @media screen and (max-width: 1200px) {
+    .kw-contact-form-section__container {
+      flex-direction: column;
+    }
+    
+    .kw-opening-hours {
+      min-height: 500px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .kw-contact-form-section {
+      padding: 0 0px 60px;
+    }
+    
+    .kw-opening-hours__grid {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .kw-opening-hours__title {
+      font-size: 24px;
+    }
+    
+    .kw-opening-hours__day,
+    .kw-opening-hours__time {
+      font-size: 16px;
+    }
+    
+    .kw-contact-form {
+      padding: 25px 20px;
+    }
+    
+    .kw-contact-form__title {
+      font-size: 26px;
+    }
+
+    .kw-contact-form__inner {
+      gap: 30px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "KW - Contact Form + Hours",
+  "tag": "section",
+  "class": "kw-section-contact-form",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Opening Hours"
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "text",
+      "id": "hours_title",
+      "label": "Hours Title",
+      "default": "OPENINGSTIJDEN"
+    },
+    {
+      "type": "header",
+      "content": "Contact Form"
+    },
+    {
+      "type": "textarea",
+      "id": "form_title",
+      "label": "Form Title",
+      "default": "Heb je een vraag of wil je advies?"
+    },
+    {
+      "type": "textarea",
+      "id": "form_description",
+      "label": "Form Description",
+      "default": "Can't find your question in the FAQs? Send your question using the contact form below. Have a complaint or comment? Please let us know via the contact form below, and we'll get back to you soon."
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Name Label",
+      "default": "Full Name"
+    },
+    {
+      "type": "text",
+      "id": "name_placeholder",
+      "label": "Name Placeholder",
+      "default": "John Doe"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email Label",
+      "default": "Email Address"
+    },
+    {
+      "type": "text",
+      "id": "email_placeholder",
+      "label": "Email Placeholder",
+      "default": "example@domain.com"
+    },
+    {
+      "type": "text",
+      "id": "topic_label",
+      "label": "Topic Label",
+      "default": "Topic"
+    },
+    {
+      "type": "text",
+      "id": "topic_placeholder",
+      "label": "Topic Placeholder",
+      "default": "Select a title here"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Message Label",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "message_placeholder",
+      "label": "Message Placeholder",
+      "default": "Type here...."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Submit Now"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success Message",
+      "default": "Thank you for your message. We will get back to you soon!"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom",
+      "min": 0,
+      "max": 150,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hours_row",
+      "name": "Opening Hours Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "day",
+          "label": "Day",
+          "default": "Maandag"
+        },
+        {
+          "type": "text",
+          "id": "hours",
+          "label": "Hours",
+          "default": "10:00 - 18:00 uur"
+        }
+      ]
+    },
+    {
+      "type": "topic_option",
+      "name": "Topic Option",
+      "settings": [
+        {
+          "type": "text",
+          "id": "topic_value",
+          "label": "Topic",
+          "default": "General Inquiry"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "KW - Contact Form + Hours",
+      "blocks": [
+        { "type": "hours_row", "settings": { "day": "Maandag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "hours_row", "settings": { "day": "Dinsdag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "hours_row", "settings": { "day": "Woensdag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "hours_row", "settings": { "day": "Vrijdag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "hours_row", "settings": { "day": "Zaterdag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "hours_row", "settings": { "day": "Zondag", "hours": "10:00 - 18:00 uur" }},
+        { "type": "topic_option", "settings": { "topic_value": "General Inquiry" }},
+        { "type": "topic_option", "settings": { "topic_value": "Product Question" }},
+        { "type": "topic_option", "settings": { "topic_value": "Order Status" }},
+        { "type": "topic_option", "settings": { "topic_value": "Complaint" }}
+      ]
+    }
+  ]
+}
+{% endschema %}
