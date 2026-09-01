@@ -36,7 +36,7 @@
                         name="{{ option_id }}"
                         id="{{ option_id }}-opt-{{ forloop.index0 }}"
                         value="{{ value | escape }}"
-                        {% if product.variants.size == 1 or variant != blank %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
+                        {% if product.variants.size == 1 %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
                         required>
                         <label class="product-alt__opt-label" for="{{ option_id }}-opt-{{ forloop.index0 }}">
                             {% if uses_swatches %}
@@ -72,7 +72,7 @@
                         name="{{ option_id }}"
                         id="{{ option_id }}-opt-{{ forloop.index0 }}"
                         value="{{ value | escape }}"
-                        {% if product.variants.size == 1 or variant != blank %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
+                        {% if product.variants.size == 1 %}{% if option.selected_value == value %}checked{% endif %}{% endif %}
                         required>
                 <label class="product-alt__opt-label"{% if uses_swatches %} style="--bg:{{ bg }}" data-swatch="{{ value | replace: '"', '' | downcase }}"{% endif %} for="{{ option_id }}-opt-{{ forloop.index0 }}">
                     
@@ -115,7 +115,6 @@
                             return variant[`option${index + 1}`] === value;
                         });
                     });
-                    console.log(variant)
                     input.classList.toggle('variant-option-hidden', variant === undefined)
                 })
             }
@@ -125,6 +124,7 @@
         options.forEach((option, index) => {
             const selector = productContainer.querySelector(`.product-alt__option-selector[data-option-index="${index}"]`);
             const checked = selector.querySelector('.js-option:checked');
+            if(!checked) return;
             if(checked.classList.contains('variant-option-hidden'))
             {
                 const availableOption = selector.querySelector('.js-option:not(.variant-option-hidden)');
@@ -144,7 +144,6 @@
         const selectedOptions = getSelectedOptions(productContainer);
         updateOptionVisibility(Theme.currentProduct, selectedOptions, productContainer)
         updateSelectedBasedOnVisibility(selectedOptions, productContainer)
-        console.log(selectedOptions)
         // if not all options selected yet, bail
         if (selectedOptions.includes(null)) return;
         const variant = findVariantByOptions(

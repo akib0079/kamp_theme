@@ -46,7 +46,6 @@
           class="product-alt__gallery-wrap-outer"
           data-thumb-limit="{{ thumb_limit }}"
           data-thumb-limit-mob="{{ mob_thumb_limit }}"
-          data-pre-selected-group="{{ current_variant.option1 }}"
         >
           <div class="product-alt__gallery-wrap">
             <div class="product-alt__thumb swiper">
@@ -138,7 +137,7 @@
           <script id="thumb-overlay-template" type="text/template">
             <div class="product-alt__thumb_overlay">
               <span>0+</span>
-            </div>;
+            </div>
           </script>
         </div>
         {% for block in section.blocks %}
@@ -570,20 +569,34 @@
                     {% capture stock_out_text %}
                       <span>{{ block.settings.sold_out_text }}</span>
                     {% endcapture %}
+                    {% capture choose_text %}
+                      <span>{{ block.settings.choose_text | default: 'Maak een keuze' }}</span>
+                    {% endcapture %}
+                    {%- liquid
+                      # Nothing is preselected, so a multi-variant product starts without a choice.
+                      assign needs_choice = false
+                      if product.variants.size > 1
+                        assign needs_choice = true
+                      endif
+                    -%}
                     <button
                       type="submit"
                       class="product-alt__add-cart btn-global"
-                      data-add-to-cart-text="{{add_to_cart_text | escape }}"
-                      data-sold-out-text="{{stock_out_text | escape }}"
-                      {% unless product.selected_or_first_available_variant.available %}
+                      data-add-to-cart-text="{{ add_to_cart_text | escape }}"
+                      data-sold-out-text="{{ stock_out_text | escape }}"
+                      data-choose-text="{{ choose_text | escape }}"
+                      {% if needs_choice %}data-needs-choice{% endif %}
+                      {% if needs_choice or product.selected_or_first_available_variant.available == false %}
                         disabled
-                      {% endunless %}
+                      {% endif %}
                     >
-                      {% unless product.selected_or_first_available_variant.available %}
+                      {% if product.selected_or_first_available_variant.available == false %}
                         {{ stock_out_text }}
+                      {% elsif needs_choice %}
+                        {{ choose_text }}
                       {% else %}
                         {{ add_to_cart_text }}
-                      {% endunless %}
+                      {% endif %}
                     </button>
                   </div>
                   {% if block.settings.show_store_availability %}
@@ -1122,12 +1135,19 @@
                   </svg>
                 </button>
               </div>
+              {%- liquid
+                assign needs_choice = false
+                if product.variants.size > 1
+                  assign needs_choice = true
+                endif
+              -%}
               <button
                 type="submit"
                 class="product-alt__add-cart btn-global"
-                {% unless product.selected_or_first_available_variant.available %}
+                {% if needs_choice %}data-needs-choice{% endif %}
+                {% if needs_choice or product.selected_or_first_available_variant.available == false %}
                   disabled
-                {% endunless %}
+                {% endif %}
               >
                 {% if block.settings.cart_icon != blank %}
                   <img
@@ -1169,9 +1189,35 @@
 {% render 'specs-label.liquid' %}
 <script>
   const container = document.querySelector('.section-id-{{ section.id }}');
+  let productGallery = null;
   updateAvailableState(Theme.currentProduct, container);
-  if(container.classList.contains('variant-based-gallery')){
-    separateGallery(Theme.currentProduct, container);
+
+  /* Colour drives the gallery on its own, before a full variant exists. */
+  container.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('js-option')) return;
+    const selector = e.target.closest('.product-alt__option-selector');
+    if (!selector || selector.dataset.optionIndex !== '0') return;
+    if (!container.classList.contains('variant-based-gallery')) return;
+    if (productGallery) productGallery.setGroup(e.target.value);
+  });
+
+  /* Nothing is preselected, so hold the cart until every option is chosen. */
+  container.addEventListener('change', (e) => {
+    if (!e.target.classList.contains('js-option')) return;
+    updateChoiceState(container);
+  });
+
+  function updateChoiceState(container) {
+    const selectors = container.querySelectorAll(
+      '.product-alt__variant-picker .product-alt__option-selector'
+    );
+    if (!selectors.length) return;
+    const incomplete = Array.from(selectors).some((s) => !s.querySelector('.js-option:checked'));
+    if (!incomplete) return; // a complete choice is handled by variant_changed
+    container.querySelectorAll('.product-alt__add-cart[data-needs-choice]').forEach((btn) => {
+      if (btn.dataset.chooseText) btn.innerHTML = btn.dataset.chooseText;
+      btn.setAttribute('disabled', '');
+    });
   }
   container.querySelectorAll('.product-alt__popup').forEach((popup) => {
     popup.querySelector('.product-alt__popup-anchor')?.addEventListener('click', (e) => {
@@ -1403,15 +1449,12 @@
     updateVariantVisibilityArea(variant, container);
     updateAvailableState(e.detail.product, container);
     updateButButtons(variant, container);
-    if(container.classList.contains('variant-based-gallery')){
-      updateActiveGallery(variant, container);
-    }
   });
   function updateButButtons(variant, container) {
     container.querySelectorAll('[data-input-curr-variant-id]').forEach((input) => {
       input.value = variant.id;
     });
-    container.querySelectorAll('.product-alt__buy-buttons .product-alt__add-cart').forEach((btn) => {
+    container.querySelectorAll('.product-alt__add-cart').forEach((btn) => {
       if(variant.available && btn.dataset.addToCartText){
         btn.innerHTML = btn.dataset.addToCartText
       }else if(!variant.available && btn.dataset.soldOutText){
@@ -1532,115 +1575,200 @@
         ?.classList.toggle('is-unavailable', !available);
     });
   }
-  function updateActiveGallery(variant, container) {
-    if (variant) {
-      const activeGallery = container.querySelector(`.product-alt__gallery-wrap[data-variant-image-group="${variant.option1}"]`);
-      if(activeGallery){
-        container.querySelector('.product-alt__gallery-wrap.active').classList.remove('active')
-        activeGallery.classList.add('active');
-        container.querySelector('.product-alt__gallery-wrap-outer').style.setProperty('--height', activeGallery.scrollHeight + 'px');
+  /* ============================================
+     Product gallery
+     - Lands unfiltered: every image is in the slider, no colour applied.
+     - Picking a colour narrows it to that colour's own images.
+     - The thumb rail is capped; the last one carries a "3+" badge that opens
+       the rest. Browsing past the cap with the arrows opens it too.
+     ============================================ */
+  function buildMediaGroups(product) {
+    const map = {};
+    if (!product || !product.media || !product.variants) return map;
+
+    // The first image each colour claims as its featured media marks where that
+    // colour's run begins.
+    const firstMediaFor = {};
+    product.media.forEach((media) => {
+      product.variants.forEach((variant) => {
+        const featured = variant.featured_media && variant.featured_media.id;
+        const colour = variant.options && variant.options[0];
+        if (featured === media.id && colour != null && !(colour in firstMediaFor)) {
+          firstMediaFor[colour] = media.id;
+        }
+      });
+    });
+
+    // Media is ordered by colour, so each image belongs to the last marker seen.
+    let current = null;
+    product.media.forEach((media) => {
+      for (const colour in firstMediaFor) {
+        if (firstMediaFor[colour] === media.id) current = colour;
       }
-    }
+      map[media.id] = current;
+    });
+    return map;
   }
 
-  function separateGallery(productData, container) {
-    {% comment %} console.log(productData) {% endcomment %}
-    let optionNameMediaMap = {}, groupingOptionIndex = 0;
-    productData.media.forEach((media) => {
-        productData.variants.forEach((variant) => {
-            if (variant.featured_media && variant.featured_media.id == media.id) {
-                if (!optionNameMediaMap[variant.options[groupingOptionIndex]]) {
-                    optionNameMediaMap[variant.options[groupingOptionIndex]] = media.id;
-                }
-            }
-        });
+  function initProductGallery(container) {
+    const outer = container.querySelector('.product-alt__gallery-wrap-outer');
+    const wrap = outer && outer.querySelector('.product-alt__gallery-wrap');
+    if (!wrap || typeof Swiper === 'undefined') return null;
+
+    const galleryEl = wrap.querySelector('.product-alt__gallery');
+    const thumbEl = wrap.querySelector('.product-alt__thumb');
+    const galleryTrack = galleryEl.querySelector('.swiper-wrapper');
+    const thumbTrack = thumbEl.querySelector('.swiper-wrapper');
+
+    // Slides are kept here and re-appended on every render, never deleted, so
+    // filtering and the thumb cap are both reversible.
+    const allSlides = Array.from(galleryTrack.children);
+    const allThumbs = Array.from(thumbTrack.children);
+    const thumbByMediaId = {};
+    allThumbs.forEach((thumb) => {
+      thumbByMediaId[thumb.dataset.mediaId] = thumb;
     });
-    let currentMediaOptionName = '';
-    let mainSwiperCont = container.querySelector(".product-alt__gallery-wrap");
-    container.querySelectorAll('.product-alt__gallery .swiper-slide').forEach(function (item, index) {
-    for (let optionName in optionNameMediaMap) {
-        if (item.dataset.mediaId == optionNameMediaMap[optionName]) {
-        currentMediaOptionName = optionName;
+
+    const deskLimit = parseInt(outer.dataset.thumbLimit, 10) || 0;
+    const mobLimit = parseInt(outer.dataset.thumbLimitMob, 10) || deskLimit;
+    const overlayTpl = container.querySelector('#thumb-overlay-template');
+    const mobileMQ = window.matchMedia('(max-width: 749px)');
+
+    const groupByMediaId = buildMediaGroups(Theme.currentProduct);
+
+    let activeGroup = null; // null = no colour picked yet, show everything
+    let expanded = false; // true once the full thumb rail has been opened
+
+    const thumbsSwiper = new Swiper(thumbEl, {
+      slidesPerView: 'auto',
+      freeMode: { enabled: true, sticky: true, momentumRatio: 0.8 },
+      breakpoints: { 750: { direction: 'vertical' } },
+    });
+
+    const gallerySwiper = new Swiper(galleryEl, {
+      slidesPerView: 1,
+      effect: 'fade',
+      fadeEffect: { crossFade: true },
+      watchOverflow: true,
+      thumbs: { swiper: thumbsSwiper },
+      navigation: {
+        nextEl: wrap.querySelector('.slider_nav.nav-next'),
+        prevEl: wrap.querySelector('.slider_nav.nav-prev'),
+      },
+    });
+
+    function currentLimit() {
+      return mobileMQ.matches ? mobLimit : deskLimit;
+    }
+
+    function expand() {
+      if (expanded) return;
+      expanded = true;
+      render({ keepIndex: true });
+    }
+
+    function visibleSlides() {
+      if (activeGroup === null) return allSlides;
+      const matched = allSlides.filter((slide) => groupByMediaId[slide.dataset.mediaId] === activeGroup);
+      // A colour with no images of its own keeps the whole gallery.
+      return matched.length ? matched : allSlides;
+    }
+
+    function paintThumbs(slides) {
+      allThumbs.forEach((thumb) => {
+        const stale = thumb.querySelector('.product-alt__thumb_overlay');
+        if (stale) stale.remove();
+      });
+
+      const thumbs = slides.map((slide) => thumbByMediaId[slide.dataset.mediaId]).filter(Boolean);
+      const limit = currentLimit();
+      const capped = !expanded && limit > 0 && thumbs.length > limit;
+      const shown = capped ? thumbs.slice(0, limit) : thumbs;
+
+      thumbTrack.replaceChildren(...shown);
+
+      if (capped && overlayTpl && shown.length) {
+        const holder = document.createElement('div');
+        holder.innerHTML = overlayTpl.innerHTML;
+        const badge = holder.querySelector('.product-alt__thumb_overlay');
+        if (badge) {
+          const hidden = thumbs.length - limit;
+          badge.querySelector('span').textContent = hidden + '+';
+          badge.setAttribute('role', 'button');
+          badge.setAttribute('tabindex', '0');
+          badge.setAttribute('aria-label', 'Toon ' + hidden + ' extra afbeeldingen');
+          badge.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            expand();
+          });
+          badge.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            e.preventDefault();
+            e.stopPropagation();
+            expand();
+          });
+          const last = shown[shown.length - 1];
+          (last.querySelector('.product-alt__thumb_img-wrap') || last).appendChild(badge);
         }
+      }
+      return shown;
     }
-    let currMainSwiperCont = container.querySelector(`.product-alt__gallery-wrap[data-variant-image-group="${currentMediaOptionName}"]`);
-    if(currMainSwiperCont == undefined){
-        currMainSwiperCont = mainSwiperCont.cloneNode(true);
-        currMainSwiperCont.setAttribute('data-variant-image-group', currentMediaOptionName);
-        currMainSwiperCont.querySelector('.product-alt__thumb .swiper-wrapper').replaceChildren();
-        currMainSwiperCont.querySelector('.product-alt__gallery .swiper-wrapper').replaceChildren();
-        mainSwiperCont.insertAdjacentElement('afterend', currMainSwiperCont);
+
+    function render(opts) {
+      const keepIndex = opts && opts.keepIndex;
+      const active = gallerySwiper.slides[gallerySwiper.activeIndex];
+      const prevMediaId = active ? active.dataset.mediaId : null;
+
+      const slides = visibleSlides();
+      // Drop the fade effect's inline styles so re-added slides start clean.
+      slides.forEach((slide) => {
+        slide.style.opacity = '';
+        slide.style.transitionDuration = '';
+      });
+
+      galleryTrack.replaceChildren(...slides);
+      const shownThumbs = paintThumbs(slides);
+
+      gallerySwiper.update();
+      thumbsSwiper.update();
+
+      let index = 0;
+      if (keepIndex && prevMediaId) {
+        const found = slides.findIndex((slide) => slide.dataset.mediaId === prevMediaId);
+        if (found > -1) index = found;
+      }
+      gallerySwiper.slideTo(index, 0);
+      if (shownThumbs.length) {
+        thumbsSwiper.slideTo(Math.min(index, shownThumbs.length - 1), 0);
+      }
+      if (gallerySwiper.navigation) gallerySwiper.navigation.update();
+      outer.style.setProperty('--height', wrap.scrollHeight + 'px');
     }
-    currMainSwiperCont.querySelector('.product-alt__gallery .swiper-wrapper').append(item)
-    currMainSwiperCont.querySelector('.product-alt__thumb .swiper-wrapper').append(mainSwiperCont.querySelector(`.product-alt__thumb .swiper-slide[data-media-id="${item.dataset.mediaId}"]`))
-    // $(item).attr('data-variant-image-group', currentMediaOptionName);
+
+    // Reveal the rest of the rail once the shopper browses past the cap.
+    gallerySwiper.on('slideChange', () => {
+      if (!expanded && gallerySwiper.activeIndex >= currentLimit()) expand();
     });
-    mainSwiperCont.remove();
-    const deskThumbLimit = parseInt(container.querySelector(".product-alt__gallery-wrap-outer").dataset.thumbLimit);
-    const mobThumbLimit = parseInt(container.querySelector(".product-alt__gallery-wrap-outer").dataset.thumbLimitMob);
-    const thumbOverlayTemplate = container.querySelector('#thumb-overlay-template');
-    if(deskThumbLimit && thumbOverlayTemplate){
-        container.querySelectorAll(".product-alt__gallery-wrap").forEach(gallery => {
-            const thumbSlider = gallery.querySelector('.product-alt__thumb .swiper-wrapper');
-            const childLength = thumbSlider.children.length;
-            if(childLength > deskThumbLimit){
-                while (thumbSlider.children.length > deskThumbLimit) {
-                    thumbSlider.removeChild(thumbSlider.lastElementChild);
-                }
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = thumbOverlayTemplate.innerHTML;
-                let overlay = wrapper.querySelector('.product-alt__thumb_overlay');
-                overlay.querySelector('span').textContent = (childLength - deskThumbLimit) + '+';
-                thumbSlider.lastElementChild.appendChild(overlay);
-                if(mobThumbLimit < deskThumbLimit){
-                    wrapper.innerHTML = thumbOverlayTemplate.innerHTML;
-                    overlay = wrapper.querySelector('.product-alt__thumb_overlay');
-                    overlay.classList.add('desktop:hidden')
-                    overlay.querySelector('span').textContent = (childLength - mobThumbLimit) + '+';
-                    thumbSlider.querySelector(`.swiper-slide:nth-child(${mobThumbLimit})`).appendChild(overlay);
-                    for (let i = mobThumbLimit; i <= deskThumbLimit; i++) {
-                        thumbSlider.querySelector(`.swiper-slide:nth-child(${mobThumbLimit})`).classList.add('mobile:hidden')
-                    }
-                }
-            }
-            
-        })
-    }
-    let activeGallery = container.querySelector('.product-alt__gallery-wrap');
-    const preselected = container.querySelector('.product-alt__gallery-wrap-outer').dataset.preSelectedGroup;
-    if(preselected)
-    activeGallery = container.querySelector(`.product-alt__gallery-wrap[data-variant-image-group="${preselected}"]`);
-    activeGallery.classList.add('active');
-    container.querySelector('.product-alt__gallery-wrap-outer').style.setProperty('--height', activeGallery.scrollHeight + 'px');
-}
+
+    // The two breakpoints cap the rail differently.
+    mobileMQ.addEventListener('change', () => render({ keepIndex: true }));
+
+    render({ keepIndex: false });
+
+    return {
+      setGroup(group) {
+        const next = group == null || group === '' ? null : group;
+        if (next === activeGroup) return;
+        activeGroup = next;
+        expanded = false; // a fresh colour starts capped again
+        render({ keepIndex: false });
+      },
+    };
+  }
   document.addEventListener('DOMContentLoaded', () => {
     initTabs(container);
-    document.querySelectorAll('.section-id-{{ section.id }} .product-alt__gallery-wrap').forEach(galleryWrap => {
-        const thumbsSwiper = new Swiper(galleryWrap.querySelector('.product-alt__thumb'), {
-            slidesPerView: 'auto',
-            freeMode: {
-                enabled: true,
-                sticky: true,
-                momentumRatio: 0.8,
-            },
-            breakpoints: {
-                750: {
-                direction: 'vertical',
-                },
-            },
-        });
-        const gallerySwiper = new Swiper(galleryWrap.querySelector('.product-alt__gallery'), {
-            slidesPerView: 1,
-            effect: 'fade',
-            thumbs: {
-                swiper: thumbsSwiper,
-            },
-            navigation: {
-                nextEl: galleryWrap.querySelector('.slider_nav.nav-next'),
-                prevEl: galleryWrap.querySelector('.slider_nav.nav-prev'),
-            },
-        });
-    })
+    productGallery = initProductGallery(container);
     {% comment %} document.querySelector('.section-id-{{ section.id }}').addEventListener('variant_changed', (e) => {
       const selector = e.target.closest('.product-alt__option-selector');
       if (selector == null || selector.dataset.optionIndex != 0) return;
@@ -1961,6 +2089,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .product-alt__thumb_overlay:hover,
+        .product-alt__thumb_overlay:focus-visible{
+            background: rgba(0, 0, 0, 0.3);
+            outline: none;
         }
         .product-alt__thumb_overlay span{
             font-size: 50px;
@@ -3559,6 +3694,13 @@
           "id": "text",
           "label": "Text",
           "default": "In winkelwagen"
+        },
+        {
+          "type": "text",
+          "id": "choose_text",
+          "label": "Text before an option is chosen",
+          "info": "Shown on the disabled button while the shopper has not picked every option yet.",
+          "default": "Maak een keuze"
         },
         {
           "type": "checkbox",
