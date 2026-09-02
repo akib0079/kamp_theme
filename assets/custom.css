@@ -1520,6 +1520,7 @@ html.theme-store-id-2481.spf-has-filter.spf-filter-tree-theme.gf-left .gf-option
         overflow: hidden auto;
         scrollbar-width: thin;
         transition: max-height 0.5s ease-out;
+        padding-right: 10px;
 
         .header--sticky & {
             max-height: calc(100vh - 120px);
