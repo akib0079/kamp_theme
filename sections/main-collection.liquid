@@ -1,5 +1,3 @@
-
-
 <script
   src="{{ 'results-list.js' | asset_url }}"
   type="module"
@@ -22,52 +20,57 @@
   }
 {% endjavascript %}
 <style>
-{%-for entry in metaobjects.color.values-%}
-  {%- liquid
-    assign bg = '#FFF'
-    if entry
-        if entry.color_s.value.size == 1
-            assign bg = entry.color_s.value
-        elsif entry.color_s.value.size > 1
-            assign bg = 'linear-gradient(to right'
-            for color in entry.color_s.value
-                assign bg = bg | append: ', ' | append: color
-            endfor
-            assign bg = bg | append: ')'
-        endif
-    endif
--%}
-[data-swatch="{{ entry.title | downcase }}"]{
-  --bg: {{bg }};
-}
-{%endfor%}
+  {%-for entry in metaobjects.color.values-%}
+    {%- liquid
+      assign bg = '#FFF'
+      if entry
+          if entry.color_s.value.size == 1
+              assign bg = entry.color_s.value
+          elsif entry.color_s.value.size > 1
+              assign bg = 'linear-gradient(to right'
+              for color in entry.color_s.value
+                  assign bg = bg | append: ', ' | append: color
+              endfor
+              assign bg = bg | append: ')'
+          endif
+      endif
+  -%}
+  [data-swatch="{{ entry.title | downcase }}"]{
+    --bg: {{bg }};
+  }
+  {%endfor%}
 </style>
 {% for block in section.blocks %}
   {% if block.type == 'banner' %}
-    <script type="text/template" data-offset="{{ block.settings.offset }}" class="injected-block-template" id="injected-block-template-{{forloop.index}}">
-    <div class="collection__block" {{ block.shopify_attributes }}>
-      <div class="collection__block_row">
-      <div class="collection__block_content">
-        {% if block.settings.title != blank %}
-            <h4 class="collection__block-title">{{ block.settings.title }}</h4>
-        {% endif %}
-        {% if block.settings.desc != blank %}
-            <div class="collection__block-desc desc">{{ block.settings.desc }}</div>
-        {% endif %}
-      </div>
-        <a href="{{ block.settings.btn_url }}" class="collection__block-btn">
-          {% render 'svg-btn-global-icon' %}
-        </a>
+    <script
+      type="text/template"
+      data-offset="{{ block.settings.offset }}"
+      class="injected-block-template"
+      id="injected-block-template-{{forloop.index}}"
+    >
+      <div class="collection__block" {{ block.shopify_attributes }}>
+        <div class="collection__block_row">
+        <div class="collection__block_content">
+          {% if block.settings.title != blank %}
+              <h4 class="collection__block-title">{{ block.settings.title }}</h4>
+          {% endif %}
+          {% if block.settings.desc != blank %}
+              <div class="collection__block-desc desc">{{ block.settings.desc }}</div>
+          {% endif %}
         </div>
-        {% if block.settings.img != blank %}
-            {{ block.settings.img | image_url: width: nil | image_tag: class: 'collection__block-img bg-img hidden--mobile' }}
-            {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'collection__block-img bg-img hidden--desktop' }}
-        {% else %}
-            {{ 'image' | placeholder_svg_tag: 'collection__block-img bg-img placeholder' }}
-        {% endif %}
-    </div>
+          <a href="{{ block.settings.btn_url }}" class="collection__block-btn">
+            {% render 'svg-btn-global-icon' %}
+          </a>
+          </div>
+          {% if block.settings.img != blank %}
+              {{ block.settings.img | image_url: width: nil | image_tag: class: 'collection__block-img bg-img hidden--mobile' }}
+              {{ block.settings.img_mobile | default: block.settings.img | image_url: width: nil | image_tag: class: 'collection__block-img bg-img hidden--desktop' }}
+          {% else %}
+              {{ 'image' | placeholder_svg_tag: 'collection__block-img bg-img placeholder' }}
+          {% endif %}
+      </div>
     </script>
-    {% endif %}
+  {% endif %}
 {% endfor %}
 {% comment %} We always render this full-width, as the child blocks have width: page/full settings {% endcomment %}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
@@ -79,31 +82,37 @@
 >
   {% render 'skip-to-content-link', href: '#ResultsList', text: 'accessibility.skip_to_results_list' %}
 
-   <nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
-    <a class="link home-link" href="{{ routes.cart_url | split: '/cart' | first | append: '/'  }}">{{ 'breadcrumb.home' | t }}</a>
+  <nav class="breadcrumb" role="navigation" aria-label="breadcrumbs">
+    <a class="link home-link" href="{{ routes.cart_url | split: '/cart' | first | append: '/'  }}">
+      {{- 'breadcrumb.home' | t -}}
+    </a>
     {%- if current_tags -%}
+      <span class="separate" aria-hidden="true">/</span>
+      <span class="bd-title" style="display: flex;">
+        <span>{{ collection.title | split: '|' | first | link_to: collection.url }}</span>
         <span class="separate" aria-hidden="true">/</span>
-        <span class="bd-title" style="display: flex;">
-            <span>{{ collection.title | split: '|' | first | link_to: collection.url }}</span>
-            <span class="separate" aria-hidden="true">/</span>
-            {% assign bd_tags = current_tags | join: " + " %}
-            <span>{{ bd_tags | split: '|' | first }}</span>
-        </span>
+        {% assign bd_tags = current_tags | join: ' + ' %}
+        <span>{{ bd_tags | split: '|' | first }}</span>
+      </span>
     {%- else -%}
-        <span class="separate" aria-hidden="true">/</span>
-        <span class="bd-title"><span>{{ collection.title | split: '|' | first | link_to: collection.url }}</span></span>
+      <span class="separate" aria-hidden="true">/</span>
+      <span class="bd-title"
+        ><span>{{ collection.title | split: '|' | first | link_to: collection.url }}</span></span
+      >
     {%- endif -%}
   </nav>
 
   <div
     class="collection-wrapper grid gap-style{% if section.settings.product_grid_width == 'full-width' %} collection-wrapper--grid-full-width{% endif %}"
   >
-    {% comment %} {% content_for 'block',
-      type: 'filters',
-      id: 'filters',
-      results: collection,
-      results_size: collection.products_count
-    %} {% endcomment %}
+    {% comment %}
+      {% content_for 'block',
+        type: 'filters',
+        id: 'filters',
+        results: collection,
+        results_size: collection.products_count
+      %}
+    {% endcomment %}
 
     {% assign products_per_page = 24 %}
 
@@ -124,7 +133,7 @@
             {% # theme-check-disable %}
             {% comment %} {% content_for 'block', type: '_product-card', id: 'product-card', closest.product: product %} {% endcomment %}
             {% # theme-check-enable %}
-            {% render 'product-block-alt', product: product %}
+            {% render 'product-card-alt-v2', product: product %}
           </li>
         {% endfor %}
       {% endcapture %}
@@ -340,13 +349,13 @@
       margin-inline-end: calc(-1 * max(var(--padding-xs), var(--padding-inline-end)));
     }
   }
-  .spf-has-filter.theme-store-id-2481.spf-layout-theme #gf-products li.product-grid__item{
+  .spf-has-filter.theme-store-id-2481.spf-layout-theme #gf-products li.product-grid__item {
     overflow: hidden;
   }
   .collection__block {
     height: 100%;
-    background: #F4F4F4;
-    color: #FFF;
+    background: #f4f4f4;
+    color: #fff;
     position: relative;
     padding: 20px;
     border-radius: 10px;
@@ -361,7 +370,7 @@
       min-height: 278px;
     }
   }
-  .collection__block_row{
+  .collection__block_row {
     display: flex;
     justify-content: space-between;
     grid-gap: 30px;
@@ -377,7 +386,7 @@
       font-size: 20px;
     }
   }
-  .collection__block-desc{
+  .collection__block-desc {
     margin-top: 18px;
     font-size: 14px;
     font-weight: 500;
@@ -386,13 +395,13 @@
       margin-top: 11px;
     }
   }
-  .collection__block-btn{
+  .collection__block-btn {
     width: 60px;
     height: 60px;
     border-radius: 15px;
     border: 1.6px solid rgba(255, 255, 255, 0.28);
     background: rgba(255, 255, 255, 0.12);
-    color: #FFF;
+    color: #fff;
     backdrop-filter: blur(16px);
     display: flex;
     justify-content: center;
@@ -402,13 +411,13 @@
     @media screen and (max-width: 749px) {
       width: 37px;
       height: 37px;
-    border-radius: 9px;
+      border-radius: 9px;
     }
   }
-  .collection__block-btn:hover{
+  .collection__block-btn:hover {
     background: #ffffff59;
   }
-  .collection__block-btn svg{
+  .collection__block-btn svg {
     width: 24px;
     height: 24px;
     @media screen and (max-width: 749px) {
@@ -416,13 +425,13 @@
       height: 15px;
     }
   }
-  .collection__block .placeholder{
+  .collection__block .placeholder {
     background-color: #a1a1a180;
   }
-  .collection__block-img{
+  .collection__block-img {
     transition: transform 0.3s ease-out;
   }
-  .collection__block:hover .collection__block-img{
+  .collection__block:hover .collection__block-img {
     transform: scale(1.05);
   }
   #gf-grid .custom-section-content h1 {
@@ -433,10 +442,10 @@
     color: #908f90;
   }
   div#gf-controls-container {
-    padding-top: 10px;
-    border-top: 1px solid #EFEFEF;
+    padding-top: 20px;
+    border-top: 1px solid #efefef;
   }
-  html:not(.shopify-design-mode) .template-collection .custom-section-background+.custom-section-content{
+  html:not(.shopify-design-mode) .template-collection .custom-section-background + .custom-section-content {
     display: none;
   }
 {% endstylesheet %}
@@ -625,38 +634,38 @@
       "name": "Banner",
       "settings": [
         {
-            "type": "inline_richtext",
-            "id": "title",
-            "label": "Title",
-            "default": "Snow full kit",
-          },
-        {
-            "type": "richtext",
-            "id": "desc",
-            "label": "Description",
-            "default": "<p>30% Discount for black Friday valid till 30th November only for limited time!</p>"
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Title",
+          "default": "Snow full kit"
         },
         {
-            "type": "url",
-            "id": "btn_url",
-            "label": "Button URL",
-            "default": "/collections/all",
+          "type": "richtext",
+          "id": "desc",
+          "label": "Description",
+          "default": "<p>30% Discount for black Friday valid till 30th November only for limited time!</p>"
         },
         {
-            "type": "image_picker",
-            "id": "img",
-            "label": "Image"
+          "type": "url",
+          "id": "btn_url",
+          "label": "Button URL",
+          "default": "/collections/all"
         },
         {
-            "type": "image_picker",
-            "id": "img_mobile",
-            "label": "Image mobile"
+          "type": "image_picker",
+          "id": "img",
+          "label": "Image"
         },
         {
-            "type": "number",
-            "id": "offset",
-            "label": "Product offset",
-            "default": 8
+          "type": "image_picker",
+          "id": "img_mobile",
+          "label": "Image mobile"
+        },
+        {
+          "type": "number",
+          "id": "offset",
+          "label": "Product offset",
+          "default": 8
         }
       ]
     }
