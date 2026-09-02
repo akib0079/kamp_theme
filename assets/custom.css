@@ -1514,8 +1514,16 @@ html.theme-store-id-2481.spf-has-filter.spf-filter-tree-theme.gf-left .gf-option
 
 @media screen and (min-width: 750px) {
     .gf-filter-contents {
-        /* position: sticky;
-        top: 100px; */
+        position: sticky;
+        top: 100px;
+        max-height: calc(100vh - 220px);
+        overflow: hidden auto;
+        scrollbar-width: thin;
+        transition: max-height 0.5s ease-out;
+
+        .header--sticky & {
+            max-height: calc(100vh - 120px);
+        }
     }
 }
 
