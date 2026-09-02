@@ -196,21 +196,21 @@
         "block_CECNWw": {
           "type": "block",
           "settings": {
-            "title": "Kinderkleding",
+            "title": "KINDERKLEDING",
             "btn_url": "shopify://collections/all"
           }
         },
         "block_6z34TN": {
           "type": "block",
           "settings": {
-            "title": "Reisartikelen",
+            "title": "REISARTIKELEN",
             "btn_url": "shopify://collections/all"
           }
         },
         "block_eDGd7f": {
           "type": "block",
           "settings": {
-            "title": "Barbecues",
+            "title": "BARBECUES",
             "img": "shopify://shop_images/pngwing.com_1.webp",
             "btn_url": "shopify://collections/all"
           }
