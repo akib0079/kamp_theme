@@ -573,6 +573,12 @@ button {
 
 .product-card__alt-v2 {
     .variant-image-swatch {
+        overflow: hidden;
+        interpolate-size: allow-keywords;
+        height: auto;
+        transition: 0.3s ease-out;
+        transition-property: height;
+
         .product-alt__option-selector_btns {
             grid-gap: 5px;
             padding: 0;
@@ -595,6 +601,38 @@ button {
 
             .product-alt__opt-btn:checked+& {
                 border-color: #484848;
+            }
+        }
+
+        &.collapsible {
+            .product-alt__opt-label:nth-of-type(5)::after {
+                counter-reset: my-string-counter calc(var(--collapsible) - 4);
+                content: '+' counter(my-string-counter);
+                position: absolute;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                background: #F3F3F3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #908F90;
+                font-family: var(--header-font-family);
+                opacity: 0;
+                visibility: hidden;
+                transition: 0.3s ease-out;
+                transition-property: opacity, visibility;
+            }
+
+            &.collapsed {
+                height: var(--item-height, 67px);
+
+                .product-alt__opt-label:nth-of-type(5)::after {
+                    opacity: 1;
+                    visibility: visible;
+                }
             }
         }
     }

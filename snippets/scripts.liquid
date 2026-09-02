@@ -38,7 +38,7 @@
   ></script>
   {% # theme-check-enable %}
 {% endif %}
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollToPlugin.min.js" defer></script>
 <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer></script>
@@ -131,6 +131,11 @@
 {% endif %}
 <script
   src="{{ 'product-card-alt.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+<script
+  src="{{ 'product-card-alt-v2.js' | asset_url }}"
   type="module"
   fetchpriority="low"
 ></script>
@@ -423,6 +428,8 @@
   }
 </script>
 
-<script src="{{ 'custom-script.js'  | asset_url }}"  type="module" 
-  fetchpriority="low"></script>
-
+<script
+  src="{{ 'custom-script.js'  | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>

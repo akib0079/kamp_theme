@@ -86,6 +86,27 @@ class ProductCardAltV2 extends Component {
         })
       );
     });
+    this.querySelectorAll('.product-alt__option-selector.option-selector--swatch.collapsible').forEach(block => {
+      // if(this.closest('.product-slider') && document.body.classList.contains('template-product')){
+      //   return;
+      // }
+      let limit = 5;
+      const itemCount = block.querySelectorAll('.product-alt__opt-label').length;
+      if (itemCount <= limit) {
+        block.classList.remove('collapsible');
+        return;
+      }
+      block.style.setProperty('--item-height', block.querySelector(' .product-alt__opt-label').offsetHeight + 'px');
+      block.style.setProperty('--collapsible', itemCount);
+      block.querySelectorAll(`.product-alt__opt-label:nth-of-type(${limit})`).forEach(opt => {
+        opt.addEventListener('click', (e) => {
+          if (!block.classList.contains('collapsed')) return;
+          e.preventDefault();
+          e.stopPropagation();
+          block.classList.remove('collapsed')
+        })
+      });
+    })
   }
   initAjaxCart() {
     const btn = this.querySelector('.quick-add');

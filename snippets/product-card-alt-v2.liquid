@@ -70,7 +70,8 @@
       -%}
       {%- if sanitized_setting contains option_name -%}
         <div
-          class="product-alt__option-selector option-selector--swatch{% if settings.show_variant_image %} variant-image-swatch{% endif %}"
+          class="product-alt__option-selector option-selector--swatch{% if settings.show_variant_image %} variant-image-swatch{% endif %}{% if option.values.size > 5 %} collapsible{% endif %}{% if option.values.size > 3 %} mobile-collapsible{% endif %} collapsed"
+          style="--collapsible: {{ option.values.size }}"
           data-option-index="{{ forloop.index0 }}"
           role="radiogroup"
           aria-labelledby="{{ option_id }}-Label"
