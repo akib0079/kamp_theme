@@ -2104,6 +2104,12 @@
         .product-alt__thumb .swiper-wrapper{
             flex-direction: column;
         }
+        /* PDP gallery only. Desktop is unaffected: the vertical thumbs stretch to
+           the column, and Swiper writes an inline width on the main slides. On
+           mobile it lets the thumb rail size itself instead of locking to thirds. */
+        .product-alt__gallery-wrap-outer .swiper-slide{
+            width: auto;
+        }
         .product-alt__thumb .swiper-slide{
             height: 25%;
             display: flex;
@@ -3428,7 +3434,6 @@
         }
         .product-alt__thumb .swiper-slide{
             height: 100%;
-            width: 33.33%;
         }
         .product-alt__thumb_img-wrap{
             margin: 0 calc(var(--gap) / 2);
