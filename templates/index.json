@@ -176,6 +176,7 @@
           "type": "block",
           "settings": {
             "title": "Wandelschoenen",
+            "img": "shopify://shop_images/Wandelen.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -183,6 +184,7 @@
           "type": "block",
           "settings": {
             "title": "DAMESKLEDING",
+            "img": "shopify://shop_images/Dameskleding.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -190,6 +192,7 @@
           "type": "block",
           "settings": {
             "title": "HERENKLEDING",
+            "img": "shopify://shop_images/Herenkleding.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -197,6 +200,7 @@
           "type": "block",
           "settings": {
             "title": "KINDERKLEDING",
+            "img": "shopify://shop_images/Kinderkleding.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -204,6 +208,7 @@
           "type": "block",
           "settings": {
             "title": "REISARTIKELEN",
+            "img": "shopify://shop_images/Reisartikelen.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -219,6 +224,7 @@
           "type": "block",
           "settings": {
             "title": "TUIN & ZWEMBADEN",
+            "img": "shopify://shop_images/tuin_zwembaden.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -226,6 +232,7 @@
           "type": "block",
           "settings": {
             "title": "WINTERSPORT",
+            "img": "shopify://shop_images/Wintersport_8ad9a498-fd17-4acd-a58e-5c9ca0cc82eb.png",
             "btn_url": "shopify://collections/all"
           }
         }
