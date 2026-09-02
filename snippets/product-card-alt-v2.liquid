@@ -116,7 +116,11 @@
                   {% if value.variant.featured_image != blank %}
                     {{ value.variant.featured_image | image_url: width: 100 | image_tag }}
                   {% else %}
-                    {{ 'product-1' | placeholder_svg_tag }}
+                    {% if settings.product_placeholder_img != blank %}
+                      {{ settings.product_placeholder_img | image_url: width: 80 | image_tag }}
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
                   {% endif %}
                 {% endif %}
                 <span class="product-alt__opt-label_text">{{ value }}</span>
