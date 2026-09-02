@@ -3060,6 +3060,10 @@ span[ref=viewMorePrevious] {
     align-items: center;
     grid-gap: 35px;
     margin-top: 9px;
+
+    @media screen and (max-width: 749px) {
+        grid-gap: 10px;
+    }
 }
 
 .product-card__alt_price-wrapper .product-card__alt_price {
