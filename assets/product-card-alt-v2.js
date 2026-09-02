@@ -86,7 +86,7 @@ class ProductCardAltV2 extends Component {
         })
       );
     });
-    this.querySelectorAll('.product-alt__option-selector.option-selector--swatch.collapsible').forEach(block => {
+    this.querySelectorAll('.product-alt__option-selector.option-selector--swatch.mobile-collapsible').forEach(block => {
       // if(this.closest('.product-slider') && document.body.classList.contains('template-product')){
       //   return;
       // }
@@ -97,6 +97,9 @@ class ProductCardAltV2 extends Component {
       const itemCount = block.querySelectorAll('.product-alt__opt-label').length;
       if (itemCount <= limit) {
         block.classList.remove('collapsible');
+        if (isMobileBreakpoint()) {
+          block.classList.remove('mobile-collapsible');
+        }
         return;
       }
       block.style.setProperty('--item-height', block.querySelector('.product-alt__opt-label').offsetHeight + 'px');
