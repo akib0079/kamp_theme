@@ -1,5 +1,5 @@
 import { Component } from '@theme/component';
-import { debounce, onDocumentLoaded } from '@theme/utilities';
+import { debounce, isMobileBreakpoint, onDocumentLoaded } from '@theme/utilities';
 import {
   ThemeEvents,
   CartUpdateEvent,
@@ -91,12 +91,15 @@ class ProductCardAltV2 extends Component {
       //   return;
       // }
       let limit = 5;
+      if (isMobileBreakpoint()) {
+        limit = 4;
+      }
       const itemCount = block.querySelectorAll('.product-alt__opt-label').length;
       if (itemCount <= limit) {
         block.classList.remove('collapsible');
         return;
       }
-      block.style.setProperty('--item-height', block.querySelector(' .product-alt__opt-label').offsetHeight + 'px');
+      block.style.setProperty('--item-height', block.querySelector('.product-alt__opt-label').offsetHeight + 'px');
       block.style.setProperty('--collapsible', itemCount);
       block.querySelectorAll(`.product-alt__opt-label:nth-of-type(${limit})`).forEach(opt => {
         opt.addEventListener('click', (e) => {
