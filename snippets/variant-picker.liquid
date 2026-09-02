@@ -135,13 +135,41 @@
     }
     
 
+    function isBuyable(product, values, index, value) {
+        return product.variants.some(variant => {
+            if (!variant.available || variant.options[index] !== value) return false;
+            return values.slice(0, index).every((chosen, i) => chosen == null || variant.options[i] === chosen);
+        });
+    }
+    // Picking a colour should land the shopper on a size they can actually buy.
+    // Only options after the one just touched are filled in, so deliberately
+    // choosing a sold-out size is never overridden.
+    function autoSelectFollowingOptions(product, values, productContainer, changedIndex) {
+        if (changedIndex < 0) return;
+        values.forEach((value, index) => {
+            if (index <= changedIndex) return;
+            const selector = productContainer.querySelector(`.product-alt__option-selector[data-option-index="${index}"]`);
+            if (!selector) return;
+            if (value != null && isBuyable(product, values, index, value)) return;
+            const inputs = [...selector.querySelectorAll('.js-option')];
+            const firstBuyable = inputs.find(input => isBuyable(product, values, index, input.value));
+            inputs.forEach(input => { input.checked = false; });
+            if (firstBuyable) firstBuyable.checked = true;
+            values[index] = firstBuyable ? firstBuyable.value : null;
+        });
+    }
+
     const productContainer = document.querySelector('[data-section-type="main-product"]');
     productContainer.addEventListener('change', (e) => {
         if (!e.target.classList.contains('js-option')) return;
 
+        const changedSelector = e.target.closest('.product-alt__option-selector');
+        const changedIndex = changedSelector ? parseInt(changedSelector.dataset.optionIndex, 10) : -1;
+
         const selectedOptions = getSelectedOptions(productContainer);
         updateOptionVisibility(Theme.currentProduct, selectedOptions, productContainer)
         updateSelectedBasedOnVisibility(selectedOptions, productContainer)
+        autoSelectFollowingOptions(Theme.currentProduct, selectedOptions, productContainer, changedIndex)
         // if not all options selected yet, bail
         if (selectedOptions.includes(null)) return;
         const variant = findVariantByOptions(

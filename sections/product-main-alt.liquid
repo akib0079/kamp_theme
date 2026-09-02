@@ -383,12 +383,6 @@
       </div>
     </div>
     <div class="product-alt__right">
-      <!-- Start of Judge.me code -->
-      <div class='jdgm-widget jdgm-preview-badge' data-id="{{ product.id }}">
-        {{ product.metafields.judgeme.badge }}
-      </div>
-    <!-- End of Judge.me code -->
-
       {% for block in section.blocks %}
         {% case block.type %}
           {% when 'vendor' %}
@@ -399,6 +393,11 @@
             {% endif %}
           {% when 'title' %}
             <h1 class="product-alt__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
+            <!-- Start of Judge.me code -->
+            <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}">
+              {{ product.metafields.judgeme.badge }}
+            </div>
+            <!-- End of Judge.me code -->
           {% when 'reviews' %}
             <div class="product-alt__reviews" {{ block.shopify_attributes }}>
               <div class="product-alt__reviews-stars">
@@ -1202,6 +1201,37 @@
     updateChoiceState(container);
   });
 
+  /* Landing on ?variant=<id> should arrive with that variant already chosen. */
+  function applyVariantFromUrl(container) {
+    const id = new URLSearchParams(window.location.search).get('variant');
+    if (!id) return;
+
+    const product = Theme.currentProduct;
+    const variants = (product && product.variants) || [];
+    const variant = variants.find((v) => String(v.id) === String(id));
+    if (!variant) return;
+
+    const selectors = Array.from(
+      container.querySelectorAll('.product-alt__variant-picker .product-alt__option-selector')
+    );
+    if (!selectors.length) return;
+
+    let last = null;
+    selectors.forEach((selector, i) => {
+      const value = variant.options[i];
+      const input = Array.from(selector.querySelectorAll('.js-option')).find((o) => o.value === value);
+      if (!input) return;
+      input.checked = true;
+      last = input;
+    });
+    if (!last) return;
+
+    if (productGallery) productGallery.setGroup(variant.options[0]);
+    // Fire from the last option so the auto-fill never overwrites the variant
+    // we were handed, sold out or not.
+    last.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   function updateChoiceState(container) {
     const selectors = Array.from(
       container.querySelectorAll('.product-alt__variant-picker .product-alt__option-selector')
@@ -1799,6 +1829,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initTabs(container);
     productGallery = initProductGallery(container);
+    applyVariantFromUrl(container);
     {% comment %} document.querySelector('.section-id-{{ section.id }}').addEventListener('variant_changed', (e) => {
       const selector = e.target.closest('.product-alt__option-selector');
       if (selector == null || selector.dataset.optionIndex != 0) return;
@@ -2083,7 +2114,8 @@
         }
         .product-alt__thumb_img-wrap{
             margin: calc(var(--gap) / 2) 0;
-            border-radius: 10px;
+            /* Figma inspector: 9.076px on a 164px-wide thumb. */
+            border-radius: 9px;
             overflow: hidden;
             height: 100%;
             background-color: #ECECE9 !important;
@@ -2099,7 +2131,7 @@
             position: absolute;
             inset: 0;
             background: rgba(0, 0, 0, 0.16);
-            border-radius: 10px;
+            border-radius: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
