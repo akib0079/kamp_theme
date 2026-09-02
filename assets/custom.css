@@ -3061,6 +3061,10 @@ span[ref=viewMorePrevious] {
     grid-gap: 35px;
     margin-top: 9px;
 
+    .jdgm-prev-badge {
+        flex-shrink: 0;
+    }
+
     @media screen and (max-width: 749px) {
         grid-gap: 10px;
     }
