@@ -50,7 +50,7 @@
     assign has_mobile_quick_add = true
   endif
 -%}
- {% if product_price != 0 %}
+{% if product_price != 0 %}
 <li
     {% if showPageData %}
         data-page="{{page}}"
@@ -59,14 +59,14 @@
     data-product-id="{{ product.id }}"
     ref="cards[]"
     >
-  <product-card-alt class="product-card__alt globo-template-product" data-product-id={{  product.id }}>
+  <product-card-alt-v2 class="product-card__alt product-card__alt-v2 globo-template-product" data-product-id="{{ product.id }}">
     <div class="hidden">
       {% for variant in product.variants %}
         <input
           type="hidden"
-          value="{{  variant.id }}"
-          name="{{variant.title}}"
-          data-media="{{ variant.featured_image.id }}"
+          value="{{ variant.id }}"
+          name="{{ variant.title | escape }}"
+          data-media="{% if variant.featured_image %}{{ variant.featured_image.id }}{% elsif variant.image %}{{ variant.image.id }}{% endif %}"
           {% for option in variant.options %}
             option-{{ forloop.index }}="{{ option | strip }}"
           {% endfor %}
@@ -81,9 +81,8 @@
               <a class="product-card__alt_img-wrap" href="{{ product.url | within: collection }}">
                 <img
                   class="product-card__alt_img"
-                  src="{{  media | image_url: width: 300 }}"
-                  alt="{{ product.title }}"
-                  )
+                  src="{{ media | image_url: width: 600 }}"
+                  alt="{{ product.title | escape }}"
                 >
               </a>
             </div>
@@ -95,77 +94,10 @@
               </a>
             </div>
           {% endif %}
-          %}
         </div>
-        {% comment %}
-          <div class="product__floating-buttons">
-              <a class="quick-action-button product-link quick-action-button--visibility-{{ settings.quickbuy_visibility }} quick-add quick-add-toggle tap-target" href="{{ product.url }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" aria-label="{{ 'actions.add_to_cart' | t }}">
-              <span class="product__icon-cart">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <g clip-path="url(#clip0_209_4492)">
-                  <path d="M4.16677 11.6667H15.1132C15.9572 11.6667 16.3792 11.6667 16.7152 11.5093C17.0111 11.3707 17.2598 11.1481 17.4303 10.8693C17.6238 10.5528 17.6704 10.1333 17.7636 9.29447L18.2511 4.90694C18.2795 4.65073 18.2938 4.52262 18.2526 4.42346C18.2164 4.33637 18.1517 4.26413 18.0692 4.21855C17.9752 4.16666 17.8463 4.16666 17.5885 4.16666H3.75011M1.66666 1.66666H2.70702C2.92754 1.66666 3.0378 1.66666 3.12406 1.70859C3.2 1.74551 3.26294 1.80463 3.30452 1.87812C3.35176 1.9616 3.35864 2.07165 3.37239 2.29174L4.12759 14.3749C4.14134 14.595 4.14822 14.705 4.19546 14.7885C4.23704 14.862 4.29998 14.9211 4.37592 14.9581C4.46218 15 4.57244 15 4.79296 15H15.8333M6.24999 17.9167H6.25832M13.75 17.9167H13.7583M6.66666 17.9167C6.66666 18.1468 6.48011 18.3333 6.24999 18.3333C6.01987 18.3333 5.83332 18.1468 5.83332 17.9167C5.83332 17.6865 6.01987 17.5 6.24999 17.5C6.48011 17.5 6.66666 17.6865 6.66666 17.9167ZM14.1667 17.9167C14.1667 18.1468 13.9801 18.3333 13.75 18.3333C13.5199 18.3333 13.3333 18.1468 13.3333 17.9167C13.3333 17.6865 13.5199 17.5 13.75 17.5C13.9801 17.5 14.1667 17.6865 14.1667 17.9167Z" stroke="currentColor" stroke-width="{{ stroke_width | default: 2 }}" stroke-linecap="round" stroke-linejoin="round"/>
-              </g>
-              <defs>
-                  <clipPath id="clip0_209_4492">
-                  <rect width="20" height="20" fill="currentColor"/>
-                  </clipPath>
-              </defs>
-              </svg>
-              </span>
-              <span class="product__icon-check">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-              </span>
-              {%- if settings.swatch_enabled and settings.prod_thumb_swatches_layout != blank and hide_swatch != true -%}
-                  <div class="product__var_ids">
-                  {%- for variant in product.variants -%}
-                      <input type="hidden" class="product__var_id" data-option-item="{{ variant.title | escape }}" data-available="{{ variant.available }}" value="{{ variant.id }}">
-                  {%- endfor -%}
-                  </div>
-              {%- endif -%}
-              </a>
-          </div>
-        {% endcomment %}
       </div>
     </div>
     <div class="product-card__alt_info">
-      <a class="link-underline" href="{{product.url | within: collection }}">
-        <h4 class="product-card__alt_title">
-          <span class="link-underline-text">{{ product.title }}</span>
-        </h4>
-      </a>
-      <div class="product-card__alt_price-wrapper">
-        <div class="product-card__alt_price">
-          {% if product.price < product.compare_at_price %}
-              <span class="product-alt__compare-price">{{ product.compare_at_price | money }}</span>
-          {% endif %}
-              <span class="product-alt__main-price">{{ product.price | money }}</span>
-        </div>
-      </div>
-      {% liquid
-        assign colors = ""
-        for variant in product.variants
-          if variant.metafields.custom.color != blank
-            assign entry = variant.metafields.custom.color
-            assign handle = entry | handle
-            assign bg = '#FFF'
-            if entry
-                if entry.color_s.value.size == 1
-                    assign bg = entry.color_s.value
-                elsif entry.color_s.value.size > 1
-                    assign bg = 'linear-gradient(to right'
-                    for color in entry.color_s.value
-                        assign bg = bg | append: ', ' | append: color
-                    endfor
-                    assign bg = bg | append: ')'
-                endif
-            endif
-            assign colors = colors | append: handle | append: ':' | append: bg | append: ';'
-          endif
-        endfor
-        assign colors = colors | remove_last: ';'
-      %}
       {%- for option in product.options -%}
         {%- capture option_id -%}{{ section.id }}-{{ product.id }}-{{ option.name | handle }}-selector{%- endcapture -%}
         {%- liquid
@@ -173,8 +105,10 @@
           assign option_name = option.name | downcase
         -%}
         {%- if sanitized_setting contains option_name -%}
+          {% assign values_count = option.values | size %}
           <div
-            class="product-alt__option-selector option-selector--swatch"
+            class="product-alt__option-selector option-selector--swatch{% if settings.show_variant_image %} variant-image-swatch{% endif %}{% if values_count > 5 %} collapsible{% endif %}{% if values_count > 3 %} mobile-collapsible{% endif %} collapsed"
+            style="--collapsible: {{ values_count }}"
             data-option-index="{{ forloop.index0 }}"
             role="radiogroup"
             aria-labelledby="{{ option_id }}-Label"
@@ -182,6 +116,18 @@
             <div class="product-alt__option-selector_btns">
               {% assign index = forloop.index %}
               {%- for value in option.values -%}
+                {% assign variant_image = '' %}
+                {% for variant in product.variants %}
+                  {% if variant.options contains value %}
+                    {% if variant.featured_image %}
+                      {% assign variant_image = variant.featured_image | image_url: width: 100 %}
+                      {% break %}
+                    {% elsif variant.image %}
+                      {% assign variant_image = variant.image | image_url: width: 100 %}
+                      {% break %}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
                 <input
                   class="product-alt__opt-btn js-option"
                   type="radio"
@@ -198,8 +144,14 @@
                   class="product-alt__opt-label"
                   data-swatch="{{ value | replace: '"', '' | downcase }}"
                   for="{{ option_id }}-opt-{{ forloop.index0 }}"
-                  style="background: var(--bg-{{ value | handle }});"
                 >
+                  {% if settings.show_variant_image %}
+                    {% if variant_image != blank %}
+                      <img src="{{ variant_image }}" alt="{{ value | escape }}" width="100" height="100" loading="lazy">
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
+                  {% endif %}
                   <span class="product-alt__opt-label_text">{{ value }}</span>
                 </label>
               {%- endfor -%}
@@ -207,8 +159,32 @@
           </div>
         {% endif %}
       {%- endfor -%}
+      <a class="link-underline" href="{{ product.url | within: collection }}">
+        <h4 class="product-card__alt_title">
+          <span class="link-underline-text">{{ product.title }}</span>
+        </h4>
+      </a>
+      <div class="product-card__alt_price-wrapper">
+        <div class="product-card__alt_price">
+          {% if product.compare_at_price > product.price %}
+            <span class="product-alt__compare-price">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+          <span class="product-alt__main-price">{{ product.price | money }}</span>
+        </div>
+        <!-- Start of Judge.me code -->
+        <div
+          style="{{ jm_style }}"
+          class="jdgm-widget jdgm-preview-badge"
+          data-id="{{ product.id }}"
+          data-auto-install="false"
+        >
+          {{ product.metafields.judgeme.badge }}
+        </div>
+        <!-- End of Judge.me code -->
+      </div>
     </div>
-  </product-card-alt>
+  </product-card-alt-v2>
 </li>
 {% endif %}
 {% endraw %}
+

@@ -519,8 +519,8 @@ button {
 }
 
 .product-card__alt .option-selector--swatch {
-    margin-top: 12px;
-    margin-bottom: 5px;
+    margin-top: 14px;
+    margin-bottom: 0px;
 }
 
 .product-card__alt .option-selector--swatch .product-alt__option-selector_btns {
@@ -540,7 +540,7 @@ button {
 }
 
 .product-card__alt .product-card__alt_title {
-    margin: 16px 0 0;
+    margin: 14px 0 0;
     font-size: 16px;
     font-weight: 500;
     line-height: 1.2em;
@@ -586,7 +586,7 @@ button {
 
         .product-alt__opt-label {
             width: 80px;
-            flex-basis: calc(20% - 3.99px);
+            flex-basis: calc(20% - 4px);
             aspect-ratio: 24428 / 26173;
             height: auto;
             border-radius: 10px;
@@ -627,7 +627,7 @@ button {
             }
 
             &.collapsed {
-                height: var(--item-height, 67px);
+                height: calc(var(--item-height, 67px) + 2px);
 
                 .product-alt__opt-label:nth-of-type(5)::after {
                     opacity: 1;
