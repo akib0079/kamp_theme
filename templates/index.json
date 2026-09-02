@@ -166,6 +166,7 @@
           "type": "block",
           "settings": {
             "title": "Slapen",
+            "img": "shopify://shop_images/Slapen.png",
             "btn_url": "shopify://collections/all"
           }
         },
