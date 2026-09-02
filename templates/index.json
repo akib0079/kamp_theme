@@ -136,6 +136,7 @@
           "type": "block",
           "settings": {
             "title": "Voortenten & Luifels",
+            "img": "shopify://shop_images/Voortenten_luifels.png",
             "btn_url": "shopify://collections/voortenten-luifels"
           }
         },
@@ -143,6 +144,7 @@
           "type": "block",
           "settings": {
             "title": "Kampeerartikelen",
+            "img": "shopify://shop_images/Kampeerartikelen.png",
             "btn_url": "shopify://collections/kampeerartikelen"
           }
         },
@@ -150,7 +152,7 @@
           "type": "block",
           "settings": {
             "title": "Caravan & Camper",
-            "img": "shopify://shop_images/caravan_en_camper.png",
+            "img": "shopify://shop_images/Caravan_camper.png",
             "btn_url": "shopify://collections/all"
           }
         },
@@ -158,7 +160,7 @@
           "type": "block",
           "settings": {
             "title": "Kampeermeubelen",
-            "img": "shopify://shop_images/2.png",
+            "img": "shopify://shop_images/Kampeermeubelen.png",
             "btn_url": "shopify://collections/all"
           }
         },
