@@ -182,14 +182,14 @@
         "block_BHrzmV": {
           "type": "block",
           "settings": {
-            "title": "Dameskleding",
+            "title": "DAMESKLEDING",
             "btn_url": "shopify://collections/all"
           }
         },
         "block_f7qtTV": {
           "type": "block",
           "settings": {
-            "title": "Herenkleding",
+            "title": "HERENKLEDING",
             "btn_url": "shopify://collections/all"
           }
         },
