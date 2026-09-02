@@ -2114,8 +2114,10 @@
         }
         .product-alt__thumb_img-wrap{
             margin: calc(var(--gap) / 2) 0;
-            /* Figma inspector: 9.076px on a 164px-wide thumb. */
-            border-radius: 9px;
+            /* Figma: 9.076px on a 163.974px thumb = 5.5%. The design frame is a
+               fixed width and this column is fluid, so keep the ratio, not the
+               pixel value, or the corners read too round on a narrow window. */
+            border-radius: 5.5%;
             overflow: hidden;
             height: 100%;
             background-color: #ECECE9 !important;
