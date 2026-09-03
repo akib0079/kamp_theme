@@ -52,10 +52,13 @@
     z-index: 1;
     .home-categories__block-img{
       mix-blend-mode: darken;
-      height: 50px;
-      max-height: 95%;
-      max-width: 95%;
-      width: auto;
+      /* Vaste, gelijke grootte voor iedere categorie-afbeelding */
+      width: 70px;
+      height: 70px;
+      max-width: none;
+      max-height: none;
+      object-fit: contain;
+      object-position: center;
       top: 50%;
       left: 50%;
       transform: translate(-50%,-50%);
@@ -125,9 +128,6 @@
       {
         "name": "KW - Home Categories",
         "blocks": [
-          {
-            "type": "block"
-          },
           {
             "type": "block"
           },
