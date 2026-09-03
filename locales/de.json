@@ -74,7 +74,9 @@
     "remove": "Entfernen",
     "view_pricing_info": "Preisinformationen anzeigen",
     "open_hotspot": "Hotspot öffnen",
-    "slideshow": "Diashow"
+    "slideshow": "Diashow",
+    "read_more": "Mehr lesen",
+    "ajax_search": "Suche starten..."
   },
   "actions": {
     "add_to_cart": "In den Warenkorb legen",
@@ -114,7 +116,8 @@
     "open_image_in_full_screen": "Bild im Vollbildmodus öffnen",
     "sort": "Sortieren",
     "show_all_options": "Alle Optionen anzeigen",
-    "open": "Öffnen"
+    "open": "Öffnen",
+    "back_to_menu": "Zurück zum Menü"
   },
   "content": {
     "reviews": "Reviews",
@@ -270,7 +273,10 @@
     "items_added_to_cart": {
       "one": "1 Artikel zum Warenkorb hinzugefügt",
       "other": "{{ count }} Artikel zum Warenkorb hinzugefügt"
-    }
+    },
+    "return_to_home": "Zurück",
+    "you_might_like_this": "Auch interessant",
+    "see_more": "Mehr anzeigen"
   },
   "gift_cards": {
     "issued": {
@@ -310,7 +316,9 @@
       "quantity_increments": "In {{ increment }}er Schritten",
       "quantity_minimum": "Mindestens {{ minimum }}",
       "quantity_maximum": "Maximal {{ maximum }}",
-      "in_cart": "im Warenkorb"
+      "in_cart": "im Warenkorb",
+      "default_title": "Standardtitel",
+      "sticky_add_to_cart": "Schnell-in-den-Warenkorb-Leiste"
     }
   },
   "fields": {
@@ -335,5 +343,61 @@
       "success_moderated": "Kommentar gepostet, Moderation ausstehend",
       "success": "Kommentar gepostet"
     }
+  },
+  "breadcrumb": {
+    "home": "Startseite"
+  },
+  "cart": {
+    "free_shipping_bar": {
+      "free_shipping_not_met_html": "Noch {{ difference }} bis zum kostenlosen Versand",
+      "free_shipping_met_html": "Kostenloser Versand!"
+    }
+  },
+  "specs_label": {
+    "accessory_type": "Zubehörtyp",
+    "active_ingredients": "Aktive Inhaltsstoffe",
+    "adjustable_backrest": "Verstellbare Rückenlehne",
+    "aerodynamic_design": "Aerodynamisches Design",
+    "air_flow_rate": "Luftstrom",
+    "allergen_free": "Allergenfrei",
+    "application_method": "Anwendungsmethode",
+    "armrests_included": "Armlehnen inklusive",
+    "ash_management_system": "Aschesystem",
+    "attachment_method": "Befestigungsmethode",
+    "backrest_adjustable": "Rückenlehne verstellbar",
+    "barbecue_type": "Grilltyp",
+    "battery_capacity": "Akkukapazität",
+    "bike_capacity": "Fahrradkapazität",
+    "biodegradable": "Biologisch abbaubar",
+    "brand": "Marke",
+    "brightness_lumens": "Helligkeit Lumen",
+    "burn_time": "Brenndauer",
+    "cabinet_depth": "Schranktiefe",
+    "cabinet_height": "Schrankhöhe",
+    "cabinet_type": "Schranktyp",
+    "cabinet_weight": "Schrankgewicht",
+    "cabinet_width": "Schrankbreite",
+    "cable_length": "Kabellänge",
+    "capacity_volume": "Fassungsvermögen",
+    "cargo_capacity": "Ladekapazität",
+    "carrier_type": "Trägertyp",
+    "carrying_bag_included": "Tragetasche inklusive",
+    "certifications": "Zertifizierungen",
+    "chair_material": "Stuhlmaterial",
+    "charcoal_capacity": "Holzkohlekapazität",
+    "compatibility_notes": "Kompatibilitätshinweise",
+    "compatible_bbq_type": "Passender Grilltyp",
+    "compatible_burner_types": "Passende Brennertypen",
+    "compatible_caravan_models": "Passende Caravanmodelle",
+    "compatible_models": "Passende Modelle",
+    "connector_gender": "Steckertyp",
+    "connector_length": "Steckerlänge",
+    "connector_material": "Steckermaterial",
+    "connector_weight": "Steckergewicht",
+    "cooking_area": "Grillfläche",
+    "cooking_surface_area": "Kochfläche",
+    "cooking_zones": "Kochzonen",
+    "cooler_type": "Kühlboxtyp",
+    "cooling_duration": "Kühldauer"
   }
 }
