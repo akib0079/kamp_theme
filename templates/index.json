@@ -118,7 +118,8 @@
         "desc": "<p>Vele last minute aanbiedingen en summer sale op kleding.</p>",
         "btn_text": "Shop now",
         "btn_url": "shopify://collections/all",
-        "img": "shopify://shop_images/Kampeer_banner_1.png"
+        "img": "shopify://shop_images/Kampeer_banner_1.png",
+        "img_mobile": "shopify://shop_images/Kampeer_banner_mobiel_1.png"
       }
     },
     "home_categories_4K8DH7": {
