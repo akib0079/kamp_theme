@@ -157,31 +157,137 @@
 }
 
 /* ---------- 5. Sticky balk: geen aantal, wel maatkiezer ----------
-   De aantalkiezer verdwijnt; deed-sticky-size.js zet er een <select>
-   met de maten voor in de plaats (zelfde look als het aantalvak). */
+   De aantalkiezer verdwijnt; deed-sticky-size.js zet er een eigen dropdown
+   voor in de plaats. De lijst opent naar boven, in de stijl van het thema. */
 .product-alt__bottom-bar .product-alt__buy-quantity {
     display: none;
 }
-.product-alt__bottom-bar .deed-bb-size {
+.deed-bb-size {
+    position: relative;
     flex: 0 0 auto;
+    min-width: 160px;
+    max-width: 220px;
+}
+.deed-bb-size__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
     height: 46px;
-    min-width: 150px;
-    max-width: 200px;
-    padding: 0 36px 0 14px;
+    padding: 0 14px;
     border: 1px solid #e3e3e3;
     border-radius: 9px;
-    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23202020' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
-    -webkit-appearance: none;
-    appearance: none;
+    background: #fff;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: #202020;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease-out;
+}
+.deed-bb-size__trigger:hover,
+.deed-bb-size.is-open .deed-bb-size__trigger {
+    border-color: #8A916B;
+}
+.deed-bb-size:not(.has-value) .deed-bb-size__value {
+    color: #908f90;
+    font-weight: 500;
+}
+.deed-bb-size__value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.deed-bb-size__chevron {
+    flex-shrink: 0;
+    color: #202020;
+    transition: transform 0.2s ease-out;
+}
+.deed-bb-size.is-open .deed-bb-size__chevron {
+    transform: rotate(180deg);
+}
+.deed-bb-size__panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    min-width: 100%;
+    width: max-content;
+    max-width: 260px;
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 6px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: 0.2s ease-out;
+    transition-property: opacity, visibility, transform;
+    z-index: 2;
+}
+.deed-bb-size.is-open .deed-bb-size__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+.deed-bb-size__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
     font: inherit;
     font-size: 14px;
     font-weight: 500;
+    line-height: 1.2;
     color: #202020;
+    text-align: left;
     cursor: pointer;
+    transition: background 0.15s ease-out, color 0.15s ease-out;
+}
+.deed-bb-size__option:hover:not(:disabled) {
+    background: #F5F4F5;
+}
+.deed-bb-size__option.is-active {
+    background: #8A916B;
+    color: #fff;
+    font-weight: 600;
+}
+.deed-bb-size__check {
+    flex-shrink: 0;
+    opacity: 0;
+}
+.deed-bb-size__option.is-active .deed-bb-size__check {
+    opacity: 1;
+}
+.deed-bb-size__option.is-unavailable {
+    color: #C9C9C9;
+    cursor: default;
+}
+.deed-bb-size__option.is-unavailable .deed-bb-size__option-label {
+    text-decoration: line-through;
+}
+.deed-bb-size__option-note {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 400;
+    color: #C9C9C9;
 }
 @media screen and (max-width: 749px) {
-    .product-alt__bottom-bar .deed-bb-size {
+    .deed-bb-size {
         min-width: 0;
+        max-width: none;
         flex: 1 1 auto;
+    }
+    .deed-bb-size__panel {
+        max-width: calc(100vw - 40px);
     }
 }
