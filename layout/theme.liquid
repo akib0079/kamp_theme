@@ -68,6 +68,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="{{ 'globo-locale-links.js' | asset_url }}" defer></script>
     <script src="{{ 'deed-lang-dropdown.js' | asset_url }}" defer></script>
     {% if template.name == 'product' %}<script src="{{ 'deed-sticky-size.js' | asset_url }}" defer></script>{% endif %}
+    {% if template.name == 'product' %}<script src="{{ 'deed-product-specs.js' | asset_url }}" defer></script>{% endif %}
 
     {% comment %} <script defer src="https://analytics.wearedeed.nl/script.js"
   data-website-id="8c6de707-5ca4-444f-8f5c-ea58817c7a4a"
@@ -149,6 +150,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     >
       {{ content_for_layout }}
     </main>
+
+    {% if template.name == 'product' %}{% render 'deed-product-specs' %}{% endif %}
 
     {% sections 'footer-group' %}
 
