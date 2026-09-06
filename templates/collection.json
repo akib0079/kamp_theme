@@ -61,7 +61,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "{{ closest.collection.metafields.custom.short_description | metafield_tag }}<p>A comfortable thermal layer with a full-length zipper, asymmetrical zipper, or no zipper at all.</p><p></p>",
+            "text": "{{ closest.collection.metafields.custom.short_description | metafield_tag }}",
             "width": "fit-content",
             "max_width": "none",
             "alignment": "left",
