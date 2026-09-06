@@ -1,0 +1,22 @@
+{%- comment -%}
+  Specs-metaobject van het product als JSON op de pagina (DEED, 06-09-2026).
+  Zelfde lookup als het blok metaobject_specs in sections/product-main-alt.liquid:
+  het eerste gevulde metaveld in product.metafields.specs.* (per categorie).
+  assets/deed-product-specs.js bouwt hier de rijen van in de tab "Eigenschappen".
+  Gerenderd vanuit layout/theme.liquid op producttemplates.
+{%- endcomment -%}
+{%- liquid
+  assign mo_entry = null
+  assign mo_specs_keys = 'caravan-interieur,elektriciteit,watervoorziening,gas-energie,onderhoud-verzorging,overige-kampeerartikelen,sanitair,verlichting-sfeer,outdoor-accessoires,outdoor-schoenen,reizen,tassen-rugzakken,caravan-exterieur,campingmeubelen,koelen-verwarmen,koken-eten,slapen,badmode,fietskleding,sportkleding,bijzettenten,familietenten,partytenten,strandtenten,tentaccessoires,windschermen,luifels,voortent-accessoires,voortenten,outdoor-kleding,skis-snowboards,wintersportaccessoires,wintersportkleding,barbecue-soorten,bbq-accessoires'
+  assign mo_keys_arr = mo_specs_keys | split: ','
+  for mo_key in mo_keys_arr
+    assign mo_ref = product.metafields.specs[mo_key]
+    if mo_ref.value != blank
+      assign mo_entry = mo_ref.value
+      break
+    endif
+  endfor
+-%}
+{%- if mo_entry != blank -%}
+<script type="application/json" id="deed-product-specs">{{ mo_entry | json }}</script>
+{%- endif -%}
