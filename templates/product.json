@@ -367,10 +367,7 @@
           "type": "bought_together",
           "settings": {
             "title": "Combineer je product",
-            "products": [
-              "sabor-sabori",
-              "carhartt-m-dearborn-relaxed-logo-t-shirt"
-            ]
+            "products": "{{ product.metafields[\"shopify--discovery--product_recommendation\"].complementary_products.value }}"
           }
         },
         "heading_tdYktN": {
