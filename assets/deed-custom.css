@@ -4,6 +4,7 @@
    1. Megamenu desktop: losse items als kop + kolomindeling zonder gaten
    2. Productpagina: "Complete your set" verbergen als er geen producten zijn
    3. Productblokken: knop altijd op 1 regel
+   4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
    ============================================================ */
 
 /* ---------- 1. Megamenu desktop ----------
@@ -92,4 +93,68 @@
 }
 .btn-global.product-blocks__block-btn .btn__icon {
     flex-shrink: 0;
+}
+
+/* ---------- 4. Productpagina: sticky add-to-cart balk ----------
+   Het thema zet de balk over de volledige contentbreedte, gecentreerd
+   (left: 50% + translateX(-50%)), met z-index 4. De "Sign up"-knop in de
+   footer heeft ook z-index 4 en kwam daardoor over de balk heen.
+   Nieuw op desktop: max. de helft van de pagina, rechts uitgelijnd op de
+   contentrand, compacter, en boven de footerknop. Mobiel ongewijzigd. */
+.product-alt__bottom-bar {
+    z-index: 6;
+}
+@media screen and (min-width: 750px) {
+    .product-alt__bottom-bar {
+        width: auto;
+        max-width: min(50vw, calc(var(--page-content-width) / 2));
+        left: auto;
+        right: max(20px, calc((100vw - var(--page-content-width)) / 2));
+        transform: translateY(50%);
+        gap: 16px;
+        padding: 10px;
+    }
+    .product-sticky-bar .product-alt__bottom-bar {
+        transform: none;
+    }
+    /* Linkerdeel (afbeelding + titel) mag krimpen, titel op 1 regel met ... */
+    .product-alt__bottom-bar .product-alt__bb_left {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+    .product-alt__bottom-bar .product-alt__bb_img-wrap {
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+    }
+    .product-alt__bottom-bar .product-alt__bb_left-content {
+        min-width: 0;
+    }
+    .product-alt__bottom-bar .product-alt__bb_heading {
+        font-size: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    /* Rechterdeel: aantal + knop op natuurlijke breedte */
+    .product-alt__bottom-bar .product-alt__buy-buttons {
+        flex: 0 0 auto;
+        max-width: none;
+        width: auto;
+    }
+    .product-alt__bottom-bar .product-alt__buy-row {
+        height: 46px;
+        gap: 10px;
+    }
+    .product-alt__bottom-bar .product-alt__buy-quantity {
+        max-width: 120px;
+        flex: 0 0 120px;
+    }
+    .product-alt__bottom-bar .product-alt__add-cart {
+        flex: 0 0 auto;
+        min-width: 190px;
+        padding-left: 24px;
+        padding-right: 24px;
+        white-space: nowrap;
+    }
 }
