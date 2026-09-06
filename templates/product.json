@@ -425,7 +425,7 @@
           "type": "tab_description",
           "settings": {
             "label": "Beschrijving",
-            "desc": "<p>De Karsten Imperia is de grootste en meest ruime tent uit de Karsten Tenten familie en biedt comfortabel plaats aan maar liefst 5 personen. Deze tunneltent is perfect voor grotere gezinnen die veel leefruimte willen zonder in te leveren op gebruiksgemak bij het opzetten. Ondanks de royale afmetingen is de Imperia net als alle Karsten tunneltenten snel en moeiteloos op te zetten.<br/><br/>Met twee aparte slaapkamers en een ruime leefruimte met voorportaal biedt de Imperia uitstekende organisatie en privacy voor gezinscampingtrips. De robuuste constructie van de tent zorgt voor betrouwbare weerbescherming met waterdichte materialen, terwijl geïntegreerde ventilatiefuncties een comfortabel binnenklimaat behouden. De 3-seizoenen rating maakt hem ideaal voor kampeeravonturen in lente, zomer en herfst.<br/><br/>Ontworpen met gezinscamping in gedachten, combineert de Karsten Imperia praktische functies met kwaliteitsmaterialen. Het tunnelontwerp biedt uitstekende stabiliteit onder verschillende weersomstandigheden, terwijl de royale stahoogte en vloeroppervlakte een comfortabel thuis ver van huis creëren. Of u nu een weekendje weg plant of een langere kampeervakanties, de Imperia levert de ruimte en het comfort dat uw gezin nodig heeft.<br/><br/></p>",
+            "desc": "<p></p>{{ product.description }}",
             "inject": true
           }
         },
