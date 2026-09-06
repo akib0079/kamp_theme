@@ -334,9 +334,9 @@
           "type": "usps",
           "settings": {
             "usp_icon": "shopify://shop_images/package-check.svg",
-            "usp": "<p>Gratis verzending vanaf €100,-Voor 15:00<br/>besteld, zelfde werkdag verstuurd</p>",
+            "usp": "<p>Gratis verzending vanaf €100,-</p>",
             "usp_icon_2": "shopify://shop_images/package-check_1.svg",
-            "usp_2": "<p>Gratis verzending vanaf €100,-Voor 15:00<br/>besteld, zelfde werkdag verstuurd 2</p>",
+            "usp_2": "<p>Voor 15:00 besteld, zelfde werkdag verstuurd</p>",
             "usp_icon_3": "shopify://shop_images/package-check_1.svg",
             "usp_3": "<p>Gratis verzending vanaf €100,-Voor 15:00<br/>besteld, zelfde werkdag verstuurd 3</p>",
             "usp_4": "",
