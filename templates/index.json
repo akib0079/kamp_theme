@@ -409,7 +409,7 @@
           "settings": {
             "heading": "CARAVAN PLEZIER",
             "btn_text": "SHOP NOW",
-            "btn_url": "shopify://collections/all",
+            "btn_url": "shopify://collections/caravan-camper",
             "img": "shopify://shop_images/Frame_470238.webp",
             "overlay_opacity": 0
           }
