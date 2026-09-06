@@ -154,7 +154,7 @@
           "settings": {
             "title": "CARAVAN & CAMPER",
             "img": "shopify://shop_images/Caravan_camper.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/caravan-camper"
           }
         },
         "block_EAkzRm": {
@@ -162,7 +162,7 @@
           "settings": {
             "title": "KAMPEER-MEUBELEN",
             "img": "shopify://shop_images/Kampeermeubelen.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/campingmeubelen"
           }
         },
         "block_HEXptD": {
@@ -170,7 +170,7 @@
           "settings": {
             "title": "SLAPEN",
             "img": "shopify://shop_images/Slapen.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/slapen"
           }
         },
         "block_MKRMkR": {
@@ -178,7 +178,7 @@
           "settings": {
             "title": "WANDEL-SCHOENEN",
             "img": "shopify://shop_images/Wandelen.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/wandelschoenen-dames"
           }
         },
         "block_BHrzmV": {
@@ -186,7 +186,7 @@
           "settings": {
             "title": "DAMESKLEDING",
             "img": "shopify://shop_images/Dameskleding.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/dameskleding-1"
           }
         },
         "block_f7qtTV": {
@@ -194,7 +194,7 @@
           "settings": {
             "title": "HERENKLEDING",
             "img": "shopify://shop_images/Herenkleding.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/herenkleding-1"
           }
         },
         "block_CECNWw": {
@@ -202,7 +202,7 @@
           "settings": {
             "title": "KINDERKLEDING",
             "img": "shopify://shop_images/Kinderkleding.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/kinderkleding-1"
           }
         },
         "block_6z34TN": {
@@ -210,7 +210,7 @@
           "settings": {
             "title": "REISARTIKELEN",
             "img": "shopify://shop_images/Reisartikelen.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/reisaccessoires"
           }
         },
         "block_eDGd7f": {
@@ -218,7 +218,7 @@
           "settings": {
             "title": "BARBECUES",
             "img": "shopify://shop_images/pngwing.com_1.webp",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/barbecues"
           }
         },
         "block_dXnKpD": {
@@ -226,7 +226,7 @@
           "settings": {
             "title": "TUIN & ZWEMBADEN",
             "img": "shopify://shop_images/tuin_zwembaden.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/tuin"
           }
         },
         "block_pLUfYt": {
@@ -234,7 +234,7 @@
           "settings": {
             "title": "WINTERSPORT",
             "img": "shopify://shop_images/Wintersport_8ad9a498-fd17-4acd-a58e-5c9ca0cc82eb.png",
-            "btn_url": "shopify://collections/all"
+            "btn_url": "shopify://collections/wintersport"
           }
         }
       },
