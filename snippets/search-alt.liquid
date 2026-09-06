@@ -1,3 +1,24 @@
+{%- comment -%}
+  Zoekpopup-labels per taal (DEED, 06-09-2026).
+  De theme settings (search_suggestion_label, search_sugg_link_text, search_result_label)
+  gebruiken de schema-default en zijn daardoor niet vertaalbaar via Translate & Adapt.
+  NL komt uit de settings; EN en DE staan hieronder.
+{%- endcomment -%}
+{%- liquid
+  assign search_suggestion_label = settings.search_suggestion_label
+  assign search_sugg_link_text = settings.search_sugg_link_text
+  assign search_result_label = settings.search_result_label
+  case request.locale.iso_code
+    when 'en'
+      assign search_suggestion_label = 'Suggested'
+      assign search_sugg_link_text = 'View all results for ‘%%’'
+      assign search_result_label = 'Our range'
+    when 'de'
+      assign search_suggestion_label = 'Vorschläge'
+      assign search_sugg_link_text = 'Alle Ergebnisse für ‘%%’ anzeigen'
+      assign search_result_label = 'Unser Sortiment'
+  endcase
+-%}
 <search-popup-from class="search-popup-form" data-skip-subtree-update="true">
 <form class="search-form kw-search-form {{ search_class }}" method="POST" action="{{ routes.search_url }}">
     <input class="search-form-field" type="text" name="q" placeholder="{{ 'content.search_input_placeholder' | t }}" value="{{ search.terms }}">
@@ -8,7 +29,7 @@
 </form>
 <div class="search-popup">
     <div class="search-popup__sugg-row">
-        <h5 class="search-popup__title">{{ settings.search_suggestion_label }}</h5>
+        <h5 class="search-popup__title">{{ search_suggestion_label }}</h5>
         <div class="search-popup__sugg-container">
             <ul class="search-popup__sugg-list">
             </ul>
@@ -23,7 +44,7 @@
                 </li>
             </script>
             <a class="search-popup__sugg-link link-underline" href="{{routes.search_url}}?q='terms'">
-                <span class="link-underline-text">{{ settings.search_sugg_link_text | replace: '%%', '<span class="terms"></span>' }}</span>
+                <span class="link-underline-text">{{ search_sugg_link_text | replace: '%%', '<span class="terms"></span>' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
                 <path d="M8.21822 7.18739L8.07091 1.14752L2.03104 1.00021M8.07091 1.14752L0.999842 8.21859" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -31,7 +52,7 @@
         </div>
     </div>
     <div class="search-popup__prod-row">
-        <h5 class="search-popup__title">{{ settings.search_result_label }}</h5>
+        <h5 class="search-popup__title">{{ search_result_label }}</h5>
         <div class="search-container">
             <div class="search-popup__prod-swiper swiper">
                 <div class="swiper-wrapper">
