@@ -66,6 +66,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     {{ 'custom.css' | asset_url | stylesheet_tag}}
     {{ 'deed-custom.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'globo-locale-links.js' | asset_url }}" defer></script>
+    {% if template.name == 'product' %}<script src="{{ 'deed-sticky-size.js' | asset_url }}" defer></script>{% endif %}
 
     {% comment %} <script defer src="https://analytics.wearedeed.nl/script.js"
   data-website-id="8c6de707-5ca4-444f-8f5c-ea58817c7a4a"
