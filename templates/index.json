@@ -154,7 +154,7 @@
           "settings": {
             "title": "CARAVAN & CAMPER",
             "img": "shopify://shop_images/Caravan_camper.png",
-            "btn_url": "shopify://collections/caravan-camper"
+            "btn_url": "shopify://collections/caravan-camper-accessoires"
           }
         },
         "block_EAkzRm": {
@@ -178,7 +178,7 @@
           "settings": {
             "title": "WANDEL-SCHOENEN",
             "img": "shopify://shop_images/Wandelen.png",
-            "btn_url": "shopify://collections/wandelschoenen-dames"
+            "btn_url": "shopify://collections/wandelschoenen"
           }
         },
         "block_BHrzmV": {
@@ -202,7 +202,7 @@
           "settings": {
             "title": "KINDERKLEDING",
             "img": "shopify://shop_images/Kinderkleding.png",
-            "btn_url": "shopify://collections/kinderkleding-1"
+            "btn_url": "shopify://collections/kinderkleding"
           }
         },
         "block_6z34TN": {
@@ -210,7 +210,7 @@
           "settings": {
             "title": "REISARTIKELEN",
             "img": "shopify://shop_images/Reisartikelen.png",
-            "btn_url": "shopify://collections/reisaccessoires"
+            "btn_url": "shopify://collections/reisartikelen"
           }
         },
         "block_eDGd7f": {
@@ -226,7 +226,7 @@
           "settings": {
             "title": "TUIN & ZWEMBADEN",
             "img": "shopify://shop_images/tuin_zwembaden.png",
-            "btn_url": "shopify://collections/tuin"
+            "btn_url": "shopify://collections/tuin-zwembaden"
           }
         },
         "block_pLUfYt": {
