@@ -6,6 +6,7 @@
    3. Productblokken: knop altijd op 1 regel
    4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
    5. Productpagina: sticky balk zonder aantal, met maatkiezer (deed-sticky-size.js)
+   6. Topbalk: taalkiezer als eigen dropdown (deed-lang-dropdown.js)
    ============================================================ */
 
 /* ---------- 1. Megamenu desktop ----------
@@ -290,4 +291,106 @@
     .deed-bb-size__panel {
         max-width: calc(100vw - 40px);
     }
+}
+
+/* ---------- 6. Taalkiezer topbalk: eigen dropdown ----------
+   deed-lang-dropdown.js verbergt de native select en zet er een knop +
+   paneel voor in de plaats, in dezelfde stijl als de maatkiezer in de
+   sticky balk. Het paneel opent naar beneden, onder de gekozen taal. */
+.deed-lang {
+    position: relative;
+}
+.deed-lang .localization-form__select,
+.deed-lang > .icon-caret {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    opacity: 0;
+    pointer-events: none;
+}
+.deed-lang__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0 2px 8px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    color: inherit;
+    cursor: pointer;
+    line-height: 1;
+}
+.deed-lang__chevron {
+    flex-shrink: 0;
+    transition: transform 0.2s ease-out;
+}
+.deed-lang.is-open .deed-lang__chevron {
+    transform: rotate(180deg);
+}
+.deed-lang.is-busy .deed-lang__trigger {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.deed-lang__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    min-width: 96px;
+    padding: 6px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: 0.2s ease-out;
+    transition-property: opacity, visibility, transform;
+    z-index: 10;
+}
+.deed-lang.is-open .deed-lang__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+}
+.deed-lang__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #202020;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease-out, color 0.15s ease-out;
+}
+.deed-lang__option:hover {
+    background: #F5F4F5;
+}
+.deed-lang__option.is-active {
+    background: #8A916B;
+    color: #fff;
+    font-weight: 600;
+}
+.deed-lang__check {
+    flex-shrink: 0;
+    opacity: 0;
+}
+.deed-lang__option.is-active .deed-lang__check {
+    opacity: 1;
+}
+/* Het paneel moet boven de sticky header uitkomen: de announcement-sectie
+   heeft z-index 6, de header 88. Alleen tijdens openen omhoog. */
+.shopify-section:has(.deed-lang.is-open) {
+    z-index: 99 !important;
 }
