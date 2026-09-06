@@ -1,0 +1,95 @@
+/* ============================================================
+   DEED aanpassingen (06-09-2026). Geladen via layout/theme.liquid,
+   direct na custom.css.
+   1. Megamenu desktop: losse items als kop + kolomindeling zonder gaten
+   2. Productpagina: "Complete your set" verbergen als er geen producten zijn
+   3. Productblokken: knop altijd op 1 regel
+   ============================================================ */
+
+/* ---------- 1. Megamenu desktop ----------
+   Alleen het desktop-megamenu (.header__column);
+   de mobiele drawer (.header__drawer) blijft ongewijzigd. */
+@media screen and (min-width: 750px) {
+    /* Kolomindeling: items vloeien per kolom van boven naar beneden,
+       dus geen lege cellen naast een kop met sublinks */
+    .header__column .mega-menu__content .mega-menu__items {
+        display: block;
+        columns: 4;
+        column-gap: 40px;
+    }
+
+    /* Elk blok (kop + sublinks) blijft bij elkaar in een kolom */
+    .header__column .mega-menu__content .mega-menu__items > .mega-menu__item,
+    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link {
+        display: block;
+        break-inside: avoid;
+        page-break-inside: avoid;
+        width: 100%;
+    }
+
+    /* Scheidingslijnen en nth-child padding van het thema uit */
+    .header__column .mega-menu__content .mega-menu__items > .mega-menu__item {
+        border-right: 0;
+        padding: 0;
+        margin: 0 0 28px;
+    }
+
+    /* Kop met sublinks */
+    .header__column .mega-menu__content .mega-menu__item-title {
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 140%;
+        color: #202020;
+        margin: 0 0 10px;
+    }
+
+    /* Los item zonder submenu: exact dezelfde stijl als een kop */
+    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link {
+        font-family: inherit;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 140%;
+        text-transform: none;
+        color: #202020;
+        padding: 0;
+        margin: 0 0 16px;
+    }
+
+    /* Zelfde hover op beide (themagroen) */
+    .header__column .mega-menu__content .mega-menu__item-title a:hover,
+    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link:hover {
+        color: #8A916B;
+    }
+
+    /* Sublinks iets donkerder grijs voor leesbaarheid (was #908f90) */
+    .header__column .mega-menu__content .mega-menu__item-link {
+        color: #6b6b6b;
+    }
+}
+
+/* ---------- 2. Productpagina: Complete your set ----------
+   Het bought_together-blok in sections/product-main-alt.liquid rendert de
+   titel altijd, ook als de productlijst (meestal een metafield) leeg is.
+   De lijst (.product-alt__bt-list) wordt alleen gerenderd als er producten
+   zijn, dus: geen lijst = hele blok verbergen. */
+.product-alt__bt:not(:has(.product-alt__bt-list)) {
+    display: none;
+}
+
+/* ---------- 3. Productblokken: knop op 1 regel ----------
+   In het smalle tekstblok (296px breed, 50px padding) blijft 196px over.
+   De knop (padding 30px + icoon + "READ MORE" op 18px) is exact 196px,
+   dus bij een fractie bredere fontrendering breekt de tekst af.
+   Minder zijpadding en geen regelafbreking geeft ruimte. */
+.btn-global.product-blocks__block-btn {
+    padding-left: 20px;
+    padding-right: 20px;
+    white-space: nowrap;
+    max-width: 100%;
+}
+.btn-global.product-blocks__block-btn .btn__text {
+    white-space: nowrap;
+}
+.btn-global.product-blocks__block-btn .btn__icon {
+    flex-shrink: 0;
+}
