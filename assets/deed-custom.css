@@ -5,6 +5,7 @@
    2. Productpagina: "Complete your set" verbergen als er geen producten zijn
    3. Productblokken: knop altijd op 1 regel
    4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
+   5. Productpagina: sticky balk zonder aantal, met maatkiezer (deed-sticky-size.js)
    ============================================================ */
 
 /* ---------- 1. Megamenu desktop ----------
@@ -136,7 +137,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    /* Rechterdeel: aantal + knop op natuurlijke breedte */
+    /* Rechterdeel: maat + knop op natuurlijke breedte */
     .product-alt__bottom-bar .product-alt__buy-buttons {
         flex: 0 0 auto;
         max-width: none;
@@ -146,15 +147,41 @@
         height: 46px;
         gap: 10px;
     }
-    .product-alt__bottom-bar .product-alt__buy-quantity {
-        max-width: 120px;
-        flex: 0 0 120px;
-    }
     .product-alt__bottom-bar .product-alt__add-cart {
         flex: 0 0 auto;
         min-width: 190px;
         padding-left: 24px;
         padding-right: 24px;
         white-space: nowrap;
+    }
+}
+
+/* ---------- 5. Sticky balk: geen aantal, wel maatkiezer ----------
+   De aantalkiezer verdwijnt; deed-sticky-size.js zet er een <select>
+   met de maten voor in de plaats (zelfde look als het aantalvak). */
+.product-alt__bottom-bar .product-alt__buy-quantity {
+    display: none;
+}
+.product-alt__bottom-bar .deed-bb-size {
+    flex: 0 0 auto;
+    height: 46px;
+    min-width: 150px;
+    max-width: 200px;
+    padding: 0 36px 0 14px;
+    border: 1px solid #e3e3e3;
+    border-radius: 9px;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23202020' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+    -webkit-appearance: none;
+    appearance: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: #202020;
+    cursor: pointer;
+}
+@media screen and (max-width: 749px) {
+    .product-alt__bottom-bar .deed-bb-size {
+        min-width: 0;
+        flex: 1 1 auto;
     }
 }
