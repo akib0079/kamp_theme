@@ -37,9 +37,8 @@
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
-            "text": "+150 Reviews",
-            "img": "shopify://shop_images/Group_20624.svg",
-            "link": "https://www.google.com/search?sca_esv=918d0965cae38051&sxsrf=ANbL-n4Nl1yVCMSvlyz7_mOcyYFYMloKpw:1774878688373&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOQM_3oG_gYY31cnkCvBMe0Y95dbRUPtS0IAOqgoNZSoXniq2M0cGV6pcsoSW0y5VxhSMm4CJERKurJuKDxXdQV_vesocpj3jWSsfiqhYSSgaEgdyQQ%3D%3D&q=Kampeerwinkel+Roermond+Reviews&sa=X&ved=2ahUKEwihrvWt4seTAxVNxwIHHVV_DNYQ0bkNegQISRAH&biw=1866&bih=1257",
+            "text": "Winkel 7 dagen per week geopend",
+            "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.875rem",
             "weight": "500",
