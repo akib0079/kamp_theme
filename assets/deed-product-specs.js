@@ -7,6 +7,7 @@
    (blok metaobject_specs, de slide-in). snippets/deed-product-specs.liquid
    zet datzelfde metaobject als JSON op de pagina; dit script bouwt daar de
    rijen van in de tab, met dezelfde regels als het thema (zelfde skip-lijst,
+   maar op exacte sleutel zodat velden als tent_type wel getoond worden;
    booleans als Ja/Nee). Geen metaobject = tab en tabknop verbergen.
 
    Vertaling:
@@ -135,8 +136,8 @@
 
     var ul = document.createElement('ul');
     Object.keys(data).forEach(function (key) {
-      var lower = key.toLowerCase();
-      for (var i = 0; i < SKIP.length; i++) { if (lower.indexOf(SKIP[i]) !== -1) return; }
+      // Exacte match (het thema zelf matcht op deelstring, waardoor alle *_type velden wegvallen)
+      if (SKIP.indexOf(key.toLowerCase()) !== -1) return;
       var value = data[key];
       var display;
       if (value === true || value === 'true') display = YES[lang];
