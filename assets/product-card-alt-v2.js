@@ -19,9 +19,10 @@ class ProductCardAltV2 extends Component {
       //this.initAjaxCart(); 
     });
     if (this.classList.contains('globo-template-product')) {
-      this.fetchReviews();
+     // this.fetchReviews();
     }
   }
+  /*
   async fetchReviews() {
     const id = this.dataset.productId;
     if (id) {
@@ -48,7 +49,7 @@ class ProductCardAltV2 extends Component {
         return null;
       }
     }
-  }
+  }*/
   initSlider() {
     this.#slider = new Swiper(this.querySelector('.product-card__alt-gallery'), {
       slidesPerView: 1,
