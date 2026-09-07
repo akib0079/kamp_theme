@@ -2,7 +2,9 @@
   Specs-metaobject van het product als JSON op de pagina (DEED, 06-09-2026).
   Zelfde lookup als het blok metaobject_specs in sections/product-main-alt.liquid:
   het eerste gevulde metaveld in product.metafields.specs.* (per categorie).
-  assets/deed-product-specs.js bouwt hier de rijen van in de tab "Eigenschappen".
+  assets/deed-product-specs.js bouwt hier de rijen van in de tab "Eigenschappen"
+  en haalt de vertalingen op uit de twee JSON-assets in de data-attributen
+  (labels NL/EN/DE en waarden EN/DE, toegevoegd 07-09-2026).
   Gerenderd vanuit layout/theme.liquid op producttemplates.
 {%- endcomment -%}
 {%- liquid
@@ -18,5 +20,5 @@
   endfor
 -%}
 {%- if mo_entry != blank -%}
-<script type="application/json" id="deed-product-specs">{{ mo_entry | json }}</script>
+<script type="application/json" id="deed-product-specs" data-labels="{{ 'deed-specs-labels.json' | asset_url }}" data-values="{{ 'deed-specs-values.json' | asset_url }}">{{ mo_entry | json }}</script>
 {%- endif -%}
