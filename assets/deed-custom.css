@@ -99,26 +99,17 @@
 }
 
 /* ---------- 4. Productpagina: sticky add-to-cart balk ----------
-   Het thema zet de balk over de volledige contentbreedte, gecentreerd
-   (left: 50% + translateX(-50%)), met z-index 4. De "Sign up"-knop in de
-   footer heeft ook z-index 4 en kwam daardoor over de balk heen.
-   Nieuw op desktop: max. de helft van de pagina, rechts uitgelijnd op de
-   contentrand, compacter, en boven de footerknop. Mobiel ongewijzigd. */
+   De balk staat over de volledige contentbreedte, gecentreerd door het thema
+   (left: 50% + translateX(-50%)). Die breedte blijft nu staan; alleen z-index 6
+   is nodig, omdat de "Sign up"-knop in de footer op z-index 4 anders over de
+   balk heen kwam. Desktop houdt verder de compactere binnenkant. */
 .product-alt__bottom-bar {
     z-index: 6;
 }
 @media screen and (min-width: 750px) {
     .product-alt__bottom-bar {
-        width: auto;
-        max-width: min(50vw, calc(var(--page-content-width) / 2));
-        left: auto;
-        right: max(20px, calc((100vw - var(--page-content-width)) / 2));
-        transform: translateY(50%);
         gap: 16px;
         padding: 10px;
-    }
-    .product-sticky-bar .product-alt__bottom-bar {
-        transform: none;
     }
     /* Linkerdeel (afbeelding + titel) mag krimpen, titel op 1 regel met ... */
     .product-alt__bottom-bar .product-alt__bb_left {

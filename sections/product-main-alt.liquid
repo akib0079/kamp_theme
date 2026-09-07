@@ -383,6 +383,16 @@
       </div>
     </div>
     <div class="product-alt__right">
+      {%- liquid
+        # Judge.me is normally added as an app block. The hardcoded badge below is
+        # only a fallback for sections that have none, so it never doubles up.
+        assign has_app_block = false
+        for candidate in section.blocks
+          if candidate.type == '@app'
+            assign has_app_block = true
+          endif
+        endfor
+      -%}
       {% for block in section.blocks %}
         {% case block.type %}
           {% when 'vendor' %}
@@ -393,11 +403,12 @@
             {% endif %}
           {% when 'title' %}
             <h1 class="product-alt__title" {{ block.shopify_attributes }}>{{ product.title }}</h1>
-            <!-- Start of Judge.me code -->
-            <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}">
-              {{ product.metafields.judgeme.badge }}
-            </div>
-            <!-- End of Judge.me code -->
+            {%- if has_app_block == false and product.metafields.judgeme.badge != blank -%}
+              <!-- Judge.me fallback, used only when the app block is absent -->
+              <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}">
+                {{ product.metafields.judgeme.badge }}
+              </div>
+            {%- endif -%}
           {% when 'reviews' %}
             <div class="product-alt__reviews" {{ block.shopify_attributes }}>
               <div class="product-alt__reviews-stars">
@@ -986,6 +997,8 @@
               {% endif %}
             </div>
 
+          {% when '@app' %}
+            {% render block %}
           {% else %}
 
         {% endcase %}
