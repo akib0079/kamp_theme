@@ -2,7 +2,8 @@
    DEED aanpassingen (06-09-2026). Geladen via layout/theme.liquid,
    direct na custom.css.
    1. Megamenu desktop: nieuwe layout volgens Figma "KWR 2.0 - Menu"
-      (07-09-2026): tegels bovenaan, subcategorieën in 6 kolommen
+      (07-09-2026): tegels bovenaan, subcategorieën in 6 kolommen;
+      mobiel alleen: losse items in dezelfde stijl als koppen
    2. Productpagina: "Complete your set" verbergen als er geen producten zijn
    3. Productblokken: knop altijd op 1 regel
    4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
@@ -241,6 +242,23 @@
     }
     .header__column .kw-mega-menu .mega-menu__items > :nth-child(4n)::after {
         display: none;
+    }
+}
+
+/* Mobiele drawer: los item zonder submenu krijgt dezelfde opmaak als een
+   kop met sublinks (zwart, 18px), in plaats van de groene themastijl.
+   Verder blijft de mobiele drawer ongewijzigd. */
+@media screen and (max-width: 749px) {
+    .header__drawer .kw-mega-menu .mega-menu__items > .mega-menu__link {
+        display: block;
+        font-family: inherit;
+        font-size: 18px;
+        font-weight: 500;
+        line-height: 140%;
+        text-transform: none;
+        color: #202020;
+        padding: 0;
+        margin: 0;
     }
 }
 
