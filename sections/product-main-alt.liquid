@@ -289,93 +289,138 @@
                 </a>
               </div>
               <script>
-                  const id = {{product.id}};
-                  {% comment %} alert("data") {% endcomment %}
-                  const review_url = `https://api.judge.me/api/v1/widgets/product_review?api_token=DKyluAuaeKXc_lFDdw0vzHh_7Rs&shop_domain=kampeerwinkelecomm.myshopify.com&page=1&per_page=20&external_id=${id}`;
+                (function () {
                   const wrap = document.querySelector('.product-main__tab.tab-reviews');
-                  fetch(review_url)
-                  .then((res) => {
-                    return res.json();
-                  })
-                  .then(data => {
-                    
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data.widget, 'text/html');
-                    const widget = doc.querySelector('.jdgm-rev-widg');
-                    if(parseFloat(widget.dataset.averageRating) < 3.00){
-                      wrap.remove();
-                      document.querySelector(".product-detail")?.classList.add('hide-reviews');
-                      const header = document.querySelector(`.product-main__tabs-hedader-link[data-id=${wrap.dataset.id}]`);
-                      if(header){
-                        header.closest('.swiper-slide').remove();
-                        if(window.headerSlider){
-                          window.headerSlider.update();
-                        }
+                  if (!wrap) return;
+
+                  const productId = {{ product.id }};
+                  const reviewUrl =
+                    'https://api.judge.me/api/v1/widgets/product_review' +
+                    '?api_token=DKyluAuaeKXc_lFDdw0vzHh_7Rs' +
+                    '&shop_domain={{ shop.permanent_domain }}' +
+                    '&page=1&per_page=20&external_id=' + productId;
+
+                  function hideReviewTab() {
+                    const header = document.querySelector(
+                      `.product-main__tabs-hedader-link[data-id=${wrap.dataset.id}]`
+                    );
+                    wrap.remove();
+                    document.querySelector('.product-detail')?.classList.add('hide-reviews');
+                    if (header) {
+                      header.closest('.swiper-slide')?.remove();
+                      if (window.headerSlider) window.headerSlider.update();
+                    }
+                  }
+
+                  function formatDate(rev) {
+                    const stamp = rev.querySelector('.jdgm-rev__timestamp');
+                    const raw = stamp && stamp.dataset.content;
+                    if (!raw) return '';
+                    const date = new Date(raw.replace(' ', 'T').replace(' UTC', 'Z'));
+                    if (isNaN(date)) return '';
+                    const day = String(date.getUTCDate()).padStart(2, '0');
+                    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+                    return `${day}/${month}/${date.getUTCFullYear()}`;
+                  }
+
+                  fetch(reviewUrl)
+                    .then((res) => {
+                      if (!res.ok) throw new Error('Judge.me responded ' + res.status);
+                      return res.json();
+                    })
+                    .then((data) => {
+                      const doc = new DOMParser().parseFromString(data.widget || '', 'text/html');
+                      const widget = doc.querySelector('.jdgm-rev-widg');
+                      // No widget markup means no reviews to show for this product.
+                      if (!widget) {
+                        hideReviewTab();
                         return;
                       }
-                    }
-                    wrap.querySelector('.product-main__tab_review-main').innerText = parseFloat(widget.dataset.averageRating).toFixed(1);
-                    wrap.querySelector('.product-main__tab_review-stars').innerHTML = widget.querySelector('.jdgm-rev-widg__summary-stars').innerHTML;
-                    wrap.querySelector('.product-main__tab_review-text').innerText = widget.querySelector('.jdgm-rev-widg__summary-text').innerText
-                    {% comment %} wrap.querySelector('.product-main__tab_review-items').innerHTML = data.widget; {% endcomment %}
-                    let html = '';
-                    widget.querySelectorAll('.jdgm-rev').forEach(rev => {
-                      const utcString = rev.querySelector('.jdgm-rev__timestamp').dataset.content;
 
-                      // Format string to ISO 8601: "2025-12-15T13:28:34Z"
-                      const isoString = utcString.replace(" ", "T").replace(" UTC", "Z");
-                      const date = new Date(isoString);
-
-                      // Extract UTC parts safely
-                      const day = String(date.getUTCDate()).padStart(2, '0');
-                      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-                      const year = date.getUTCFullYear();
-
-                      const formattedDate = `${day}/${month}/${year}`;
-
-                      html+=`<div class="product-main__tab_review-single">
-                      ${rev.querySelector('.jdgm-rev__rating').outerHTML}
-                      <div class="jdgm-rev__body-wrap">
-                        ${rev.querySelector('.jdgm-rev__body').outerHTML}
-                      </div>
-                      ${rev.querySelector('.jdgm-rev__pic-link') ? rev.querySelector('.jdgm-rev__pic-link').outerHTML  : ''}
-                      <div class="product-main__tab_review-single_footer">
-                        ${rev.querySelector('.jdgm-rev__author-wrapper')?.outerHTML}
-                          <div class="jdgm-rev__date">${formattedDate}</div>
-                      </div>
-                      </div>`
-                    })
-                    wrap.querySelector('.product-main__tab_review-items').innerHTML = html;
-                    wrap.querySelectorAll('.jdgm-rev__pic-link').forEach(ele => {
-                      ele.classList.remove('jdgm--loading')
-                      const img = ele.querySelector('.jdgm-rev__pic-img');
-                      img.src= img.dataset.src;
-                    })
-                    wrap.querySelectorAll('.jdgm-rev__body-wrap').forEach(ele => {
-                      const eleBody = ele.querySelector('.jdgm-rev__body');
-                      const maxHeight = parseFloat(window.getComputedStyle(eleBody).lineHeight) * 8;
-                      if(maxHeight < ele.scrollHeight){
-                        ele.classList.add('expandible');
-                        ele.insertAdjacentHTML('beforeend', '<a href="#" class="jdgm-rev__body-expander">{{ block.settings.item_more_text }}</a>');
-                        ele.querySelector('.jdgm-rev__body-expander').addEventListener('click', e => {
-                          e.preventDefault();
-                          ele.classList.toggle('expanded')
-                        })
+                      const average = parseFloat(widget.dataset.averageRating);
+                      if (!isNaN(average) && average < 3.0) {
+                        hideReviewTab();
+                        return;
                       }
-                      ele.style.setProperty('--max-height',maxHeight + 'px');
+
+                      const main = wrap.querySelector('.product-main__tab_review-main');
+                      if (main) main.innerText = isNaN(average) ? '' : average.toFixed(1);
+                      const stars = wrap.querySelector('.product-main__tab_review-stars');
+                      const summaryStars = widget.querySelector('.jdgm-rev-widg__summary-stars');
+                      if (stars && summaryStars) stars.innerHTML = summaryStars.innerHTML;
+                      const text = wrap.querySelector('.product-main__tab_review-text');
+                      const summaryText = widget.querySelector('.jdgm-rev-widg__summary-text');
+                      if (text && summaryText) text.innerText = summaryText.innerText;
+
+                      let html = '';
+                      widget.querySelectorAll('.jdgm-rev').forEach((rev) => {
+                        const rating = rev.querySelector('.jdgm-rev__rating');
+                        const body = rev.querySelector('.jdgm-rev__body');
+                        if (!rating || !body) return;
+                        const pic = rev.querySelector('.jdgm-rev__pic-link');
+                        const author = rev.querySelector('.jdgm-rev__author-wrapper');
+                        html += `<div class="product-main__tab_review-single">
+                        ${rating.outerHTML}
+                        <div class="jdgm-rev__body-wrap">
+                          ${body.outerHTML}
+                        </div>
+                        ${pic ? pic.outerHTML : ''}
+                        <div class="product-main__tab_review-single_footer">
+                          ${author ? author.outerHTML : ''}
+                            <div class="jdgm-rev__date">${formatDate(rev)}</div>
+                        </div>
+                        </div>`;
+                      });
+
+                      const items = wrap.querySelector('.product-main__tab_review-items');
+                      if (!items) return;
+                      items.innerHTML = html;
+
+                      wrap.querySelectorAll('.jdgm-rev__pic-link').forEach((ele) => {
+                        ele.classList.remove('jdgm--loading');
+                        const img = ele.querySelector('.jdgm-rev__pic-img');
+                        if (img && img.dataset.src) img.src = img.dataset.src;
+                      });
+
+                      wrap.querySelectorAll('.jdgm-rev__body-wrap').forEach((ele) => {
+                        const eleBody = ele.querySelector('.jdgm-rev__body');
+                        if (!eleBody) return;
+                        const maxHeight = parseFloat(window.getComputedStyle(eleBody).lineHeight) * 8;
+                        if (maxHeight < ele.scrollHeight) {
+                          ele.classList.add('expandible');
+                          ele.insertAdjacentHTML(
+                            'beforeend',
+                            '<a href="#" class="jdgm-rev__body-expander">{{ block.settings.item_more_text }}</a>'
+                          );
+                          ele.querySelector('.jdgm-rev__body-expander').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            ele.classList.toggle('expanded');
+                          });
+                        }
+                        ele.style.setProperty('--max-height', maxHeight + 'px');
+                      });
+
+                      let limiter = window.matchMedia('(max-width: 767px)').matches ? 2 : 3;
+                      const button = wrap.querySelector('.product-main__tab_review-button');
+                      const single = wrap.querySelector('.product-main__tab_review-single');
+                      if (items.querySelector(`.product-main__tab_review-single:nth-child(${limiter})`)) {
+                        if (single) items.style.setProperty('--item-height', single.scrollHeight + 'px');
+                        if (button) {
+                          button.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            wrap.classList.toggle('expanded');
+                          });
+                        }
+                      } else if (button) {
+                        button.remove();
+                      }
                     })
-                    let limiter = 3;
-                    if (window.matchMedia("(max-width: 767px)").matches) limiter = 2
-                    if(wrap.querySelector(`.product-main__tab_review-items .product-main__tab_review-single:nth-child(${limiter})`)){
-                      wrap.querySelector('.product-main__tab_review-items').style.setProperty('--item-height', wrap.querySelector('.product-main__tab_review-single').scrollHeight + 'px');
-                      wrap.querySelector('.product-main__tab_review-button').addEventListener('click', e => {
-                        e.preventDefault();
-                        wrap.classList.toggle('expanded')
-                      })
-                    } else {
-                      wrap.querySelector('.product-main__tab_review-button').remove();
-                    }
-                  })
+                    .catch((err) => {
+                      // Never let a Judge.me outage take the rest of the page with it.
+                      console.warn('[reviews] could not load Judge.me reviews:', err);
+                      hideReviewTab();
+                    });
+                })();
               </script>
             {% endif %}
           {% endfor %}
@@ -2058,7 +2103,9 @@
     })
     const reviewTab = container.querySelector('.product-main__tab.tab-reviews');
     if(reviewTab)
-    container.querySelectorAll('.jdgm-prev-badge').forEach(badge => {
+    // The theme's own "N Reviews" link points at #reviews, which no section
+    // defines, so send it to the reviews tab like the Judge.me badge.
+    container.querySelectorAll('.jdgm-prev-badge, .product-alt__reviews-link').forEach(badge => {
       badge.addEventListener('click', e => {
         e.preventDefault();
         gsap.to(window, {
