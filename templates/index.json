@@ -398,7 +398,7 @@
           "type": "card",
           "settings": {
             "heading": "SHOP JOUW THULE FIETSENDRAGERS",
-            "btn_text": "SHOP NOW",
+            "btn_text": "SHOP NU",
             "btn_url": "shopify://collections/fietsendragers-thule",
             "img": "shopify://shop_images/Thule_fietsendrager_3.png",
             "overlay_opacity": 0
@@ -408,7 +408,7 @@
           "type": "card",
           "settings": {
             "heading": "CARAVAN PLEZIER",
-            "btn_text": "SHOP NOW",
+            "btn_text": "Shop nu",
             "btn_url": "shopify://collections/caravan-camper-accessoires",
             "img": "shopify://shop_images/Frame_470238.webp",
             "overlay_opacity": 0
