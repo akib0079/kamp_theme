@@ -115,7 +115,7 @@
       "name": "KW - Home Banner 2",
       "settings": {
         "title": "Midsummer sale tot 50% korting!",
-        "desc": "<p>Vele last minute aanbiedingen en summer sale op kleding.</p>",
+        "desc": "",
         "btn_text": "Shop now",
         "btn_url": "shopify://collections/all",
         "img": "shopify://shop_images/Kampeer_banner_1.png",
