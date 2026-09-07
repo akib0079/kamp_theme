@@ -1,8 +1,26 @@
+{%- liquid
+  # DEED 07-09-2026: op mobiel eerst 5 categorieen tonen, rest achter "Toon meer".
+  assign mobile_visible = 5
+  assign block_count = section.blocks | where: 'type', 'block' | size
+
+  # Labels per taal (NL / EN / DE), zonder aanpassing van de locale-bestanden.
+  case request.locale.iso_code
+    when 'de'
+      assign label_more = 'Mehr anzeigen'
+      assign label_less = 'Weniger anzeigen'
+    when 'en'
+      assign label_more = 'Show more'
+      assign label_less = 'Show less'
+    else
+      assign label_more = 'Toon meer'
+      assign label_less = 'Toon minder'
+  endcase
+-%}
 <div class="section home-categories-section section-id-{{ section.id }}" >
-    <div class="home-categories__grid">
+    <div class="home-categories__grid" id="home-categories-grid-{{ section.id }}">
         {% for block in section.blocks %}
             {% if block.type == 'block' %}
-            <a class="home-categories__block link-underline" {{ block.shopify_attributes }} href="{{block.settings.url}}">
+            <a class="home-categories__block link-underline{% if forloop.index > mobile_visible %} home-categories__block--extra{% endif %}" {{ block.shopify_attributes }} href="{{ block.settings.btn_url }}">
                 <div class="home-categories__block-img-wrap">
                     {% if block.settings.img != blank %}
                         {{ block.settings.img | image_url: width: nil | image_tag: class: 'home-categories__block-img bg-img hidden--mobile' }}
@@ -21,6 +39,21 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% if block_count > mobile_visible %}
+    <button
+        type="button"
+        class="home-categories__toggle"
+        aria-expanded="false"
+        aria-controls="home-categories-grid-{{ section.id }}"
+        data-label-more="{{ label_more | escape }}"
+        data-label-less="{{ label_less | escape }}"
+    >
+        <span class="home-categories__toggle-text">{{ label_more }}</span>
+        <svg class="home-categories__toggle-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    {% endif %}
 </div>
 {%stylesheet %}
   .home-categories-section{
@@ -91,8 +124,61 @@
       height: 18px;
     }
   }
+  /* Toon meer / Toon minder: alleen op mobiel */
+  .home-categories__toggle{
+    display: none;
+  }
+  @media screen and (max-width: 749px) {
+    .home-categories__block--extra{
+      display: none;
+    }
+    .home-categories-section.is-expanded .home-categories__block--extra{
+      display: flex;
+    }
+    .home-categories__toggle{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1;
+      color: #202020;
+      cursor: pointer;
+    }
+    .home-categories__toggle-icon{
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s ease-out;
+    }
+    .home-categories-section.is-expanded .home-categories__toggle-icon{
+      transform: rotate(180deg);
+    }
+  }
 {% endstylesheet %}
-      
+
+{% javascript %}
+  document.querySelectorAll('.home-categories__toggle').forEach(function (btn) {
+    var section = btn.closest('.home-categories-section');
+    var text = btn.querySelector('.home-categories__toggle-text');
+    if (!section || !text) return;
+
+    btn.addEventListener('click', function () {
+      var expanded = section.classList.toggle('is-expanded');
+      btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      text.textContent = expanded ? btn.dataset.labelLess : btn.dataset.labelMore;
+      // Bij inklappen terug naar de categorieen scrollen, anders sta je onder de sectie
+      if (!expanded) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+{% endjavascript %}
+
 {% schema %}
   {
     "name": "KW - Home Categories",
