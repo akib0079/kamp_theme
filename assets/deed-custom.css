@@ -1,7 +1,8 @@
 /* ============================================================
    DEED aanpassingen (06-09-2026). Geladen via layout/theme.liquid,
    direct na custom.css.
-   1. Megamenu desktop: losse items als kop + kolomindeling zonder gaten
+   1. Megamenu desktop: nieuwe layout volgens Figma "KWR 2.0 - Menu"
+      (07-09-2026): tegels bovenaan, subcategorieën in 6 kolommen
    2. Productpagina: "Complete your set" verbergen als er geen producten zijn
    3. Productblokken: knop altijd op 1 regel
    4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
@@ -11,63 +12,225 @@
    ============================================================ */
 
 /* ---------- 1. Megamenu desktop ----------
-   Alleen het desktop-megamenu (.header__column);
-   de mobiele drawer (.header__drawer) blijft ongewijzigd. */
+   Alleen het desktop-megamenu (.header__column .kw-mega-menu);
+   de mobiele drawer (.header__drawer--mobile) blijft ongewijzigd.
+   Overschrijft de basisregels uit het {% stylesheet %}-blok in
+   blocks/_megamenu.liquid. Hover-activatie van de tegels zit in
+   assets/mega-menu.js. */
 @media screen and (min-width: 750px) {
-    /* Kolomindeling: items vloeien per kolom van boven naar beneden,
-       dus geen lege cellen naast een kop met sublinks */
-    .header__column .mega-menu__content .mega-menu__items {
-        display: block;
-        columns: 4;
-        column-gap: 40px;
+    /* Container: tegels boven, contentvlak eronder */
+    .header__column .kw-mega-menu {
+        border-radius: 0 0 25px 25px;
+        background: #fff;
+    }
+    .header__column .kw-mega-menu .mega-menu__grid {
+        display: flex;
+        flex-direction: column;
+        gap: 34px;
+        padding: 30px 0 50px;
     }
 
-    /* Elk blok (kop + sublinks) blijft bij elkaar in een kolom */
-    .header__column .mega-menu__content .mega-menu__items > .mega-menu__item,
-    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link {
-        display: block;
-        break-inside: avoid;
-        page-break-inside: avoid;
-        width: 100%;
-    }
-
-    /* Scheidingslijnen en nth-child padding van het thema uit */
-    .header__column .mega-menu__content .mega-menu__items > .mega-menu__item {
-        border-right: 0;
+    /* Categorietegels: wrappende rij */
+    .header__column .kw-mega-menu .mega-menu__headers {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0;
         padding: 0;
-        margin: 0 0 28px;
+        border-right: 0;
+        list-style: none;
+    }
+    .header__column .kw-mega-menu .mega-menu__headers > li {
+        flex: 0 0 auto;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 8px 14px 8px 8px;
+        border: 1px solid #F0F1ED;
+        border-radius: 10px;
+        background: #fff;
+        text-decoration: none;
+        transition: background-color 0.3s ease-out, border-color 0.3s ease-out;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link:hover {
+        background: #FBFCF7;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link.active {
+        background: #F7FAEB;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid #F0F1ED;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: none;
+        transition: box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link.active .mega-menu__anchor-icon-wrap {
+        border-color: #fff;
+        box-shadow: 0 4px 2px rgba(210, 219, 172, 0.29);
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-icon {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-title-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin: 0;
+        white-space: nowrap;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1;
+        color: #202020;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link.active .mega-menu__anchor-title {
+        font-weight: 600;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-count {
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1;
+        color: #5C5C5C;
+    }
+    .header__column .kw-mega-menu .mega-menu__anchor-link.active .mega-menu__anchor-count {
+        font-weight: 500;
+        color: #5C5B5C;
+    }
+    .header__column .kw-mega-menu .mega-menu__headers .mega-menu__anchor-link svg {
+        display: none;
+    }
+
+    /* Contentvlak onder de tegels */
+    .header__column .kw-mega-menu .mega-menu__contents {
+        position: relative;
+        overflow: hidden;
+        height: var(--megamenu-content-height);
+        transition: height 0.4s ease-out;
+    }
+    .header__column .kw-mega-menu .mega-menu__content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0;
+    }
+    .header__column .kw-mega-menu .mega-menu__content-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    .header__column .kw-mega-menu .mega-menu__content-title {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #8A916B;
+    }
+    .header__column .kw-mega-menu .mega-menu__content-title a {
+        color: inherit;
+    }
+
+    /* Subcategorieën: 6 kolommen, rij voor rij (menuvolgorde),
+       met doorlopende scheidingslijnen in het midden van de kolomruimte */
+    .header__column .kw-mega-menu .mega-menu__items {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        column-gap: 40px;
+        row-gap: 40px;
+        overflow: hidden; /* knipt de lijnen van de onderste rij af */
+    }
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__item,
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__link {
+        position: relative;
+        display: block;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        border-right: 0;
+    }
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__item::after,
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__link::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: -40px;
+        right: -20px;
+        width: 1px;
+        background: #F2F2F2;
+        pointer-events: none;
+    }
+    .header__column .kw-mega-menu .mega-menu__items > :nth-child(6n)::after {
+        display: none;
     }
 
     /* Kop met sublinks */
-    .header__column .mega-menu__content .mega-menu__item-title {
+    .header__column .kw-mega-menu .mega-menu__item-title {
+        margin: 0 0 13px;
         font-size: 18px;
         font-weight: 500;
-        line-height: 140%;
+        line-height: 1;
         color: #202020;
-        margin: 0 0 10px;
+        white-space: normal;
+    }
+    .header__column .kw-mega-menu .mega-menu__item-title a {
+        color: inherit;
+    }
+    .header__column .kw-mega-menu .mega-menu__item-list {
+        display: flex;
+        flex-direction: column;
+        gap: 13px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    .header__column .kw-mega-menu .mega-menu__item-link {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #5C5C5C;
     }
 
-    /* Los item zonder submenu: exact dezelfde stijl als een kop */
-    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link {
+    /* Los item zonder submenu: zelfde stijl als een kop */
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__link {
         font-family: inherit;
         font-size: 18px;
         font-weight: 500;
-        line-height: 140%;
+        line-height: 1;
         text-transform: none;
         color: #202020;
-        padding: 0;
-        margin: 0 0 16px;
     }
 
-    /* Zelfde hover op beide (themagroen) */
-    .header__column .mega-menu__content .mega-menu__item-title a:hover,
-    .header__column .mega-menu__content .mega-menu__items > .mega-menu__link:hover {
+    /* Hover in themagroen */
+    .header__column .kw-mega-menu .mega-menu__item-title a:hover,
+    .header__column .kw-mega-menu .mega-menu__items > .mega-menu__link:hover,
+    .header__column .kw-mega-menu .mega-menu__item-link:hover {
         color: #8A916B;
     }
+}
 
-    /* Sublinks iets donkerder grijs voor leesbaarheid (was #908f90) */
-    .header__column .mega-menu__content .mega-menu__item-link {
-        color: #6b6b6b;
+/* Kleinere desktops (750-1199px): 6 kolommen passen niet, terug naar 4 */
+@media screen and (min-width: 750px) and (max-width: 1199px) {
+    .header__column .kw-mega-menu .mega-menu__items {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .header__column .kw-mega-menu .mega-menu__items > :nth-child(6n)::after {
+        display: block;
+    }
+    .header__column .kw-mega-menu .mega-menu__items > :nth-child(4n)::after {
+        display: none;
     }
 }
 

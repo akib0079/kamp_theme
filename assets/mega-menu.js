@@ -13,7 +13,12 @@ class MegaMenu extends Component {
     activeItem: null,
   };
   #closeTimeout = null;
+  #hoverTimeout = null;
   #mobile = false;
+
+  // DEED 07-09-2026: vertraging (ms) voordat een tegel bij hover actief wordt,
+  // zodat het contentvlak niet flikkert als je snel over de tegels beweegt.
+  #hoverDelay = 120;
 
   connectedCallback() {
     super.connectedCallback();
@@ -23,8 +28,8 @@ class MegaMenu extends Component {
     // });
 
     // onDocumentLoaded(this.#preloadImages);
-    
-    
+
+
     this.init();
   }
 
@@ -41,10 +46,17 @@ class MegaMenu extends Component {
               this.activateItem(item);
             // }
         })
-        // item.addEventListener('mouseenter', e => {
-        //     if (!this.#mobile)
-        //     this.activateItem(item);
-        // })
+        // DEED 07-09-2026: op desktop wisselt het contentvlak ook bij hover
+        // over een tegel (nieuwe megamenu-layout). Mobiel blijft op klik.
+        item.addEventListener('mouseenter', () => {
+            if (this.#mobile) return;
+            clearTimeout(this.#hoverTimeout);
+            this.#hoverTimeout = setTimeout(() => this.activateItem(item), this.#hoverDelay);
+        })
+        item.addEventListener('mouseleave', () => {
+            if (this.#mobile) return;
+            clearTimeout(this.#hoverTimeout);
+        })
     })
     if (!this.#mobile){
       this.#state.activeItem = this.querySelector('.mega-menu__anchor-link.active');
@@ -54,7 +66,7 @@ class MegaMenu extends Component {
       this.querySelector('.mega-menu__anchor-link.active').classList.remove('active');
       this.querySelector('.mega-menu__content.active').classList.remove('active');
     }
-    
+
     this.closest('.menu-list__list-item.megamenu').querySelector('.menu-list__link').addEventListener('mouseenter', () => {
       clearTimeout(this.#closeTimeout);
       if(this.closest('.menu-list__list-item.megamenu').classList.contains('active')) return;
