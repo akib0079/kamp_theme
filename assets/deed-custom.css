@@ -7,6 +7,7 @@
    4. Productpagina: sticky add-to-cart balk compacter, rechts, max halve pagina
    5. Productpagina: sticky balk zonder aantal, met maatkiezer (deed-sticky-size.js)
    6. Topbalk: taalkiezer als eigen dropdown (deed-lang-dropdown.js)
+   7. Productpagina: korte beschrijving niet in Title Case (07-09-2026)
    ============================================================ */
 
 /* ---------- 1. Megamenu desktop ----------
@@ -393,4 +394,12 @@
    heeft z-index 6, de header 88. Alleen tijdens openen omhoog. */
 .shopify-section:has(.deed-lang.is-open) {
     z-index: 99 !important;
+}
+
+/* ---------- 7. Productpagina: korte beschrijving ----------
+   Het thema zet text-transform: capitalize op .product-alt__excerpt.desc,
+   waardoor een hele zin in Title Case komt ("Een Inlegzool Die Zorgt Voor...").
+   De producttitel houdt zijn eigen opmaak. */
+.product-alt__excerpt.desc {
+    text-transform: none;
 }
