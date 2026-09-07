@@ -16,9 +16,10 @@ class MegaMenu extends Component {
   #hoverTimeout = null;
   #mobile = false;
 
-  // DEED 07-09-2026: vertraging (ms) voordat een tegel bij hover actief wordt,
-  // zodat het contentvlak niet flikkert als je snel over de tegels beweegt.
-  #hoverDelay = 120;
+  // DEED 07-09-2026: vertraging (ms) voordat een tegel bij hover actief wordt.
+  // De muis moet zo lang op dezelfde tegel blijven; even overheen bewegen
+  // (bijv. op weg naar de subcategorieen) wisselt het contentvlak niet.
+  #hoverDelay = 350;
 
   connectedCallback() {
     super.connectedCallback();
