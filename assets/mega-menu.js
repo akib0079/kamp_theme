@@ -19,7 +19,7 @@ class MegaMenu extends Component {
   // DEED 07-09-2026: vertraging (ms) voordat een tegel bij hover actief wordt.
   // De muis moet zo lang op dezelfde tegel blijven; even overheen bewegen
   // (bijv. op weg naar de subcategorieen) wisselt het contentvlak niet.
-  #hoverDelay = 350;
+  #hoverDelay = 600;
 
   connectedCallback() {
     super.connectedCallback();
